@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react';
+﻿import { useState, useMemo, useEffect } from 'react';
 import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, AreaChart, Area } from 'recharts';
 import { Calendar, DollarSign, ShoppingCart, Users, Package, Download, Filter, TrendingUp, TrendingDown, Clock, MapPin, CreditCard } from 'lucide-react';
 
@@ -7,12 +7,12 @@ const Dashboard = () => {
 
   const [paymentData, setPaymentData] = useState([]);
   const [regionData, setRegionData] = useState([]);
-  const [detailedOrders, setDetailedOrders] = useState([]);
+  const [detailedOrder, setDetailedOrder] = useState([]);
   const [timeSlotData, setTimeSlotData] = useState([]);
   const [allData, setAllData] = useState([]);
 
   // -------------------------
-  // 1. DATE RANGE
+  // 1. NGÀY RANGE
   // -------------------------
   const [dateRange, setDateRange] = useState({
     start: new Date(Date.now() - 30 * 86400000).toISOString().split("T")[0],
@@ -35,7 +35,7 @@ const Dashboard = () => {
         const data = await res.json();
         setAllData(data || []);
       } catch (e) {
-        console.error("Error fetching daily stats:", e);
+        console.error("Lỗi tải thống kê theo ngày:", e);
       }
     };
 
@@ -52,18 +52,18 @@ const Dashboard = () => {
       });
       setTimeSlotData(await res.json());
     } catch (err) {
-      console.error("Error fetching time slots:", err);
+      console.error("Lỗi tải khung giờ:", err);
     }
   };
 
-  const fetchDetailedOrders = async () => {
+  const fetchDetailedOrder = async () => {
     try {
       const res = await fetch("http://localhost:8080/orders/detailed-orders", {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setDetailedOrders(await res.json());
+      setDetailedOrder(await res.json());
     } catch (err) {
-      console.error("Error fetching detailed orders:", err);
+      console.error("Lỗi tải chi tiết đơn hàng:", err);
     }
   };
 
@@ -74,7 +74,7 @@ const Dashboard = () => {
       });
       setRegionData(await res.json());
     } catch (err) {
-      console.error("Error fetching regions:", err);
+      console.error("Lỗi tải dữ liệu khu vực:", err);
     }
   };
 
@@ -85,19 +85,19 @@ const Dashboard = () => {
       });
       setPaymentData(await res.json());
     } catch (err) {
-      console.error("Error fetching payment data:", err);
+      console.error("Lỗi tải dữ liệu thanh toán:", err);
     }
   };
 
   useEffect(() => {
     fetchPaymentData();
     fetchRegionData();
-    fetchDetailedOrders();
+    fetchDetailedOrder();
     fetchTimeSlotData();
   }, []);
 
   // -------------------------
-  // 4. DATA NORMALIZATION (FILL MISSING DATES)
+  // 4. DATA NORMALIZATION (FILL MISSING NGÀYS)
   // -------------------------
   const getDateList = (start, end) => {
     const list = [];
@@ -132,14 +132,14 @@ const Dashboard = () => {
   // 5. TOTALS CALCULATION
   // -------------------------
   const totalRevenue = chartData.reduce((s, i) => s + i.revenue, 0);
-  const totalOrders = chartData.reduce((s, i) => s + i.orders, 0);
+  const totalOrder = chartData.reduce((s, i) => s + i.orders, 0);
   const totalCustomers = chartData.reduce((s, i) => s + i.customers, 0);
   const totalProducts = chartData.reduce((s, i) => s + i.products, 0);
 
   // -------------------------
   // 6. GROWTH CALCULATION (VS PREVIOUS PERIOD)
   // -------------------------
-  const getPrevRange = () => {
+  const getTrướcRange = () => {
     const days = chartData.length;
     const end = new Date(dateRange.start);
     end.setDate(end.getDate() - 1);
@@ -153,27 +153,27 @@ const Dashboard = () => {
     };
   };
 
-  const prevRange = getPrevRange();
+  const prevRange = getTrướcRange();
   const prevData = allData.filter(
     d => d.date >= prevRange.start && d.date <= prevRange.end
   );
 
   const prevRevenue = prevData.reduce((s, i) => s + i.revenue, 0);
-  const prevOrders = prevData.reduce((s, i) => s + i.orders, 0);
+  const prevOrder = prevData.reduce((s, i) => s + i.orders, 0);
 
   const revenueGrowth =
     prevRevenue > 0 ? ((totalRevenue - prevRevenue) / prevRevenue) * 100 : 0;
 
   const ordersGrowth =
-    prevOrders > 0 ? ((totalOrders - prevOrders) / prevOrders) * 100 : 0;
+    prevOrder > 0 ? ((totalOrder - prevOrder) / prevOrder) * 100 : 0;
 
-  const avgOrderValue = totalOrders ? totalRevenue / totalOrders : 0;
+  const avgOrderValue = totalOrder ? totalRevenue / totalOrder : 0;
 
   // -------------------------
-  // 7. FORMAT CURRENCY (VIETNAMESE DONG in EN LOCALE)
+  // 7. FORMAT CURRENCY
   // -------------------------
   const formatCurrency = (value) => {
-    return new Intl.NumberFormat("en-US").format(value) + " VND";
+    return new Intl.NumberFormat("vi-VN").format(value) + " đ";
   };
 
   // -------------------------
@@ -215,7 +215,7 @@ const Dashboard = () => {
   // 9. EXPORT CSV
   // -------------------------
   const exportToCSV = () => {
-    const headers = ["Date", "Revenue", "Orders", "Customers", "Products"];
+    const headers = ["Ngày", "Doanh thu", "Đơn hàng", "Khách hàng", "Sản phẩm"];
 
     // 1. LỌC DỮ LIỆU: Chỉ lấy những ngày có doanh thu hoặc đơn hàng > 0
     const activeData = chartData.filter(item => item.orders > 0 || item.revenue > 0);
@@ -254,22 +254,26 @@ const Dashboard = () => {
     link.click();
   };
 
-  // Helper to translate status from Backend (Vietnamese) to Frontend (English)
+  // Helper hiển thị trạng thái tiếng Việt
   const getStatusLabel = (status) => {
     switch (status) {
-        case 'Hoàn thành': return 'Completed';
-        case 'Đang giao': return 'Shipping';
-        case 'Đang xử lý': return 'Processing';
-        case 'Hủy': return 'Cancelled';
+        case 'Hoàn thành': return 'Hoàn thành';
+        case 'Đang giao': return 'Đang giao';
+        case 'Đang xử lý': return 'Đang xử lý';
+        case 'Hủy': return 'Đã hủy';
         default: return status;
     }
   };
 
-  // Helper to translate payment from Backend (Vietnamese) to Frontend (English)
+  // Helper hiển thị phương thức thanh toán tiếng Việt
   const getPaymentLabel = (payment) => {
     switch (payment) {
-        case 'Thẻ tín dụng': return 'Credit Card';
-        case 'Banking': return 'Bank Transfer';
+        case 'Thẻ tín dụng': return 'Thẻ tín dụng';
+        case 'Banking': return 'Chuyển khoản ngân hàng';
+        case 'BANKING': return 'Chuyển khoản ngân hàng';
+        case 'BANK_TRANSFER': return 'Chuyển khoản ngân hàng';
+        case 'COD': return 'Thanh toán khi nhận hàng';
+        case 'CASH': return 'Thanh toán khi nhận hàng';
         default: return payment;
     }
   }
@@ -285,13 +289,13 @@ const Dashboard = () => {
                 <div className="bg-white/20 p-3 rounded-xl backdrop-blur-sm">
                   <DollarSign className="w-8 h-8" />
                 </div>
-                Revenue Dashboard
+                Bảng doanh thu
               </h1>
-              <p className="text-indigo-100 text-lg">Manage and analyze business performance</p>
+              <p className="text-indigo-100 text-lg">Quản lý và phân tích hiệu quả kinh doanh</p>
             </div>
             <div className="text-right">
-              <p className="text-indigo-100 text-sm mb-1">Last updated</p>
-              <p className="text-xl font-semibold">{new Date().toLocaleTimeString('en-US')}</p>
+              <p className="text-indigo-100 text-sm mb-1">Cập nhật lần cuối</p>
+              <p className="text-xl font-semibold">{new Date().toLocaleTimeString('vi-VN')}</p>
             </div>
           </div>
         </div>
@@ -304,17 +308,17 @@ const Dashboard = () => {
             <div className="bg-linear-to-br from-blue-500 to-indigo-600 p-2 rounded-lg">
               <Calendar className="w-5 h-5 text-white" />
             </div>
-            <h2 className="text-xl font-bold text-gray-800">Date Filters</h2>
+            <h2 className="text-xl font-bold text-gray-800">Bộ lọc ngày</h2>
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3 mb-6">
             {[
-              { label: 'Today', action: 'today' },
-              { label: 'Yesterday', action: 'yesterday' },
-              { label: '7 Days', action: '7days' },
-              { label: '30 Days', action: '30days' },
-              { label: 'This Month', action: 'thisMonth' },
-              { label: 'This Year', action: 'thisYear' }
+              { label: 'Hôm nay', action: 'today' },
+              { label: 'Hôm qua', action: 'yesterday' },
+              { label: '7 ngày', action: '7days' },
+              { label: '30 ngày', action: '30days' },
+              { label: 'Tháng này', action: 'thisMonth' },
+              { label: 'Năm nay', action: 'thisYear' }
             ].map((btn) => (
               <button
                 key={btn.action}
@@ -328,7 +332,7 @@ const Dashboard = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">From Date</label>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">Từ ngày</label>
               <input
                 type="date"
                 value={dateRange.start}
@@ -337,7 +341,7 @@ const Dashboard = () => {
               />
             </div>
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">To Date</label>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">Đến ngày</label>
               <input
                 type="date"
                 value={dateRange.end}
@@ -360,9 +364,9 @@ const Dashboard = () => {
                 {Math.abs(revenueGrowth).toFixed(1)}%
               </div>
             </div>
-            <p className="text-blue-100 text-sm font-medium mb-2">Total Revenue</p>
+            <p className="text-blue-100 text-sm font-medium mb-2">Tổng doanh thu</p>
             <p className="text-3xl font-bold mb-1">{formatCurrency(totalRevenue)}</p>
-            <p className="text-blue-200 text-xs">vs. previous period</p>
+            <p className="text-blue-200 text-xs">so với kỳ trước</p>
           </div>
 
           <div className="group bg-linear-to-br from-emerald-500 via-green-600 to-teal-600 rounded-2xl shadow-xl p-6 text-white transform hover:scale-105 transition-all duration-300 hover:shadow-2xl">
@@ -375,9 +379,9 @@ const Dashboard = () => {
                 {Math.abs(ordersGrowth).toFixed(1)}%
               </div>
             </div>
-            <p className="text-green-100 text-sm font-medium mb-2">Total Orders</p>
-            <p className="text-3xl font-bold mb-1">{totalOrders.toLocaleString()}</p>
-            <p className="text-green-200 text-xs">Orders this period</p>
+            <p className="text-green-100 text-sm font-medium mb-2">Tổng đơn hàng</p>
+            <p className="text-3xl font-bold mb-1">{totalOrder.toLocaleString()}</p>
+            <p className="text-green-200 text-xs">Đơn hàng trong kỳ</p>
           </div>
 
           <div className="group bg-linear-to-br from-purple-500 via-violet-600 to-purple-700 rounded-2xl shadow-xl p-6 text-white transform hover:scale-105 transition-all duration-300 hover:shadow-2xl">
@@ -386,12 +390,12 @@ const Dashboard = () => {
                 <Users className="w-7 h-7" />
               </div>
               <div className="bg-purple-400/30 px-3 py-1 rounded-full text-xs font-bold">
-                Active
+                Hoạt động
               </div>
             </div>
-            <p className="text-purple-100 text-sm font-medium mb-2">Customers</p>
+            <p className="text-purple-100 text-sm font-medium mb-2">Khách hàng</p>
             <p className="text-3xl font-bold mb-1">{totalCustomers.toLocaleString()}</p>
-            <p className="text-purple-200 text-xs">Active customers</p>
+            <p className="text-purple-200 text-xs">Khách hàng hoạt động</p>
           </div>
 
           <div className="group bg-linear-to-br from-amber-500 via-orange-600 to-red-600 rounded-2xl shadow-xl p-6 text-white transform hover:scale-105 transition-all duration-300 hover:shadow-2xl">
@@ -400,22 +404,22 @@ const Dashboard = () => {
                 <Package className="w-7 h-7" />
               </div>
               <div className="bg-orange-400/30 px-3 py-1 rounded-full text-xs font-bold">
-                Avg: {formatCurrency(avgOrderValue)}
+                TB: {formatCurrency(avgOrderValue)}
               </div>
             </div>
-            <p className="text-orange-100 text-sm font-medium mb-2">Products Sold</p>
+            <p className="text-orange-100 text-sm font-medium mb-2">Sản phẩm đã bán</p>
             <p className="text-3xl font-bold mb-1">{totalProducts.toLocaleString()}</p>
-            <p className="text-orange-200 text-xs">Avg. Order Value</p>
+            <p className="text-orange-200 text-xs">Giá trị đơn trung bình</p>
           </div>
         </div>
 
-        {/* Area Chart - Revenue Trend */}
+        {/* Area Chart - Revenue Xu hướng */}
         <div className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-xl border border-white/20 p-6 mb-6">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-bold text-gray-800">📊 Revenue Trend</h2>
+            <h2 className="text-xl font-bold text-gray-800">📊 Xu hướng doanh thu</h2>
             <div className="flex gap-2">
-              <button className="px-4 py-2 bg-blue-50 text-blue-600 rounded-lg font-medium text-sm">Revenue</button>
-              <button className="px-4 py-2 bg-gray-100 text-gray-600 rounded-lg font-medium text-sm">Orders</button>
+              <button className="px-4 py-2 bg-blue-50 text-blue-600 rounded-lg font-medium text-sm">Doanh thu</button>
+              <button className="px-4 py-2 bg-gray-100 text-gray-600 rounded-lg font-medium text-sm">Đơn hàng</button>
             </div>
           </div>
           <ResponsiveContainer width="100%" height={350}>
@@ -425,7 +429,7 @@ const Dashboard = () => {
                   <stop offset="5%" stopColor="#6366f1" stopOpacity={0.3} />
                   <stop offset="95%" stopColor="#6366f1" stopOpacity={0} />
                 </linearGradient>
-                <linearGradient id="colorOrders" x1="0" y1="0" x2="0" y2="1">
+                <linearGradient id="colorOrder" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="5%" stopColor="#10b981" stopOpacity={0.3} />
                   <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
                 </linearGradient>
@@ -443,24 +447,24 @@ const Dashboard = () => {
                 formatter={(value) => formatCurrency(value)}
               />
               <Legend />
-              <Area type="monotone" dataKey="revenue" stroke="#6366f1" fillOpacity={1} fill="url(#colorRevenue)" name="Revenue" strokeWidth={3} />
-              <Area type="monotone" dataKey="orders" stroke="#10b981" fillOpacity={1} fill="url(#colorOrders)" name="Orders" strokeWidth={2} />
+              <Area type="monotone" dataKey="revenue" stroke="#6366f1" fillOpacity={1} fill="url(#colorRevenue)" name="Doanh thu" strokeWidth={3} />
+              <Area type="monotone" dataKey="orders" stroke="#10b981" fillOpacity={1} fill="url(#colorOrder)" name="Đơn hàng" strokeWidth={2} />
             </AreaChart>
           </ResponsiveContainer>
         </div>
 
         {/* Payment & Time Slot Charts */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-          {/* Payment Methods */}
+          {/* Method thanh toáns */}
           <div className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-xl border border-white/20 p-6">
             <div className="flex items-center gap-3 mb-6">
               <CreditCard className="w-6 h-6 text-pink-600" />
-              <h2 className="text-xl font-bold text-gray-800">💳 Payment Methods</h2>
+              <h2 className="text-xl font-bold text-gray-800">💳 Phương thức thanh toán</h2>
             </div>
             <div className="space-y-4">
               {paymentData.map((payment, idx) => {
                 const percent = (payment.value);
-                // Simple assumption to map common Vietnamese terms if they come from backend, otherwise display as is
+                // Đơn giản assumption to map common Vietnamese terms if they come from backend, otherwise display as is
                 const displayName = getPaymentLabel(payment.name);
 
                 return (
@@ -482,7 +486,7 @@ const Dashboard = () => {
                       ></div>
                     </div>
                     <div className="flex justify-between mt-1 text-xs text-gray-500">
-                      <span>{payment.orders.toLocaleString()} orders</span>
+                      <span>{payment.orders.toLocaleString()} đơn hàng</span>
                       <span className="font-semibold">{formatCurrency(payment.revenue)}</span>
                     </div>
                   </div>
@@ -495,7 +499,7 @@ const Dashboard = () => {
           <div className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-xl border border-white/20 p-6">
             <div className="flex items-center gap-3 mb-6">
               <Clock className="w-6 h-6 text-amber-600" />
-              <h2 className="text-xl font-bold text-gray-800">⏰ Peak Shopping Hours</h2>
+              <h2 className="text-xl font-bold text-gray-800">⏰ Giờ mua sắm cao điểm</h2>
             </div>
             <ResponsiveContainer width="100%" height={280}>
               <BarChart data={timeSlotData}>
@@ -511,7 +515,7 @@ const Dashboard = () => {
                   }}
                   formatter={(value) => formatCurrency(value)}
                 />
-                <Bar dataKey="revenue" fill="#f59e0b" radius={[8, 8, 0, 0]} name="Revenue" />
+                <Bar dataKey="revenue" fill="#f59e0b" radius={[8, 8, 0, 0]} name="Doanh thu" />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -521,7 +525,7 @@ const Dashboard = () => {
         <div className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-xl border border-white/20 p-6 mb-6">
           <div className="flex items-center gap-3 mb-6">
             <MapPin className="w-6 h-6 text-red-600" />
-            <h2 className="text-xl font-bold text-gray-800">🗺️ Revenue by Region</h2>
+            <h2 className="text-xl font-bold text-gray-800">🗺️ Doanh thu theo khu vực</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
             {regionData.map((region, idx) => (
@@ -533,22 +537,22 @@ const Dashboard = () => {
                   </div>
                 </div>
                 <p className="text-2xl font-bold text-indigo-600 mb-1">{formatCurrency(region.revenue)}</p>
-                <p className="text-sm text-gray-600">{region.orders.toLocaleString()} orders</p>
+                <p className="text-sm text-gray-600">{region.orders.toLocaleString()} đơn hàng</p>
               </div>
             ))}
           </div>
         </div>
-        {/* Detailed Orders Table */}
+        {/* Detailed Order Table */}
         <div className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-xl border border-white/20 p-6">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
-            <h2 className="text-xl font-bold text-gray-800">📋 Detailed Orders</h2>
+            <h2 className="text-xl font-bold text-gray-800">📋 Chi tiết đơn hàng</h2>
             <div className="flex gap-3">
               <button
                 onClick={exportToCSV}
                 className="flex items-center gap-2 px-5 py-3 bg-linear-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white rounded-xl font-medium transition-all transform hover:scale-105 shadow-lg"
               >
                 <Download className="w-4 h-4" />
-                Export CSV
+                Xuất CSV
               </button>
             </div>
           </div>
@@ -557,17 +561,17 @@ const Dashboard = () => {
             <table className="w-full">
               <thead>
                 <tr className="border-b-2 border-indigo-100">
-                  <th className="text-left py-4 px-4 font-bold text-gray-700 bg-linear-to-r from-indigo-50 to-purple-50">Order ID</th>
-                  <th className="text-left py-4 px-4 font-bold text-gray-700 bg-linear-to-r from-indigo-50 to-purple-50">Customer</th>
-                  <th className="text-right py-4 px-4 font-bold text-gray-700 bg-linear-to-r from-indigo-50 to-purple-50">Total</th>
-                  <th className="text-center py-4 px-4 font-bold text-gray-700 bg-linear-to-r from-indigo-50 to-purple-50">Payment</th>
-                  <th className="text-center py-4 px-4 font-bold text-gray-700 bg-linear-to-r from-indigo-50 to-purple-50">Status</th>
-                  <th className="text-center py-4 px-4 font-bold text-gray-700 bg-linear-to-r from-indigo-50 to-purple-50">Date</th>
-                  <th className="text-center py-4 px-4 font-bold text-gray-700 bg-linear-to-r from-indigo-50 to-purple-50">Items</th>
+                  <th className="text-left py-4 px-4 font-bold text-gray-700 bg-linear-to-r from-indigo-50 to-purple-50">ID đơn hàng</th>
+                  <th className="text-left py-4 px-4 font-bold text-gray-700 bg-linear-to-r from-indigo-50 to-purple-50">Khách hàng</th>
+                  <th className="text-right py-4 px-4 font-bold text-gray-700 bg-linear-to-r from-indigo-50 to-purple-50">Tổng tiền</th>
+                  <th className="text-center py-4 px-4 font-bold text-gray-700 bg-linear-to-r from-indigo-50 to-purple-50">Thanh toán</th>
+                  <th className="text-center py-4 px-4 font-bold text-gray-700 bg-linear-to-r from-indigo-50 to-purple-50">Trạng thái</th>
+                  <th className="text-center py-4 px-4 font-bold text-gray-700 bg-linear-to-r from-indigo-50 to-purple-50">Ngày</th>
+                  <th className="text-center py-4 px-4 font-bold text-gray-700 bg-linear-to-r from-indigo-50 to-purple-50">Sản phẩm</th>
                 </tr>
               </thead>
               <tbody>
-                {detailedOrders.map((order, index) => (
+                {detailedOrder.map((order, index) => (
                   <tr key={index} className="border-b border-gray-100 hover:bg-linear-to-r hover:from-blue-50 hover:to-indigo-50 transition-all group">
                     <td className="py-4 px-4">
                       <span className="font-mono font-bold text-indigo-600 group-hover:text-indigo-700">{order.id}</span>
@@ -620,20 +624,20 @@ const Dashboard = () => {
           </div>
 
           <div className="flex items-center justify-between mt-6 pt-4 border-t border-gray-200">
-            <p className="text-sm text-gray-600">Showing <span className="font-bold text-gray-800">1-{detailedOrders.length}</span> of <span className="font-bold text-gray-800">{totalOrders}</span> total orders</p>
+            <p className="text-sm text-gray-600">Hiển thị <span className="font-bold text-gray-800">1-{detailedOrder.length}</span> trên <span className="font-bold text-gray-800">{totalOrder}</span> đơn hàng</p>
             <div className="flex gap-2">
-              <button className="px-4 py-2 border-2 border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50 font-medium transition">Prev</button>
+              <button className="px-4 py-2 border-2 border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50 font-medium transition">Trước</button>
               <button className="px-4 py-2 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition">1</button>
               <button className="px-4 py-2 border-2 border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50 font-medium transition">2</button>
               <button className="px-4 py-2 border-2 border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50 font-medium transition">3</button>
-              <button className="px-4 py-2 border-2 border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50 font-medium transition">Next</button>
+              <button className="px-4 py-2 border-2 border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50 font-medium transition">Sau</button>
             </div>
           </div>
         </div>
 
         {/* Footer */}
         <div className="mt-8 pb-8 text-center">
-          <p className="text-gray-500 text-sm">© 2024 Revenue Dashboard - Developed by Your Company</p>
+          <p className="text-gray-500 text-sm">© 2024 Bảng doanh thu - Phát triển bởi DTCLL SHOP</p>
         </div>
       </div>
     </div>
@@ -641,3 +645,9 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
+
+
+
+
+
+

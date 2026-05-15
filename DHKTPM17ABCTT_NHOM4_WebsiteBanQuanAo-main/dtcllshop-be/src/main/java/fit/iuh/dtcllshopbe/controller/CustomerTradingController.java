@@ -2,16 +2,13 @@ package fit.iuh.dtcllshopbe.controller;
 
 import fit.iuh.dtcllshopbe.dto.request.CustomerTradingRequest;
 import fit.iuh.dtcllshopbe.dto.response.CustomerTradingResponse;
-
 import fit.iuh.dtcllshopbe.dto.response.RegionStatisticResponse;
-
 import fit.iuh.dtcllshopbe.entities.CustomerTrading;
 import fit.iuh.dtcllshopbe.service.CustomerTradingService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.web.bind.annotation.*;
-
 
 import java.util.List;
 
@@ -32,7 +29,6 @@ public class CustomerTradingController {
     public CustomerTrading getCustomerTrading(@PathVariable int customerTradingId) {
         return customerTradingService.getCustomerTradingById(customerTradingId);
     }
-
 
     @GetMapping("/regions")
     public List<RegionStatisticResponse> getRegionStatistics() {

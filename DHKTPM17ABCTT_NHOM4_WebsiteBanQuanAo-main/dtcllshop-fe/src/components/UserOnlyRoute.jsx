@@ -1,4 +1,4 @@
-// components/UserOnlyRoute.jsx
+﻿// components/UserOnlyRoute.jsx
 import React from "react";
 import { Navigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
@@ -17,7 +17,7 @@ const UserOnlyRoute = ({ children }) => {
 
         // Chặn Admin truy cập vào các trang dành cho người dùng thường
         if (role === "ADMIN") {
-            alert("Access denied. Administrators cannot access user pages.");
+            alert("Từ chối truy cập. Quản trị viên không thể vào trang người dùng.");
             return <Navigate to="/admin" replace />;
         }
 
@@ -26,9 +26,10 @@ const UserOnlyRoute = ({ children }) => {
     } catch (error) {
         console.error("Invalid or expired token:", error);
         localStorage.removeItem("accessToken");
-        alert("Your session has expired or is invalid. Please log in again.");
+        alert("Phiên đăng nhập đã hết hạn hoặc không hợp lệ. Vui lòng đăng nhập lại.");
         return <Navigate to="/login" replace />;
     }
 };
 
 export default UserOnlyRoute;
+

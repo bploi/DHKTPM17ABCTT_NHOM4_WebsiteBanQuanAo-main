@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+﻿import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import {
   Search,
@@ -144,7 +144,7 @@ export default function Header() {
           setShowDropdown(filtered.length > 0);
         }
       } catch (error) {
-        console.error("Error searching products:", error);
+        console.error("Lỗi tìm kiếm sản phẩm:", error);
       } finally {
         setIsSearching(false);
       }
@@ -178,10 +178,10 @@ export default function Header() {
   const isActive = (path) => location.pathname === path;
 
   const navItems = [
-    { to: "/", label: "Home" },
-    { to: "/product", label: "Catalog" },
-    { to: "/about", label: "Brand" },
-    { to: "/policy", label: "Service" },
+    { to: "/", label: "Trang chủ" },
+    { to: "/product", label: "Sản phẩm" },
+    { to: "/about", label: "Thương hiệu" },
+    { to: "/policy", label: "Dịch vụ" },
   ];
 
   return (
@@ -227,7 +227,7 @@ export default function Header() {
                     <div className="relative">
                       <input
                           type="text"
-                          placeholder="Search products..."
+                          placeholder="Tìm kiếm sản phẩm..."
                           className="w-56 lg:w-72 rounded-full border border-black/10 bg-white px-5 py-3 pr-10 text-sm text-black outline-none shadow-[0_10px_24px_rgba(0,0,0,0.04)] transition focus:border-black"
                           value={searchQuery}
                           onChange={(e) => setSearchQuery(e.target.value)}
@@ -283,7 +283,7 @@ export default function Header() {
                                     </h4>
                                     {product.quantity === 0 && (
                                         <span className="whitespace-nowrap rounded-full bg-black px-2 py-0.5 text-[10px] font-bold text-white">
-                                SOLD OUT
+                                HẾT HÀNG
                               </span>
                                     )}
                                   </div>
@@ -310,13 +310,13 @@ export default function Header() {
                             to="/profile"
                             className="block px-4 py-3 text-sm font-medium text-black transition hover:bg-[#f7f7f7]"
                         >
-                          Profile
+                          Hồ sơ
                         </Link>
                         <Link
                             to="/wishlists"
                             className="block px-4 py-3 text-sm font-medium text-black transition hover:bg-[#f7f7f7]"
                         >
-                          Wish List
+                          Danh sách yêu thích
                         </Link>
                         <Link
                             to="/orders"
@@ -325,14 +325,14 @@ export default function Header() {
                             }}
                             className="block px-4 py-3 text-sm font-medium text-black transition hover:bg-[#f7f7f7]"
                         >
-                          My Orders
+                          Đơn hàng của tôi
                         </Link>
                         <button
                             onClick={handleLogout}
                             className="flex w-full items-center gap-2 px-4 py-3 text-left text-sm font-semibold text-black transition hover:bg-[#f7f7f7]"
                         >
                           <LogOut size={16} />
-                          Logout
+                          Đăng xuất
                         </button>
                       </div>
                     </div>
@@ -353,13 +353,13 @@ export default function Header() {
                         to="/login"
                         className="inline-flex h-10 items-center justify-center rounded-full bg-black px-5 text-sm font-semibold text-white transition hover:bg-[#2a2a2a]"
                     >
-                      Sign In
+                      Đăng nhập
                     </Link>
                     <Link
                         to="/register"
                         className="inline-flex h-10 items-center justify-center rounded-full px-5 text-sm font-semibold text-black transition hover:bg-[#f2f2f2]"
                     >
-                      Sign Up
+                      Đăng ký
                     </Link>
                   </div>
               )}
@@ -408,14 +408,14 @@ export default function Header() {
                             className="rounded-full bg-black px-5 py-3 text-center text-sm font-semibold text-white transition hover:bg-[#2a2a2a]"
                             onClick={() => setMenuOpen(false)}
                         >
-                          Sign In
+                          Đăng nhập
                         </Link>
                         <Link
                             to="/register"
                             className="rounded-full border border-black/10 bg-white px-5 py-3 text-center text-sm font-semibold text-black transition hover:bg-[#f2f2f2]"
                             onClick={() => setMenuOpen(false)}
                         >
-                          Sign Up
+                          Đăng ký
                         </Link>
                       </div>
                   )}
@@ -427,14 +427,14 @@ export default function Header() {
                             className="block rounded-2xl px-4 py-3 text-sm font-semibold text-black transition hover:bg-[#f7f7f7]"
                             onClick={() => setMenuOpen(false)}
                         >
-                          Profile
+                          Hồ sơ
                         </Link>
                         <Link
                             to="/orders"
                             className="block rounded-2xl px-4 py-3 text-sm font-semibold text-black transition hover:bg-[#f7f7f7]"
                             onClick={() => setMenuOpen(false)}
                         >
-                          My Orders
+                          Đơn hàng của tôi
                         </Link>
                         <button
                             onClick={() => {
@@ -444,7 +444,7 @@ export default function Header() {
                             className="flex w-full items-center gap-2 rounded-2xl px-4 py-3 text-left text-sm font-semibold text-black transition hover:bg-[#f7f7f7]"
                         >
                           <LogOut size={16} />
-                          Logout
+                          Đăng xuất
                         </button>
                       </div>
                   )}
@@ -453,7 +453,7 @@ export default function Header() {
                   <div className="pt-3 sm:hidden">
                     <input
                         type="text"
-                        placeholder="Search product..."
+                        placeholder="Tìm kiếm sản phẩm..."
                         className="w-full rounded-full border border-black/10 bg-white px-4 py-3 text-sm text-black outline-none transition focus:border-black"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
@@ -482,7 +482,7 @@ export default function Header() {
                                     </h4>
                                     {product.quantity === 0 && (
                                         <span className="rounded-full bg-black px-1.5 py-0.5 text-[10px] font-bold text-white">
-                                SOLD OUT
+                                HẾT HÀNG
                               </span>
                                     )}
                                   </div>
@@ -502,3 +502,7 @@ export default function Header() {
       </header>
   );
 }
+
+
+
+

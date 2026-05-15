@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+﻿import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import { jwtDecode } from "jwt-decode";
 import { toast } from "sonner";
@@ -39,11 +39,11 @@ const Login = () => {
           localStorage.setItem("accessToken", token);
 
           const decodedToken = jwtDecode(token);
-          console.log("Decoded Token:", decodedToken);
+          console.log("Token đã giải mã:", decodedToken);
 
           const userRole = decodedToken.scope;
 
-          toast.success("Login successful!");
+          toast.success("Đăng nhập thành công!");
 
           if (userRole === "ADMIN") {
             navigate("/admin");
@@ -53,24 +53,24 @@ const Login = () => {
             navigate("/staff/orders");
           }
         } else {
-          toast.error("Login failed: Authentication token not received.");
+          toast.error("Đăng nhập thất bại: không nhận được token xác thực.");
         }
       } else {
-        let errorData = { message: "Invalid username or password." };
+        let errorData = { message: "Tên đăng nhập hoặc mật khẩu không đúng." };
         try {
           errorData = await response.json();
         } catch (jsonError) {
-          console.error("Could not parse JSON from error response.");
+          console.error("Không thể đọc phản hồi lỗi JSON.");
         }
-        console.error("Login error:", errorData);
+        console.error("Lỗi đăng nhập:", errorData);
         toast.error(
-            `Login failed: ${errorData.message || "Please try again."}`
+            `Đăng nhập thất bại: ${errorData.message || "Vui lòng thử lại."}`
         );
       }
     } catch (error) {
-      console.error("Network or unknown error:", error);
+      console.error("Lỗi mạng hoặc lỗi không xác định:", error);
       toast.error(
-          "An error occurred. Please check your network connection and try again."
+          "Có lỗi xảy ra. Vui lòng kiểm tra kết nối mạng và thử lại."
       );
     }
   };
@@ -82,36 +82,36 @@ const Login = () => {
           <div className="flex flex-col border-b border-black/10 bg-[#f8f8f8] p-8 lg:border-b-0 lg:border-r lg:p-12">
             <div>
               <p className="inline-flex rounded-full border border-black/10 bg-white px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#666]">
-                DTCLL SHOP • ACCOUNT ACCESS
+                DTCLL SHOP • TRUY CẬP TÀI KHOẢN
               </p>
 
               <h1 className="mt-8 text-4xl font-extrabold leading-[1.02] tracking-[-0.04em] sm:text-5xl">
-                Welcome Back
-                <span className="block text-[#666]">Sign in to continue</span>
+                Chào mừng trở lại
+                <span className="block text-[#666]">Đăng nhập để tiếp tục</span>
               </h1>
 
               <p className="mt-6 max-w-xl text-base leading-8 text-[#5f6368]">
-                Access your account to continue shopping, manage your profile,
-                review orders, and explore the latest DTCLL SHOP updates.
+                Truy cập tài khoản để tiếp tục mua sắm, quản lý hồ sơ,
+                xem đơn hàng và cập nhật những thông tin mới nhất từ DTCLL SHOP.
               </p>
 
               <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-3">
                 <div className="rounded-[24px] border border-black/10 bg-white p-4">
-                  <p className="text-2xl font-bold">Fast</p>
+                  <p className="text-2xl font-bold">Nhanh chóng</p>
                   <p className="mt-1 text-[11px] uppercase tracking-[0.16em] text-[#7a7a7a]">
-                    Access
+                    Truy cập
                   </p>
                 </div>
                 <div className="rounded-[24px] border border-black/10 bg-white p-4">
-                  <p className="text-2xl font-bold">Secure</p>
+                  <p className="text-2xl font-bold">Bảo mật</p>
                   <p className="mt-1 text-[11px] uppercase tracking-[0.16em] text-[#7a7a7a]">
-                    Login
+                    Đăng nhập
                   </p>
                 </div>
                 <div className="rounded-[24px] border border-black/10 bg-white p-4">
-                  <p className="text-2xl font-bold">Clean</p>
+                  <p className="text-2xl font-bold">Gọn gàng</p>
                   <p className="mt-1 text-[11px] uppercase tracking-[0.16em] text-[#7a7a7a]">
-                    Experience
+                    Trải nghiệm
                   </p>
                 </div>
               </div>
@@ -119,13 +119,13 @@ const Login = () => {
 
             <div className="mt-10 rounded-[32px] bg-black p-8 text-white">
               <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-white/50">
-                Core line
+                Tinh thần cốt lõi
               </p>
               <p className="mt-5 text-3xl font-extrabold leading-tight tracking-[-0.03em]">
-                Less noise.
+                Ít ồn ào.
               </p>
               <p className="mt-1 text-3xl font-extrabold leading-tight tracking-[-0.03em] text-white/70">
-                More style.
+                Nhiều phong cách.
               </p>
             </div>
           </div>
@@ -135,20 +135,20 @@ const Login = () => {
             <div className="w-full max-w-xl">
               <div className="mb-8">
                 <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#7a7a7a]">
-                  Sign in
+                  Đăng nhập
                 </p>
                 <h2 className="mt-3 text-3xl font-extrabold tracking-[-0.03em] sm:text-4xl">
-                  Account Login
+                  Đăng nhập tài khoản
                 </h2>
                 <p className="mt-3 text-base leading-8 text-[#5f6368]">
-                  Enter your account information below to access DTCLL SHOP.
+                  Nhập thông tin tài khoản bên dưới để truy cập DTCLL SHOP.
                 </p>
               </div>
 
               <form className="space-y-6" onSubmit={handleSubmit}>
                 <div>
                   <label className="mb-3 block text-sm font-semibold text-black">
-                    Username
+                    Tên đăng nhập
                   </label>
                   <div className="flex items-center gap-3 rounded-[20px] border border-black/10 bg-[#f7f7f7] px-4 py-4 transition focus-within:border-black">
                     <User className="h-5 w-5 text-[#666]" />
@@ -158,7 +158,7 @@ const Login = () => {
                         className="w-full bg-transparent text-base outline-none placeholder:text-[#9ca3af]"
                         value={formAuthentication.username}
                         onChange={handleChange}
-                        placeholder="Enter your username"
+                        placeholder="Nhập tên đăng nhập"
                         required
                     />
                   </div>
@@ -166,7 +166,7 @@ const Login = () => {
 
                 <div>
                   <label className="mb-3 block text-sm font-semibold text-black">
-                    Password
+                    Mật khẩu
                   </label>
                   <div className="flex items-center gap-3 rounded-[20px] border border-black/10 bg-[#f7f7f7] px-4 py-4 transition focus-within:border-black">
                     <Lock className="h-5 w-5 text-[#666]" />
@@ -176,7 +176,7 @@ const Login = () => {
                         className="w-full bg-transparent text-base outline-none placeholder:text-[#9ca3af]"
                         value={formAuthentication.password}
                         onChange={handleChange}
-                        placeholder="Enter your password"
+                        placeholder="Nhập mật khẩu"
                         required
                     />
                   </div>
@@ -190,7 +190,7 @@ const Login = () => {
                         navigate("/forget_password");
                       }}
                   >
-                    Forgot password?
+                    Quên mật khẩu?
                   </button>
 
                   <button
@@ -200,7 +200,7 @@ const Login = () => {
                         navigate("/register");
                       }}
                   >
-                    Need an account? Sign up
+                    Chưa có tài khoản? Đăng ký
                   </button>
                 </div>
 
@@ -209,7 +209,7 @@ const Login = () => {
                       type="submit"
                       className="inline-flex h-14 items-center justify-center gap-2 rounded-full bg-black px-6 text-sm font-semibold text-white transition hover:bg-[#2d2d2d]"
                   >
-                    Sign In
+                    Đăng nhập
                     <ArrowRight className="h-4 w-4" />
                   </button>
 
@@ -220,18 +220,18 @@ const Login = () => {
                         navigate("/register");
                       }}
                   >
-                    Create Account
+                    Tạo tài khoản
                   </button>
                 </div>
               </form>
 
               <div className="mt-8 rounded-[24px] border border-black/10 bg-[#f8f8f8] p-5">
                 <p className="text-sm font-semibold text-black">
-                  Access note
+                  Lưu ý đăng nhập
                 </p>
                 <p className="mt-2 text-sm leading-7 text-[#5f6368]">
-                  Your account access is role-based. After signing in, you will be
-                  redirected according to your permissions.
+                  Quyền truy cập phụ thuộc vào vai trò tài khoản. Sau khi đăng
+                  nhập, hệ thống sẽ chuyển bạn đến đúng khu vực sử dụng.
                 </p>
               </div>
             </div>
@@ -242,3 +242,8 @@ const Login = () => {
 };
 
 export default Login;
+
+
+
+
+

@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 import StaffSidebar from "./Sidebar";
 
 export default function StaffDashboard({ children }) {
@@ -9,3 +9,6 @@ export default function StaffDashboard({ children }) {
     </div>
   );
 }
+
+
+

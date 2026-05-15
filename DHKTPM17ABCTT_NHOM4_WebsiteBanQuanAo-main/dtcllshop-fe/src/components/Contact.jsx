@@ -1,4 +1,4 @@
-// src/components/Contact.jsx
+﻿// src/components/Contact.jsx
 import React, { useState, useEffect } from "react";
 
 const Contact = () => {
@@ -46,7 +46,7 @@ const Contact = () => {
             <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/be/Facebook_Messenger_logo_2020.svg/1024px-Facebook_Messenger_logo_2020.svg.png" alt="Messenger" className="w-full h-full object-cover" />
           </div>
           <span className="absolute right-16 top-1/2 -translate-y-1/2 bg-black text-white text-xs font-medium px-3 py-2 rounded-lg opacity-0 group-hover/item:opacity-100 transition pointer-events-none whitespace-nowrap shadow-lg">
-            Chat Messenger
+            Trò chuyện qua Messenger
           </span>
         </a>
 
@@ -57,7 +57,7 @@ const Contact = () => {
             <img src="https://cdn.haitrieu.com/wp-content/uploads/2022/01/Logo-Zalo-Arc.png" alt="Zalo" className="w-full h-full object-cover" />
           </div>
           <span className="absolute right-16 top-1/2 -translate-y-1/2 bg-black text-white text-xs font-medium px-3 py-2 rounded-lg opacity-0 group-hover/item:opacity-100 transition pointer-events-none whitespace-nowrap shadow-lg">
-            Chat Zalo
+            Trò chuyện qua Zalo
           </span>
         </a>
       </div>
@@ -66,3 +66,5 @@ const Contact = () => {
 };
 
 export default Contact;
+
+

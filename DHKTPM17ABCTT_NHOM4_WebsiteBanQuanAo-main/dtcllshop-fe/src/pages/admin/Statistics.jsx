@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { TrendingUp, TrendingDown, DollarSign, Users, Package, ShoppingCart } from 'lucide-react';
 
 export default function Statistics() {
@@ -188,3 +188,6 @@ export default function Statistics() {
     </div>
   );
 }
+
+
+

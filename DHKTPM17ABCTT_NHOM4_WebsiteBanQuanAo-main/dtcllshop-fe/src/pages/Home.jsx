@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   ShoppingBag,
@@ -48,7 +48,7 @@ const Home = () => {
           setProducts(productList);
         }
       } catch (error) {
-        console.error("Error fetching products:", error);
+        console.error("Lỗi tải sản phẩm:", error);
       } finally {
         setLoading(false);
       }
@@ -104,18 +104,18 @@ const Home = () => {
   const featureItems = [
     {
       icon: ShoppingBag,
-      title: "Minimal Essentials",
-      desc: "Simple pieces built for everyday styling and easy matching.",
+      title: "Món đồ tối giản",
+      desc: "Các sản phẩm đơn giản, dễ phối và phù hợp phong cách hằng ngày.",
     },
     {
       icon: TrendingUp,
-      title: "Modern Direction",
-      desc: "Clean silhouettes inspired by current youth fashion movement.",
+      title: "Định hướng hiện đại",
+      desc: "Phom dáng gọn gàng lấy cảm hứng từ xu hướng thời trang trẻ.",
     },
     {
       icon: Award,
-      title: "Refined Quality",
-      desc: "Neat finishing and wearable materials for confident comfort.",
+      title: "Chất lượng chỉn chu",
+      desc: "Hoàn thiện gọn gàng, chất liệu dễ mặc và thoải mái.",
     },
   ];
 
@@ -127,17 +127,17 @@ const Home = () => {
             {/* Left content */}
             <div className="flex flex-col justify-center">
               <div className="mb-4 inline-flex w-fit rounded-full border border-black/10 bg-white px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-black">
-                DTCLL SHOP • NEW SEASON
+                DTCLL SHOP • MÙA MỚI
               </div>
 
               <h1 className="max-w-xl text-4xl font-extrabold leading-[1.05] tracking-[-0.04em] sm:text-5xl lg:text-6xl">
-                A Different
-                <span className="block text-[#5a5a5a]">Fashion Mood</span>
+                Phong cách
+                <span className="block text-[#5a5a5a]">Khác biệt</span>
               </h1>
 
               <p className="mt-6 max-w-xl text-base leading-8 text-[#5f6368] sm:text-lg">
-                Discover a cleaner and bolder shopping experience with curated
-                pieces, modern styling, and a minimal visual identity.
+                Khám phá trải nghiệm mua sắm tinh gọn và cá tính hơn với sản
+                phẩm được chọn lọc, phong cách hiện đại và nhận diện tối giản.
               </p>
 
               <div className="mt-8 flex flex-col gap-4 sm:flex-row">
@@ -145,14 +145,14 @@ const Home = () => {
                     onClick={() => navigate("/product")}
                     className="inline-flex h-14 items-center justify-center rounded-full bg-black px-8 text-sm font-semibold text-white transition hover:bg-[#2b2b2b]"
                 >
-                  Explore Collection
+                  Khám phá bộ sưu tập
                 </button>
 
                 <button
                     onClick={() => navigate("/about")}
                     className="inline-flex h-14 items-center justify-center rounded-full border border-black/15 bg-white px-8 text-sm font-semibold text-black transition hover:bg-[#ececec]"
                 >
-                  View Brand Story
+                  Xem câu chuyện thương hiệu
                 </button>
               </div>
 
@@ -160,19 +160,19 @@ const Home = () => {
                 <div className="rounded-[24px] border border-black/10 bg-white p-4 shadow-sm">
                   <p className="text-2xl font-bold">{products.length}+</p>
                   <p className="mt-1 text-[11px] uppercase tracking-[0.16em] text-[#7a7a7a]">
-                    Products
+                    Sản phẩm
                   </p>
                 </div>
                 <div className="rounded-[24px] border border-black/10 bg-white p-4 shadow-sm">
-                  <p className="text-2xl font-bold">Fast</p>
+                  <p className="text-2xl font-bold">Nhanh chóng</p>
                   <p className="mt-1 text-[11px] uppercase tracking-[0.16em] text-[#7a7a7a]">
-                    Delivery
+                    Giao hàng
                   </p>
                 </div>
                 <div className="rounded-[24px] border border-black/10 bg-white p-4 shadow-sm">
-                  <p className="text-2xl font-bold">Fresh</p>
+                  <p className="text-2xl font-bold">Mới</p>
                   <p className="mt-1 text-[11px] uppercase tracking-[0.16em] text-[#7a7a7a]">
-                    Drops
+                    Ra mắt
                   </p>
                 </div>
               </div>
@@ -183,7 +183,7 @@ const Home = () => {
               <div className="relative overflow-hidden rounded-[32px] border border-black/10 bg-black shadow-[0_24px_60px_rgba(0,0,0,0.12)]">
                 <img
                     src={banners[currentBanner]}
-                    alt={`Banner ${currentBanner + 1}`}
+                    alt={`Ảnh bìa ${currentBanner + 1}`}
                     className="h-[520px] w-full object-cover opacity-90"
                 />
 
@@ -192,10 +192,10 @@ const Home = () => {
                 <div className="absolute bottom-5 left-5 right-5 flex items-end justify-between">
                   <div className="rounded-2xl border border-white/15 bg-white/10 px-4 py-3 backdrop-blur-md">
                     <p className="text-[10px] uppercase tracking-[0.2em] text-white/70">
-                      DTCLL LOOKBOOK
+                      DTCLL BỘ SƯU TẬP
                     </p>
                     <p className="mt-1 text-lg font-semibold text-white">
-                      Modern, clean, and expressive.
+                      Hiện đại, gọn gàng và giàu cá tính.
                     </p>
                   </div>
 
@@ -239,15 +239,15 @@ const Home = () => {
             <div className="mb-10 flex items-end justify-between gap-4 flex-col sm:flex-row sm:items-end">
               <div>
                 <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#7a7a7a]">
-                  Why this version feels different
+                  Vì sao DTCLL khác biệt
                 </p>
                 <h2 className="mt-3 text-3xl font-extrabold tracking-[-0.03em] sm:text-4xl">
-                  Cleaner, Sharper, Newer
+                  Gọn hơn, sắc hơn, mới hơn
                 </h2>
               </div>
               <p className="max-w-xl text-sm leading-7 text-[#6b7280]">
-                A more editorial homepage structure that feels closer to a modern
-                fashion landing page instead of a common template layout.
+                Trang chủ được trình bày theo tinh thần thời trang hiện đại,
+                tập trung vào sản phẩm, hình ảnh và trải nghiệm mua sắm.
               </p>
             </div>
 
@@ -279,10 +279,10 @@ const Home = () => {
             <div className="mb-10 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
               <div>
                 <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#7a7a7a]">
-                  Selected pieces
+                  Sản phẩm chọn lọc
                 </p>
                 <h2 className="mt-3 text-3xl font-extrabold tracking-[-0.03em] sm:text-4xl">
-                  New Visual Product Block
+                  Sản phẩm nổi bật
                 </h2>
               </div>
 
@@ -295,7 +295,7 @@ const Home = () => {
                             : "text-[#4b5563] hover:bg-[#f3f3f3]"
                     }`}
                 >
-                  Best Sellers
+                  Bán chạy
                 </button>
                 <button
                     onClick={() => setActiveTab("newarrival")}
@@ -305,7 +305,7 @@ const Home = () => {
                             : "text-[#4b5563] hover:bg-[#f3f3f3]"
                     }`}
                 >
-                  New Arrivals
+                  Hàng mới
                 </button>
               </div>
             </div>
@@ -316,9 +316,9 @@ const Home = () => {
                 </div>
             ) : showcaseProducts.length === 0 ? (
                 <div className="rounded-[32px] border border-dashed border-black/15 bg-white px-6 py-20 text-center shadow-sm">
-                  <h3 className="text-3xl font-bold">No featured items yet</h3>
+                  <h3 className="text-3xl font-bold">Chưa có sản phẩm nổi bật</h3>
                   <p className="mt-4 text-[#6b7280]">
-                    Products will appear here once your store data is available.
+                    Sản phẩm sẽ hiển thị khi dữ liệu cửa hàng sẵn sàng.
                   </p>
                 </div>
             ) : (
@@ -337,13 +337,13 @@ const Home = () => {
                           />
 
                           <div className="absolute left-4 top-4 rounded-full bg-white/90 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-black">
-                            {activeTab === "bestseller" ? "Best Seller" : "New Drop"}
+                            {activeTab === "bestseller" ? "Bán chạy" : "Hàng mới"}
                           </div>
 
                           {product.quantity === 0 && (
                               <div className="absolute inset-0 flex items-center justify-center bg-black/55">
                         <span className="rounded-full bg-white px-4 py-1.5 text-xs font-bold text-black">
-                          SOLD OUT
+                          HẾT HÀNG
                         </span>
                               </div>
                           )}
@@ -368,13 +368,13 @@ const Home = () => {
                               {formatPrice(product.costPrice || product.price)}
                             </p>
                             <span className="text-xs uppercase tracking-[0.16em] text-[#7a7a7a]">
-                        View Detail
+                        Xem chi tiết
                       </span>
                           </div>
 
                           {product.reviewCount > 0 && (
                               <p className="mt-2 text-xs text-[#6b7280]">
-                                {product.reviewCount} reviews
+                                {product.reviewCount} đánh giá
                               </p>
                           )}
                         </div>
@@ -392,7 +392,7 @@ const Home = () => {
                   }}
                   className="inline-flex h-14 items-center justify-center gap-2 rounded-full border border-black bg-black px-8 text-sm font-semibold text-white transition hover:bg-[#2b2b2b]"
               >
-                View All Products
+                Xem tất cả sản phẩm
                 <ArrowRight size={18} />
               </button>
             </div>
@@ -406,16 +406,16 @@ const Home = () => {
                 <div className="grid grid-cols-1 overflow-hidden rounded-[36px] border border-black/10 bg-white shadow-[0_18px_50px_rgba(0,0,0,0.08)] lg:grid-cols-[1.2fr_0.8fr]">
                   <div className="bg-black px-8 py-14 text-white sm:px-12">
                     <p className="inline-flex rounded-full border border-white/15 bg-white/10 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-white/80">
-                      Join DTCLL Shop
+                      Tham gia DTCLL Shop
                     </p>
 
                     <h2 className="mt-6 text-4xl font-extrabold tracking-[-0.03em] sm:text-5xl">
-                      Start Shopping Today
+                      Bắt đầu mua sắm hôm nay
                     </h2>
 
                     <p className="mt-5 max-w-xl text-base leading-8 text-white/72">
-                      Create your account to receive exclusive offers, updates, and
-                      a smoother shopping experience.
+                      Tạo tài khoản để nhận ưu đãi riêng, cập nhật sản phẩm mới
+                      và mua sắm thuận tiện hơn.
                     </p>
 
                     <div className="mt-8 flex flex-col gap-4 sm:flex-row">
@@ -423,13 +423,13 @@ const Home = () => {
                           onClick={() => navigate("/register")}
                           className="inline-flex h-14 items-center justify-center rounded-full bg-white px-8 text-sm font-semibold text-black transition hover:bg-[#e8e8e8]"
                       >
-                        Sign Up Now
+                        Đăng ký ngay
                       </button>
                       <button
                           onClick={() => navigate("/login")}
                           className="inline-flex h-14 items-center justify-center rounded-full border border-white/20 bg-white/10 px-8 text-sm font-semibold text-white transition hover:bg-white/20"
                       >
-                        Already Have Account
+                        Đã có tài khoản
                       </button>
                     </div>
                   </div>
@@ -437,13 +437,13 @@ const Home = () => {
                   <div className="flex items-center justify-center bg-[#efefec] p-8">
                     <div className="max-w-sm">
                       <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#7a7a7a]">
-                        Member benefits
+                        Quyền lợi thành viên
                       </p>
                       <ul className="mt-5 space-y-4 text-sm leading-7 text-[#4f5660]">
-                        <li>• Easier order management</li>
-                        <li>• Faster checkout experience</li>
-                        <li>• Access to new product updates</li>
-                        <li>• Better shopping convenience</li>
+                        <li>• Quản lý đơn hàng dễ dàng hơn</li>
+                        <li>• Thanh toán nhanh và thuận tiện hơn</li>
+                        <li>• Cập nhật sản phẩm mới sớm hơn</li>
+                        <li>• Trải nghiệm mua sắm tốt hơn</li>
                       </ul>
                     </div>
                   </div>
@@ -459,3 +459,6 @@ const Home = () => {
 };
 
 export default Home;
+
+
+

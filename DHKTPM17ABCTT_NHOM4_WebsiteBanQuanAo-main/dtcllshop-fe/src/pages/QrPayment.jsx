@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+﻿import React, { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 import dauTick from "../assets/dauTick.png";
 import ChatBot from "../components/ChatBot";
@@ -64,15 +64,15 @@ const QrPayment = () => {
           <img
             className="size-28 mx-auto mb-6 drop-shadow-lg"
             src={dauTick}
-            alt="Success"
+            alt="Thanh toán thành công"
           />
 
           <h3 className="text-3xl font-extrabold text-gray-900 mb-3">
-            Payment Successful
+            Thanh toán thành công
           </h3>
 
           <p className="text-gray-600 mb-8 text-sm">
-            Your transaction has been completed. Thank you for shopping with us!
+            Giao dịch của bạn đã hoàn tất. Cảm ơn bạn đã mua sắm tại DTCLL Shop!
           </p>
 
           <button
@@ -81,7 +81,7 @@ const QrPayment = () => {
                  hover:bg-red-500 transition-all duration-300 transform
                  hover:scale-105 shadow-lg"
           >
-            Comeback to Home
+            Về trang chủ
           </button>
         </div>
       </div>
@@ -92,52 +92,51 @@ const QrPayment = () => {
     <div className="max-w-5xl mx-auto p-6 grid lg:grid-cols-2 gap-10">
       <div className="flex flex-col justify-center items-center bg-white p-6 rounded-2xl shadow-md">
         <h2 className="text-2xl font-bold mb-4 text-gray-800">
-          Scan QR Code to Pay
+          Quét mã QR để thanh toán
         </h2>
         <img
           src={qrCode}
-          alt="QR Code"
+          alt="Mã QR thanh toán"
           className="w-64 h-64 object-contain mb-4"
         />
         <p className="text-gray-500 text-center">
-          Use your banking app to scan the QR code and complete payment.
+          Dùng ứng dụng ngân hàng để quét mã QR và hoàn tất thanh toán.
         </p>
       </div>
       <div className="bg-white p-6 rounded-2xl shadow-md space-y-6">
-        <h2 className="text-2xl font-bold text-gray-800">Payment Details</h2>
+        <h2 className="text-2xl font-bold text-gray-800">Thông tin thanh toán</h2>
         <div className="flex items-center gap-4 border p-4 rounded-xl bg-blue-50 border-blue-200">
           <img
             className="w-16 h-16 object-contain"
             src="https://play-lh.googleusercontent.com/t7F9E1HglpFrmXzXGO7u-hnTSKkFW3ZmXJdmS97WaOnUgrySvAXVgwncj1uE4_3LcA"
-            alt="MBBank Logo"
+            alt="Logo MBBank"
           />
           <div className="flex flex-col">
             <span className="font-semibold text-gray-700">MBBank</span>
-            <span className="text-gray-500 text-sm">Bank Transfer</span>
+            <span className="text-gray-500 text-sm">Chuyển khoản ngân hàng</span>
           </div>
         </div>
         <div className="space-y-3 text-gray-700">
           <div className="flex justify-between border-b pb-2 border-gray-200">
-            <span>Account Name:</span>
+            <span>Tên tài khoản:</span>
             <span className="font-medium">NGUYEN HO VIET KHOA</span>
           </div>
           <div className="flex justify-between border-b pb-2 border-gray-200">
-            <span>Account Number:</span>
+            <span>Số tài khoản:</span>
             <span className="font-medium">0812777990</span>
           </div>
           <div className="flex justify-between border-b pb-2 border-gray-200">
-            <span>Amount:</span>
+            <span>Số tiền:</span>
             <span className="font-semibold text-blue-600">{amount} VNĐ</span>
           </div>
           <div className="flex justify-between border-b pb-2 border-gray-200">
-            <span>Transfer Content:</span>
+            <span>Nội dung chuyển khoản:</span>
             <span className="font-semibold">{invoiceCode}</span>
           </div>
         </div>
 
         <p className="text-gray-500 text-sm mt-2">
-          Please complete the payment using the above details to ensure your
-          order is processed.
+          Vui lòng thanh toán theo đúng thông tin trên để đơn hàng được xử lý.
         </p>
       </div>
       <ChatBot />
@@ -147,3 +146,7 @@ const QrPayment = () => {
 };
 
 export default QrPayment;
+
+
+
+

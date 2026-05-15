@@ -43,4 +43,3 @@ public class CartDetail {
     @JoinColumn(name = "size_detail_id")
     private SizeDetail sizeDetail;
 }
-

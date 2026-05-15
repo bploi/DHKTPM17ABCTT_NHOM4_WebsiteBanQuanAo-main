@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -29,6 +30,7 @@ public class OrderDetailService {
     OrderRepository orderRepository;
     OrderDetailMapper orderDetailMapper;
 
+    @Transactional
     public OrderDetailResponse createOrderDetail(OrderDetailRequest orderDetailRequest) {
         Product product = productRepository.findById(orderDetailRequest.getProductId())
                 .orElseThrow(() -> new RuntimeException("Product not found"));

@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect } from "react";
 import { FaEye, FaSync, FaSort, FaSortUp, FaSortDown } from "react-icons/fa";
+import { paymentMethodLabel, paymentStatusLabel } from "../../utils/vietnameseLabels";
 
-export default function Invoices() {
-  const [invoices, setInvoices] = useState([]);
+export default function Invoice() {
+  const [invoices, setInvoice] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
@@ -21,14 +22,14 @@ export default function Invoices() {
       setLoading(true);
       const res = await fetch("http://localhost:8080/invoices");
       if (!res.ok) {
-        alert("Cannot load invoices");
+        alert("Không thể tải hóa đơn");
         return;
       }
       const data = await res.json();
-      setInvoices(Array.isArray(data) ? data : data?.result || []);
+      setInvoice(Array.isArray(data) ? data : data?.result || []);
     } catch (error) {
-      console.error("Error loading invoices:", error);
-      alert("Error loading invoices");
+      console.error("Lỗi khi tải hóa đơn:", error);
+      alert("Lỗi khi tải hóa đơn");
     } finally {
       setLoading(false);
     }
@@ -96,8 +97,8 @@ export default function Invoices() {
       }
     });
 
-  // View invoice details
-  //   const handleViewDetails = (invoice) => {
+  // Xem invoice details
+  //   const handleXemDetails = (invoice) => {
   //     setSelectedInvoice(invoice);
   //     setShowDetailModal(true);
   //   };
@@ -117,16 +118,7 @@ export default function Invoices() {
 
   // Get payment method display
   const getPaymentMethodDisplay = (method) => {
-    const methods = {
-      CASH: "💵 Cash",
-      CREDIT_CARD: "💳 Credit Card",
-      DEBIT_CARD: "💳 Debit Card",
-      BANK_TRANSFER: "🏦 Bank Transfer",
-      MOMO: "📱 MoMo",
-      ZALOPAY: "📱 ZaloPay",
-      VNPAY: "💳 VNPay",
-    };
-    return methods[method] || method;
+    return paymentMethodLabel(method);
   };
 
   // Get sort icon
@@ -144,20 +136,20 @@ export default function Invoices() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-4xl font-bold text-gray-900 mb-2">
-                Invoice Management
+                Quản lý hóa đơn
               </h1>
               <p className="text-gray-600 text-lg">
-                Manage and track customer invoices
+                Quản lý và theo dõi hóa đơn của khách hàng
               </p>
             </div>
-            {/* Refresh Button */}
+            {/* Làm mới Button */}
             <button
               onClick={loadInvoices}
               className="px-4 py-2 bg-white border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all flex items-center gap-2 shadow-sm"
-              title="Refresh invoices"
+              title="Làm mới hóa đơn"
             >
               <FaSync className={loading ? "animate-spin" : ""} />
-              <span className="text-sm font-medium">Refresh</span>
+              <span className="text-sm font-medium">Làm mới</span>
             </button>
           </div>
         </div>
@@ -168,63 +160,63 @@ export default function Invoices() {
             {/* Search */}
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Search Invoices
+                Tìm kiếm hóa đơn
               </label>
               <input
                 type="text"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder="ID, Invoice Code, Order Code..."
+                placeholder="ID, mã hóa đơn, mã đơn hàng..."
                 className="w-full px-4 py-2.5 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all text-base"
               />
             </div>
 
-            {/* Status Filter */}
+            {/* Trạng thái Filter */}
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Payment Status
+                Trạng thái thanh toán
               </label>
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
                 className="w-full px-4 py-2.5 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all text-base font-medium"
               >
-                <option value="all">All Status</option>
-                <option value="PAID">🟢 Paid</option>
-                <option value="UNPAID">🟡 Unpaid</option>
+                <option value="all">Tất cả trạng thái</option>
+                <option value="PAID">🟢 Đã thanh toán</option>
+                <option value="UNPAID">🟡 Chưa thanh toán</option>
               </select>
             </div>
 
-            {/* Payment Method Filter */}
+            {/* Phương thức thanh toán Filter */}
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Payment Method
+                Phương thức thanh toán
               </label>
               <select
                 value={paymentMethodFilter}
                 onChange={(e) => setPaymentMethodFilter(e.target.value)}
                 className="w-full px-4 py-2.5 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all text-base font-medium"
               >
-                <option value="all">All Methods</option>
-                <option value="CASH">💵 Cash</option>
-                <option value="BANK_TRANSFER">🏦 Bank Transfer</option>
+                <option value="all">Tất cả phương thức</option>
+                <option value="CASH">💵 Tiền mặt</option>
+                <option value="BANK_TRANSFER">🏦 Chuyển khoản ngân hàng</option>
               </select>
             </div>
 
             {/* Sort */}
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Sort by
+                Sắp xếp theo
               </label>
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
                 className="w-full px-4 py-2.5 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all text-base font-medium"
               >
-                <option value="date-desc">📅 Newest First</option>
-                <option value="date-asc">📅 Oldest First</option>
-                <option value="amount-desc">💰 Highest Amount</option>
-                <option value="amount-asc">💰 Lowest Amount</option>
+                <option value="date-desc">📅 Mới nhất trước</option>
+                <option value="date-asc">📅 Cũ nhất trước</option>
+                <option value="amount-desc">💰 Số tiền cao nhất</option>
+                <option value="amount-asc">💰 Số tiền thấp nhất</option>
               </select>
             </div>
           </div>
@@ -237,16 +229,16 @@ export default function Invoices() {
           </div>
         )}
 
-        {/* Invoices Table */}
+        {/* Invoice Table */}
         {!loading && (
           <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200">
             {filteredInvoices.length === 0 ? (
               <div className="text-center py-16">
                 <p className="text-gray-500 text-xl font-medium">
-                  No invoices found
+                  Không tìm thấy hóa đơn
                 </p>
                 <p className="text-gray-400 text-sm mt-2">
-                  Try adjusting your filters
+                  Thử thay đổi bộ lọc
                 </p>
               </div>
             ) : (
@@ -255,28 +247,28 @@ export default function Invoices() {
                   <thead className="bg-gradient-to-r from-gray-800 to-gray-700 text-white sticky top-0 z-10">
                     <tr>
                       <th className="px-6 py-5 text-left text-base font-bold tracking-wide">
-                        INVOICE ID
+                        ID HÓA ĐƠN
                       </th>
                       <th className="px-11 py-5 text-left text-base font-bold tracking-wide">
-                        INVOICE CODE
+                        MÃ HÓA ĐƠN
                       </th>
                       <th className="px-6 py-5 text-left text-base font-bold tracking-wide">
-                        ORDER CODE
+                        MÃ ĐƠN
                       </th>
                       <th className="px-6 py-5 text-left text-base font-bold tracking-wide">
                         <div className="flex items-center gap-2">
-                          CREATE DATE {getSortIcon("date")}
+                          NGÀY TẠO {getSortIcon("date")}
                         </div>
                       </th>
                       <th className="px-6 py-5 text-left text-base font-bold tracking-wide">
-                        PAYMENT METHOD
+                        PHƯƠNG THỨC
                       </th>
                       <th className="px-6 py-5 text-left text-base font-bold tracking-wide">
-                        PAYMENT STATUS
+                        TRẠNG THÁI THANH TOÁN
                       </th>
                       <th className="px-3 py-5 text-left text-base font-bold tracking-wide">
                         <div className="flex items-center gap-2">
-                          TOTAL AMOUNT {getSortIcon("amount")}
+                          TỔNG TIỀN {getSortIcon("amount")}
                         </div>
                       </th>
                       {/* <th className="px-6 py-5 text-center text-base font-bold tracking-wide">
@@ -294,10 +286,10 @@ export default function Invoices() {
                           #{invoice.id}
                         </td>
                         <td className="px-6 py-5 text-base font-semibold text-gray-700">
-                          {invoice.invoiceCode || "N/A"}
+                          {invoice.invoiceCode || "Chưa có"}
                         </td>
                         <td className="px-6 py-5 text-base font-semibold text-blue-600">
-                          {invoice.order?.orderCode || "N/A"}
+                          {invoice.order?.orderCode || "Chưa có"}
                         </td>
                         <td className="px-6 py-5 text-base text-gray-700">
                           {formatDate(invoice.createdAt || invoice.createDate)}
@@ -311,7 +303,7 @@ export default function Invoices() {
                               invoice.paymentStatus
                             )}`}
                           >
-                            {invoice.paymentStatus}
+                            {paymentStatusLabel(invoice.paymentStatus)}
                           </span>
                         </td>
                         <td className="px-6 py-5 text-base font-bold text-red-600">
@@ -320,11 +312,11 @@ export default function Invoices() {
                         {/* <td className="px-6 py-5">
                           <div className="flex justify-center">
                             <button
-                              onClick={() => handleViewDetails(invoice)}
+                              onClick={() => handleXemDetails(invoice)}
                               className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 font-semibold transition-all shadow-sm text-sm"
                             >
                               <FaEye size={16} />
-                              <span>View</span>
+                              <span>Xem</span>
                             </button>
                           </div>
                         </td> */}
@@ -339,9 +331,9 @@ export default function Invoices() {
             {!loading && filteredInvoices.length > 0 && (
               <div className="bg-gray-50 px-6 py-4 border-t-2 border-gray-200">
                 <p className="text-base text-gray-700 font-semibold">
-                  Showing {filteredInvoices.length} invoice
-                  {filteredInvoices.length !== 1 ? "s" : ""}
-                  {statusFilter !== "all" && ` (${statusFilter})`}
+                  Đang hiển thị {filteredInvoices.length} hóa đơn
+                  
+                  {statusFilter !== "all" && ` (${paymentStatusLabel(statusFilter)})`}
                   {paymentMethodFilter !== "all" &&
                     ` - ${getPaymentMethodDisplay(paymentMethodFilter)}`}
                 </p>
@@ -359,10 +351,10 @@ export default function Invoices() {
             <div className="sticky top-0 bg-gradient-to-r from-gray-800 to-gray-700 px-8 py-6 flex justify-between items-center rounded-t-xl z-10">
               <div>
                 <h2 className="text-3xl font-bold text-white">
-                  Invoice Details
+                  Chi tiết hóa đơn
                 </h2>
                 <p className="text-gray-300 text-sm mt-1">
-                  Complete invoice information
+                  Thông tin đầy đủ của hóa đơn
                 </p>
               </div>
               <button
@@ -374,15 +366,15 @@ export default function Invoices() {
             </div>
 
             <div className="p-8 space-y-6">
-              {/* 1. Invoice Information */}
+              {/* 1. Thông tin invoice */}
               <div className="bg-gradient-to-r from-red-50 to-orange-50 border-2 border-red-200 rounded-xl p-6">
                 <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  🧾 Invoice Information
+                  🧾 Thông tin hóa đơn
                 </h3>
                 <div className="grid grid-cols-3 gap-4">
                   <div>
                     <p className="text-sm text-gray-600 font-semibold mb-1">
-                      Invoice ID
+                      ID hóa đơn
                     </p>
                     <p className="text-lg font-bold text-gray-900">
                       #{selectedInvoice.id}
@@ -390,23 +382,23 @@ export default function Invoices() {
                   </div>
                   <div>
                     <p className="text-sm text-gray-600 font-semibold mb-1">
-                      Invoice Code
+                      Mã hóa đơn
                     </p>
                     <p className="text-lg font-bold text-gray-900">
-                      {selectedInvoice.invoiceCode || "N/A"}
+                      {selectedInvoice.invoiceCode || "Chưa có"}
                     </p>
                   </div>
                   <div>
                     <p className="text-sm text-gray-600 font-semibold mb-1">
-                      Order Code
+                      Mã đơn hàng
                     </p>
                     <p className="text-lg font-bold text-blue-600">
-                      {selectedInvoice.order?.orderCode || "N/A"}
+                      {selectedInvoice.order?.orderCode || "Chưa có"}
                     </p>
                   </div>
                   <div>
                     <p className="text-sm text-gray-600 font-semibold mb-1">
-                      Create Date
+                      Ngày tạo
                     </p>
                     <p className="text-lg font-bold text-gray-900">
                       {formatDate(
@@ -416,7 +408,7 @@ export default function Invoices() {
                   </div>
                   <div>
                     <p className="text-sm text-gray-600 font-semibold mb-1">
-                      Payment Method
+                      Phương thức thanh toán
                     </p>
                     <p className="text-lg font-bold text-gray-900">
                       {getPaymentMethodDisplay(selectedInvoice.paymentMethod)}
@@ -424,19 +416,19 @@ export default function Invoices() {
                   </div>
                   <div>
                     <p className="text-sm text-gray-600 font-semibold mb-1">
-                      Payment Status
+                      Trạng thái thanh toán
                     </p>
                     <span
                       className={`text-sm font-bold px-4 py-2 rounded-lg inline-block ${getStatusColor(
                         selectedInvoice.paymentStatus
                       )}`}
                     >
-                      {selectedInvoice.paymentStatus}
+                      {paymentStatusLabel(selectedInvoice.paymentStatus)}
                     </span>
                   </div>
                   <div className="col-span-3">
                     <p className="text-sm text-gray-600 font-semibold mb-1">
-                      Total Amount
+                      Tổng tiền
                     </p>
                     <p className="text-3xl font-bold text-red-600">
                       {formatPrice(selectedInvoice.totalAmount || 0)}
@@ -445,7 +437,7 @@ export default function Invoices() {
                   {selectedInvoice.paidAt && (
                     <div className="col-span-3">
                       <p className="text-sm text-gray-600 font-semibold mb-1">
-                        Paid At
+                        Ngày thanh toán
                       </p>
                       <p className="text-lg font-bold text-green-600">
                         {formatDate(selectedInvoice.paidAt)}
@@ -455,16 +447,16 @@ export default function Invoices() {
                 </div>
               </div>
 
-              {/* 2. Customer Information */}
+              {/* 2. Thông tin khách hàng */}
               {selectedInvoice.customerName && (
                 <div className="bg-blue-50 border-2 border-blue-200 rounded-xl p-6">
                   <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                    👤 Customer Information
+                    👤 Thông tin khách hàng
                   </h3>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <p className="text-sm text-gray-600 font-semibold mb-1">
-                        Name
+                        Tên
                       </p>
                       <p className="text-lg font-bold text-gray-900">
                         {selectedInvoice.customerName}
@@ -473,7 +465,7 @@ export default function Invoices() {
                     {selectedInvoice.customerPhone && (
                       <div>
                         <p className="text-sm text-gray-600 font-semibold mb-1">
-                          Phone
+                          Số điện thoại
                         </p>
                         <p className="text-lg font-bold text-gray-900">
                           📞 {selectedInvoice.customerPhone}
@@ -483,7 +475,7 @@ export default function Invoices() {
                     {selectedInvoice.customerEmail && (
                       <div className="col-span-2">
                         <p className="text-sm text-gray-600 font-semibold mb-1">
-                          Email
+                          Thư điện tử
                         </p>
                         <p className="text-base text-gray-900">
                           ✉️ {selectedInvoice.customerEmail}
@@ -498,11 +490,11 @@ export default function Invoices() {
               {selectedInvoice.transactionId && (
                 <div className="bg-purple-50 border-2 border-purple-200 rounded-xl p-6">
                   <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                    💳 Transaction Details
+                    💳 Chi tiết giao dịch
                   </h3>
                   <div>
                     <p className="text-sm text-gray-600 font-semibold mb-1">
-                      Transaction ID
+                      Mã giao dịch
                     </p>
                     <p className="text-base font-mono font-bold text-gray-900 bg-white p-3 rounded-lg border border-purple-300">
                       {selectedInvoice.transactionId}
@@ -511,11 +503,11 @@ export default function Invoices() {
                 </div>
               )}
 
-              {/* 4. Notes */}
+              {/* 4. Ghi chú */}
               {selectedInvoice.notes && (
                 <div className="bg-yellow-50 border-2 border-yellow-200 rounded-xl p-6">
                   <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                    📝 Notes
+                    📝 Ghi chú
                   </h3>
                   <p className="text-base text-gray-900 bg-white p-4 rounded-lg border border-yellow-300">
                     {selectedInvoice.notes}
@@ -530,7 +522,7 @@ export default function Invoices() {
                 onClick={() => setShowDetailModal(false)}
                 className="px-8 py-3 text-gray-700 hover:text-gray-900 font-bold border-2 border-gray-400 rounded-lg hover:bg-gray-200 transition-all text-base"
               >
-                Close
+                Đóng
               </button>
             </div>
           </div>
@@ -539,3 +531,15 @@ export default function Invoices() {
     </div>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+

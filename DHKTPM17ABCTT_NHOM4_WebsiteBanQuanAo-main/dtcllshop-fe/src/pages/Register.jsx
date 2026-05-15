@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+﻿import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { ArrowRight, Calendar, Lock, Mail, Phone, User } from "lucide-react";
@@ -109,7 +109,7 @@ const Register = () => {
     e.preventDefault();
 
     if (formData.password !== formData.password_confirmed) {
-      toast.warning("Passwords do not match");
+      toast.warning("Mật khẩu xác nhận không khớp");
       return;
     }
 
@@ -136,19 +136,19 @@ const Register = () => {
 
       if (response.ok) {
         const result = await response.json();
-        console.log("Account created successfully", result);
-        toast.success("Registration successful");
+        console.log("Tạo tài khoản thành công", result);
+        toast.success("Đăng ký thành công");
       } else {
         const errorData = await response.json();
-        console.error("Error creating account:", errorData);
+        console.error("Lỗi tạo tài khoản:", errorData);
         toast.error(
-            `Registration failed: ${errorData.message || "Please try again."}`
+            `Đăng ký thất bại: ${errorData.message || "Vui lòng thử lại."}`
         );
       }
     } catch (error) {
-      console.error("Network or unknown error:", error);
+      console.error("Lỗi mạng hoặc lỗi không xác định:", error);
       toast.error(
-          "An error occurred. Please check your network connection and try again."
+          "Có lỗi xảy ra. Vui lòng kiểm tra kết nối mạng và thử lại."
       );
     }
   };
@@ -160,37 +160,36 @@ const Register = () => {
           <div className="flex flex-col border-b border-black/10 bg-[#f8f8f8] p-8 lg:border-b-0 lg:border-r lg:p-12">
             <div>
               <p className="inline-flex rounded-full border border-black/10 bg-white px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#666]">
-                DTCLL SHOP • CREATE ACCOUNT
+                DTCLL SHOP • TẠO TÀI KHOẢN
               </p>
 
               <h1 className="mt-8 text-4xl font-extrabold leading-[1.02] tracking-[-0.04em] sm:text-5xl">
-                Join DTCLL
-                <span className="block text-[#666]">Create your account</span>
+                Tham gia DTCLL
+                <span className="block text-[#666]">Tạo tài khoản của bạn</span>
               </h1>
 
               <p className="mt-6 max-w-xl text-base leading-8 text-[#5f6368]">
-                Create an account to start shopping faster, manage your profile,
-                track activity, and experience DTCLL SHOP with a cleaner and more
-                modern interface.
+                Tạo tài khoản để mua sắm nhanh hơn, quản lý hồ sơ,
+                theo dõi hoạt động và trải nghiệm DTCLL SHOP thuận tiện hơn.
               </p>
 
               <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-3">
                 <div className="rounded-[24px] border border-black/10 bg-white p-4">
-                  <p className="text-2xl font-bold">Simple</p>
+                  <p className="text-2xl font-bold">Đơn giản</p>
                   <p className="mt-1 text-[11px] uppercase tracking-[0.16em] text-[#7a7a7a]">
-                    Signup
+                    Đăng ký
                   </p>
                 </div>
                 <div className="rounded-[24px] border border-black/10 bg-white p-4">
-                  <p className="text-2xl font-bold">Secure</p>
+                  <p className="text-2xl font-bold">Bảo mật</p>
                   <p className="mt-1 text-[11px] uppercase tracking-[0.16em] text-[#7a7a7a]">
-                    Account
+                    Tài khoản
                   </p>
                 </div>
                 <div className="rounded-[24px] border border-black/10 bg-white p-4">
-                  <p className="text-2xl font-bold">Ready</p>
+                  <p className="text-2xl font-bold">Sẵn sàng</p>
                   <p className="mt-1 text-[11px] uppercase tracking-[0.16em] text-[#7a7a7a]">
-                    To Shop
+                    Mua sắm
                   </p>
                 </div>
               </div>
@@ -198,13 +197,13 @@ const Register = () => {
 
             <div className="mt-12 rounded-[32px] bg-black p-8 text-white">
               <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-white/50">
-                Core line
+                Tinh thần cốt lõi
               </p>
               <p className="mt-5 text-3xl font-extrabold leading-tight tracking-[-0.03em]">
-                Less noise.
+                Ít ồn ào.
               </p>
               <p className="mt-1 text-3xl font-extrabold leading-tight tracking-[-0.03em] text-white/70">
-                More style.
+                Nhiều phong cách.
               </p>
             </div>
           </div>
@@ -214,13 +213,13 @@ const Register = () => {
             <div className="w-full max-w-2xl">
               <div className="mb-8">
                 <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#7a7a7a]">
-                  Register
+                  Đăng ký
                 </p>
                 <h2 className="mt-3 text-3xl font-extrabold tracking-[-0.03em] sm:text-4xl">
-                  Account Registration
+                  Đăng ký tài khoản
                 </h2>
                 <p className="mt-3 text-base leading-8 text-[#5f6368]">
-                  Fill in your information below to create a DTCLL SHOP account.
+                  Điền thông tin bên dưới để tạo tài khoản DTCLL SHOP.
                 </p>
               </div>
 
@@ -228,7 +227,7 @@ const Register = () => {
                 <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
                   <div className="relative md:col-span-2">
                     <label className="mb-3 block text-sm font-semibold">
-                      Full Name
+                      Họ tên
                     </label>
                     <div
                         className={`relative flex items-center gap-3 rounded-[20px] border bg-[#f7f7f7] px-4 py-4 transition ${getBorderClass(
@@ -243,7 +242,7 @@ const Register = () => {
                           onChange={handleChange}
                           onBlur={handleValidation}
                           className="w-full bg-transparent text-base outline-none placeholder:text-[#9ca3af]"
-                          placeholder="Enter your full name"
+                          placeholder="Nhập họ tên của bạn"
                           required
                       />
                       {renderIcon("fullName")}
@@ -252,7 +251,7 @@ const Register = () => {
 
                   <div className="relative">
                     <label className="mb-3 block text-sm font-semibold">
-                      Phone Number
+                      Số điện thoại
                     </label>
                     <div
                         className={`relative flex items-center gap-3 rounded-[20px] border bg-[#f7f7f7] px-4 py-4 transition ${getBorderClass(
@@ -267,7 +266,7 @@ const Register = () => {
                           onChange={handleChange}
                           onBlur={handleValidation}
                           className="w-full bg-transparent text-base outline-none placeholder:text-[#9ca3af]"
-                          placeholder="Enter your phone number"
+                          placeholder="Nhập số điện thoại của bạn"
                           required
                       />
                       {renderIcon("phoneNumber")}
@@ -276,7 +275,7 @@ const Register = () => {
 
                   <div className="relative">
                     <label className="mb-3 block text-sm font-semibold">
-                      Email
+                      Thư điện tử
                     </label>
                     <div
                         className={`relative flex items-center gap-3 rounded-[20px] border bg-[#f7f7f7] px-4 py-4 transition ${getBorderClass(
@@ -291,7 +290,7 @@ const Register = () => {
                           onChange={handleChange}
                           onBlur={handleValidation}
                           className="w-full bg-transparent text-base outline-none placeholder:text-[#9ca3af]"
-                          placeholder="Enter your email"
+                          placeholder="Nhập thư điện tử của bạn"
                           required
                       />
                       {renderIcon("email")}
@@ -300,7 +299,7 @@ const Register = () => {
 
                   <div>
                     <label className="mb-3 block text-sm font-semibold">
-                      Gender
+                      Giới tính
                     </label>
                     <div className="flex h-[58px] items-center gap-6 rounded-[20px] border border-black/10 bg-[#f7f7f7] px-4">
                       <label className="flex items-center gap-2 cursor-pointer">
@@ -313,7 +312,7 @@ const Register = () => {
                             onChange={handleChange}
                             required
                         />
-                        <span className="text-sm text-[#444]">Male</span>
+                        <span className="text-sm text-[#444]">Nam</span>
                       </label>
 
                       <label className="flex items-center gap-2 cursor-pointer">
@@ -326,14 +325,14 @@ const Register = () => {
                             onChange={handleChange}
                             required
                         />
-                        <span className="text-sm text-[#444]">Female</span>
+                        <span className="text-sm text-[#444]">Nữ</span>
                       </label>
                     </div>
                   </div>
 
                   <div>
                     <label className="mb-3 block text-sm font-semibold">
-                      Date of Birth
+                      Ngày sinh
                     </label>
                     <div className="flex items-center gap-3 rounded-[20px] border border-black/10 bg-[#f7f7f7] px-4 py-4 transition focus-within:border-black">
                       <Calendar className="h-5 w-5 text-[#666]" />
@@ -350,7 +349,7 @@ const Register = () => {
 
                   <div className="relative">
                     <label className="mb-3 block text-sm font-semibold">
-                      Username
+                      Tên đăng nhập
                     </label>
                     <div
                         className={`relative flex items-center gap-3 rounded-[20px] border bg-[#f7f7f7] px-4 py-4 transition ${getBorderClass(
@@ -365,7 +364,7 @@ const Register = () => {
                           onChange={handleChange}
                           onBlur={handleValidation}
                           className="w-full bg-transparent text-base outline-none placeholder:text-[#9ca3af]"
-                          placeholder="Create a username"
+                          placeholder="Tạo tên đăng nhập"
                           required
                       />
                       {renderIcon("username")}
@@ -374,7 +373,7 @@ const Register = () => {
 
                   <div className="relative">
                     <label className="mb-3 block text-sm font-semibold">
-                      Password
+                      Mật khẩu
                     </label>
                     <div
                         className={`relative flex items-center gap-3 rounded-[20px] border bg-[#f7f7f7] px-4 py-4 transition ${getBorderClass(
@@ -389,7 +388,7 @@ const Register = () => {
                           onChange={handleChange}
                           onBlur={handleValidation}
                           className="w-full bg-transparent text-base outline-none placeholder:text-[#9ca3af]"
-                          placeholder="Create a password"
+                          placeholder="Tạo mật khẩu"
                           required
                       />
                       {renderIcon("password")}
@@ -398,7 +397,7 @@ const Register = () => {
 
                   <div className="relative md:col-span-2">
                     <label className="mb-3 block text-sm font-semibold">
-                      Confirm Password
+                      Xác nhận Mật khẩu
                     </label>
                     <div
                         className={`relative flex items-center gap-3 rounded-[20px] border bg-[#f7f7f7] px-4 py-4 transition ${getBorderClass(
@@ -413,7 +412,7 @@ const Register = () => {
                           onChange={handleChange}
                           onBlur={handleValidation}
                           className="w-full bg-transparent text-base outline-none placeholder:text-[#9ca3af]"
-                          placeholder="Confirm your password"
+                          placeholder="Xác nhận mật khẩu của bạn"
                           required
                       />
                       {renderIcon("password_confirmed")}
@@ -429,14 +428,14 @@ const Register = () => {
                         navigate("/login");
                       }}
                   >
-                    Sign In
+                    Đăng nhập
                   </button>
 
                   <button
                       type="submit"
                       className="inline-flex h-14 items-center justify-center gap-2 rounded-full bg-black px-6 text-sm font-semibold text-white transition hover:bg-[#2d2d2d]"
                   >
-                    Register
+                    Đăng ký
                     <ArrowRight className="h-4 w-4" />
                   </button>
 
@@ -447,16 +446,16 @@ const Register = () => {
                         navigate("/");
                       }}
                   >
-                    Back Home
+                    Về trang chủ
                   </button>
                 </div>
               </form>
 
               <div className="mt-8 rounded-[24px] border border-black/10 bg-[#f8f8f8] p-5">
-                <p className="text-sm font-semibold text-black">Registration note</p>
+                <p className="text-sm font-semibold text-black">Lưu ý đăng ký</p>
                 <p className="mt-2 text-sm leading-7 text-[#5f6368]">
-                  Please ensure all personal information is correct before
-                  submitting your registration request.
+                  Vui lòng kiểm tra kỹ thông tin cá nhân trước khi gửi yêu cầu
+                  đăng ký.
                 </p>
               </div>
             </div>
@@ -467,3 +466,6 @@ const Register = () => {
 };
 
 export default Register;
+
+
+

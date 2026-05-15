@@ -1,4 +1,4 @@
-// src/components/AdminChatBot.jsx
+﻿// src/components/AdminChatBot.jsx
 import { useState, useEffect, useRef } from "react";
 
 const AdminChatBot = () => {
@@ -9,7 +9,7 @@ const AdminChatBot = () => {
   const messagesEndRef = useRef(null);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    messagesEndRef.current?.scrollIntoXem({ behavior: "smooth" });
   };
 
   useEffect(() => {
@@ -186,3 +186,5 @@ useEffect(() => {
 };
 
 export default AdminChatBot;
+
+

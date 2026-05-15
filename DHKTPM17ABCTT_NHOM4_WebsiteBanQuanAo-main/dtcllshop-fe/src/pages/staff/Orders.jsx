@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect } from "react";
 import {
   FaEye,
   FaCheck,
@@ -10,9 +10,10 @@ import {
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-export default function Orders() {
+import { orderStatusLabel, paymentMethodLabel } from "../../utils/vietnameseLabels";
+export default function Order() {
   const navigate = useNavigate();
-  const [orders, setOrders] = useState([]);
+  const [orders, setOrder] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("PENDING");
@@ -29,14 +30,14 @@ export default function Orders() {
       setLoading(true);
       const res = await fetch("http://localhost:8080/orders");
       if (!res.ok) {
-        alert("Cannot load orders");
+        alert("Không thể tải danh sách đơn hàng");
         return;
       }
       const data = await res.json();
-      setOrders(Array.isArray(data) ? data : data?.result || []);
+      setOrder(Array.isArray(data) ? data : data?.result || []);
     } catch (error) {
-      console.error("Error loading orders:", error);
-      alert("Error loading orders");
+      console.error("Lỗi tải đơn hàng:", error);
+      alert("Lỗi khi tải danh sách đơn hàng");
     } finally {
       setLoading(false);
     }
@@ -103,7 +104,7 @@ export default function Orders() {
       }
     });
 
-  const handleViewDetails = (order) => {
+  const handleXemDetails = (order) => {
     setSelectedOrder(order);
     setShowDetailModal(true);
   };
@@ -126,7 +127,7 @@ export default function Orders() {
 
     if (!res.ok) {
       const err = await res.json().catch(() => ({}));
-      throw new Error(err.message || "Failed to create invoice");
+      throw new Error(err.message || "Không thể tạo hóa đơn");
     }
 
     return await res.json();
@@ -135,15 +136,15 @@ export default function Orders() {
  const handleConfirmOrder = async (orderId) => {
   const order = orders.find((o) => o.id === orderId);
   if (!order) {
-    alert("Order not found!");
+    alert("Không tìm thấy đơn hàng!");
     return;
   }
 
   const isCashPayment = order.paymentMethod === "CASH";
 
   const confirmMessage = isCashPayment
-    ? "Confirm this order?"
-    : "Confirm this order?";
+    ? "Xác nhận đơn hàng này?"
+    : "Xác nhận đơn hàng này?";
 
   if (!window.confirm(confirmMessage)) {
     return;
@@ -168,10 +169,10 @@ export default function Orders() {
 
     if (!statusRes.ok) {
       const error = await statusRes.json().catch(() => ({}));
-      throw new Error(error.message || "Failed to confirm order");
+      throw new Error(error.message || "Không thể xác nhận đơn hàng");
     }
 
-    // 2) 👉 Gửi email thông báo cho khách hàng
+    // 2) Gửi thư điện tử thông báo cho khách hàng
     try {
       await fetch(
         `http://localhost:8080/customers/email/notification/${order.account.id}/${orderId}`,
@@ -182,10 +183,10 @@ export default function Orders() {
           },
         }
       );
-      // toast.info("Notification email sent to the customer.");
+      // toast.info("Đã gửi thư điện tử thông báo cho khách hàng.");
     } catch (emailErr) {
-      console.error("Email failed:", emailErr);
-      // toast.warning("Order confirmed, but failed to send email.");
+      console.error("Gửi thư điện tử thất bại:", emailErr);
+      // toast.warning("Đơn hàng đã xác nhận, nhưng gửi thư điện tử thất bại.");
     }
 
     // 3) Nếu thanh toán tiền mặt thì tạo hóa đơn
@@ -193,23 +194,23 @@ export default function Orders() {
       try {
         await handleCreateInvoice(orderId);
         toast.success(
-          "Order confirmed successfully! Invoice has been created."
+          "Xác nhận đơn hàng thành công! Hóa đơn đã được tạo."
         );
       } catch (invoiceError) {
-        console.error("Invoice creation failed:", invoiceError);
+        console.error("Tạo hóa đơn thất bại:", invoiceError);
         toast.warning(
-          "Order confirmed successfully!\nInvoice could not be created. Please create it manually."
+          "Xác nhận đơn hàng thành công!\nKhông thể tạo hóa đơn. Vui lòng tạo thủ công."
         );
       }
     } else {
-      toast.success("Order confirmed successfully!");
+      toast.success("Xác nhận đơn hàng thành công!");
     }
 
     loadOrders();
     setShowDetailModal(false);
   } catch (error) {
-    console.error("Error confirming order:", error);
-    alert("Error: " + (error.message || "Something went wrong"));
+    console.error("Lỗi xác nhận đơn hàng:", error);
+    alert("Lỗi: " + (error.message || "Đã có lỗi xảy ra"));
   }
 };
 
@@ -245,10 +246,10 @@ export default function Orders() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-4xl font-bold text-gray-900 mb-2">
-                Order Management
+                Quản lý đơn hàng
               </h1>
               <p className="text-gray-600 text-lg">
-                Manage and track customer orders
+                Quản lý và theo dõi đơn hàng của khách
               </p>
             </div>
             <div className="flex items-center gap-3">
@@ -257,14 +258,14 @@ export default function Orders() {
                 className="px-5 py-2.5 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-lg hover:from-red-600 hover:to-red-700 transition-all flex items-center gap-2 shadow-lg hover:shadow-xl font-semibold"
               >
                 <FaPlus />
-                <span>Create Order</span>
+                <span>Tạo đơn hàng</span>
               </button>
               <button
                 onClick={loadOrders}
                 className="px-4 py-2 bg-white border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all flex items-center gap-2 shadow-sm"
               >
                 <FaSync className={loading ? "animate-spin" : ""} />
-                <span className="text-sm font-medium">Refresh</span>
+                <span className="text-sm font-medium">Làm mới</span>
               </button>
             </div>
           </div>
@@ -275,46 +276,46 @@ export default function Orders() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Search Orders
+                Tìm kiếm đơn hàng
               </label>
               <input
                 type="text"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder="ID, Code, Name, Phone..."
+                placeholder="ID, mã đơn, tên, số điện thoại..."
                 className="w-full px-4 py-2.5 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all text-base"
               />
             </div>
 
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Filter by Status
+                Lọc theo trạng thái
               </label>
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
                 className="w-full px-4 py-2.5 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all text-base font-medium"
               >
-                <option value="all">All Orders</option>
-                <option value="PENDING">🟡 Pending</option>
-                <option value="CONFIRMED">🟢 Confirmed</option>
-                <option value="CANCELLED">🔴 Cancelled</option>
+                <option value="all">Tất cả đơn hàng</option>
+                <option value="PENDING">🟡 Chờ xác nhận</option>
+                <option value="CONFIRMED">🟢 Đã xác nhận</option>
+                <option value="CANCELLED">🔴 Đã hủy</option>
               </select>
             </div>
 
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Sort by
+                Sắp xếp theo
               </label>
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
                 className="w-full px-4 py-2.5 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all text-base font-medium"
               >
-                <option value="date-desc">📅 Newest First</option>
-                <option value="date-asc">📅 Oldest First</option>
-                <option value="price-desc">💰 Highest Price</option>
-                <option value="price-asc">💰 Lowest Price</option>
+                <option value="date-desc">📅 Mới nhất trước</option>
+                <option value="date-asc">📅 Cũ nhất trước</option>
+                <option value="price-desc">💰 Tổng tiền cao nhất</option>
+                <option value="price-asc">💰 Tổng tiền thấp nhất</option>
               </select>
             </div>
           </div>
@@ -331,10 +332,10 @@ export default function Orders() {
             {filteredOrders.length === 0 ? (
               <div className="text-center py-16">
                 <p className="text-gray-500 text-xl font-medium">
-                  No orders found
+                  Không tìm thấy đơn hàng
                 </p>
                 <p className="text-gray-400 text-sm mt-2">
-                  Try adjusting your filters
+                  Thử thay đổi bộ lọc
                 </p>
               </div>
             ) : (
@@ -343,29 +344,29 @@ export default function Orders() {
                   <thead className="bg-gradient-to-r from-gray-800 to-gray-700 text-white sticky top-0 z-10">
                     <tr>
                       <th className="px-6 py-5 text-left text-base font-bold tracking-wide">
-                        ORDER ID
+                        ID ĐƠN
                       </th>
                       <th className="px-6 py-5 text-left text-base font-bold tracking-wide">
-                        ORDER CODE
+                        MÃ ĐƠN
                       </th>
                       <th className="px-6 py-5 text-left text-base font-bold tracking-wide">
                         <div className="flex items-center gap-2">
-                          DATE {getSortIcon("date")}
+                          NGÀY {getSortIcon("date")}
                         </div>
                       </th>
                       <th className="px-12 py-5 text-left text-base font-bold tracking-wide">
-                        CUSTOMER
+                        KHÁCH HÀNG
                       </th>
                       <th className="px-6 py-5 text-left text-base font-bold tracking-wide">
                         <div className="flex items-center gap-2">
-                          TOTAL PRICE {getSortIcon("price")}
+                          TỔNG TIỀN {getSortIcon("price")}
                         </div>
                       </th>
                       <th className="px-6 py-5 text-left text-base font-bold tracking-wide">
-                        STATUS
+                        TRẠNG THÁI
                       </th>
                       <th className="px-6 py-5 text-center text-base font-bold tracking-wide">
-                        ACTIONS
+                        THAO TÁC
                       </th>
                     </tr>
                   </thead>
@@ -379,7 +380,7 @@ export default function Orders() {
                           #{order.id}
                         </td>
                         <td className="px-6 py-5 text-base font-semibold text-gray-700">
-                          {order.orderCode || "N/A"}
+                          {order.orderCode || "Chưa có"}
                         </td>
                         <td className="px-6 py-5 text-base text-gray-700">
                           {formatDate(order.orderDate || order.createdAt)}
@@ -387,10 +388,10 @@ export default function Orders() {
                         <td className="px-6 py-5 text-base">
                           <div>
                             <p className="font-bold text-gray-900 text-base">
-                              {order.customerTrading?.receiverName || "N/A"}
+                              {order.customerTrading?.receiverName || "Chưa có"}
                             </p>
                             <p className="text-sm text-gray-600 font-medium mt-0.5">
-                              📞 {order.customerTrading?.receiverPhone || "N/A"}
+                              📞 {order.customerTrading?.receiverPhone || "Chưa có"}
                             </p>
                           </div>
                         </td>
@@ -403,17 +404,17 @@ export default function Orders() {
                               order.statusOrder
                             )}`}
                           >
-                            {order.statusOrder}
+                            {orderStatusLabel(order.statusOrder)}
                           </span>
                         </td>
                         <td className="px-6 py-5">
                           <div className="flex items-center justify-center gap-3">
                             <button
-                              onClick={() => handleViewDetails(order)}
+                              onClick={() => handleXemDetails(order)}
                               className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 font-semibold transition-all shadow-sm text-sm"
                             >
                               <FaEye size={16} />
-                              <span>View</span>
+                              <span>Xem</span>
                             </button>
 
                             {order.statusOrder === "PENDING" && (
@@ -422,7 +423,7 @@ export default function Orders() {
                                 className="flex items-center gap-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 font-semibold transition-all shadow-sm text-sm"
                               >
                                 <FaCheck size={16} />
-                                <span>Confirm</span>
+                                <span>Xác nhận</span>
                               </button>
                             )}
                           </div>
@@ -437,9 +438,8 @@ export default function Orders() {
             {!loading && filteredOrders.length > 0 && (
               <div className="bg-gray-50 px-6 py-4 border-t-2 border-gray-200">
                 <p className="text-base text-gray-700 font-semibold">
-                  Showing {filteredOrders.length} order
-                  {filteredOrders.length !== 1 ? "s" : ""}
-                  {statusFilter !== "all" && ` (${statusFilter})`}
+                  Đang hiển thị {filteredOrders.length} đơn hàng
+                  {statusFilter !== "all" && ` (${orderStatusLabel(statusFilter)})`}
                 </p>
               </div>
             )}
@@ -453,9 +453,9 @@ export default function Orders() {
           <div className="bg-white rounded-xl shadow-2xl max-w-5xl w-full max-h-[92vh] overflow-y-auto">
             <div className="sticky top-0 bg-gradient-to-r from-gray-800 to-gray-700 px-8 py-6 flex justify-between items-center rounded-t-xl z-10">
               <div>
-                <h2 className="text-3xl font-bold text-white">Order Details</h2>
+                <h2 className="text-3xl font-bold text-white">Chi tiết đơn hàng</h2>
                 <p className="text-gray-300 text-sm mt-1">
-                  Complete order information
+                  Thông tin đầy đủ của đơn hàng
                 </p>
               </div>
               <button
@@ -469,12 +469,12 @@ export default function Orders() {
             <div className="p-8 space-y-6">
               <div className="bg-gradient-to-r from-red-50 to-orange-50 border-2 border-red-200 rounded-xl p-6">
                 <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  📋 Order Information
+                  📋 Thông tin đơn hàng
                 </h3>
                 <div className="grid grid-cols-3 gap-4">
                   <div>
                     <p className="text-sm text-gray-600 font-semibold mb-1">
-                      Order ID
+                      ID đơn hàng
                     </p>
                     <p className="text-lg font-bold text-gray-900">
                       #{selectedOrder.id}
@@ -482,15 +482,15 @@ export default function Orders() {
                   </div>
                   <div>
                     <p className="text-sm text-gray-600 font-semibold mb-1">
-                      Order Code
+                      Mã đơn hàng
                     </p>
                     <p className="text-lg font-bold text-gray-900">
-                      {selectedOrder.orderCode || "N/A"}
+                      {selectedOrder.orderCode || "Chưa có"}
                     </p>
                   </div>
                   <div>
                     <p className="text-sm text-gray-600 font-semibold mb-1">
-                      Order Date
+                      Ngày đặt hàng
                     </p>
                     <p className="text-lg font-bold text-gray-900">
                       {formatDate(
@@ -500,27 +500,27 @@ export default function Orders() {
                   </div>
                   <div>
                     <p className="text-sm text-gray-600 font-semibold mb-1">
-                      Status
+                      Trạng thái
                     </p>
                     <span
                       className={`text-sm font-bold px-4 py-2 rounded-lg inline-block ${getStatusColor(
                         selectedOrder.statusOrder
                       )}`}
                     >
-                      {selectedOrder.statusOrder}
+                      {orderStatusLabel(selectedOrder.statusOrder)}
                     </span>
                   </div>
                   <div>
                     <p className="text-sm text-gray-600 font-semibold mb-1">
-                      Payment Method
+                      Phương thức thanh toán
                     </p>
                     <p className="text-lg font-bold text-gray-900">
-                      {selectedOrder.paymentMethod || "N/A"}
+                      {paymentMethodLabel(selectedOrder.paymentMethod)}
                     </p>
                   </div>
                   <div>
                     <p className="text-sm text-gray-600 font-semibold mb-1">
-                      Total Amount
+                      Tổng tiền
                     </p>
                     <p className="text-2xl font-bold text-red-600">
                       {formatPrice(
@@ -531,7 +531,7 @@ export default function Orders() {
                   {selectedOrder.note && (
                     <div className="col-span-3">
                       <p className="text-sm text-gray-600 font-semibold mb-1">
-                        Note
+                        Ghi chú
                       </p>
                       <p className="text-base text-gray-900 bg-yellow-50 p-3 rounded-lg border border-yellow-200">
                         💡 {selectedOrder.note}
@@ -543,29 +543,29 @@ export default function Orders() {
 
               <div className="bg-blue-50 border-2 border-blue-200 rounded-xl p-6">
                 <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  📦 Receiver Information
+                  📦 Thông tin người nhận
                 </h3>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <p className="text-sm text-gray-600 font-semibold mb-1">
-                      Receiver Name
+                      Tên người nhận
                     </p>
                     <p className="text-lg font-bold text-gray-900">
-                      {selectedOrder.customerTrading?.receiverName || "N/A"}
+                      {selectedOrder.customerTrading?.receiverName || "Chưa có"}
                     </p>
                   </div>
                   <div>
                     <p className="text-sm text-gray-600 font-semibold mb-1">
-                      Phone Number
+                      Số điện thoại
                     </p>
                     <p className="text-lg font-bold text-gray-900">
-                      📞 {selectedOrder.customerTrading?.receiverPhone || "N/A"}
+                      📞 {selectedOrder.customerTrading?.receiverPhone || "Chưa có"}
                     </p>
                   </div>
                   {selectedOrder.customerTrading?.receiverEmail && (
                     <div className="col-span-2">
                       <p className="text-sm text-gray-600 font-semibold mb-1">
-                        Email
+                        Thư điện tử
                       </p>
                       <p className="text-base text-gray-900">
                         ✉️ {selectedOrder.customerTrading.receiverEmail}
@@ -574,11 +574,11 @@ export default function Orders() {
                   )}
                   <div className="col-span-2">
                     <p className="text-sm text-gray-600 font-semibold mb-1">
-                      Delivery Address
+                      Địa chỉ giao hàng
                     </p>
                     <p className="text-base font-semibold text-gray-900 bg-white p-3 rounded-lg border border-blue-300">
                       📍{" "}
-                      {selectedOrder.customerTrading?.receiverAddress || "N/A"}
+                      {selectedOrder.customerTrading?.receiverAddress || "Chưa có"}
                     </p>
                   </div>
                 </div>
@@ -587,38 +587,38 @@ export default function Orders() {
               {selectedOrder.account && (
                 <div className="bg-purple-50 border-2 border-purple-200 rounded-xl p-6">
                   <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                    👤 Order Placed By
+                    👤 Người đặt hàng
                   </h3>
                   <div className="grid grid-cols-3 gap-4">
                     <div>
                       <p className="text-sm text-gray-600 font-semibold mb-1">
-                        Username
+                        Tên đăng nhập
                       </p>
                       <p className="text-lg font-bold text-gray-900">
-                        {selectedOrder.account.username || "N/A"}
+                        {selectedOrder.account.username || "Chưa có"}
                       </p>
                     </div>
                     <div>
                       <p className="text-sm text-gray-600 font-semibold mb-1">
-                        Full Name
+                        Họ tên
                       </p>
                       <p className="text-lg font-bold text-gray-900">
-                        {selectedOrder.account.customer?.fullName || "N/A"}
+                        {selectedOrder.account.customer?.fullName || "Chưa có"}
                       </p>
                     </div>
                     <div>
                       <p className="text-sm text-gray-600 font-semibold mb-1">
-                        Phone
+                        Số điện thoại
                       </p>
                       <p className="text-lg font-bold text-gray-900">
                         📞{" "}
-                        {selectedOrder.account.customer?.phoneNumber || "N/A"}
+                        {selectedOrder.account.customer?.phoneNumber || "Chưa có"}
                       </p>
                     </div>
                     {selectedOrder.account.customer?.email && (
                       <div className="col-span-3">
                         <p className="text-sm text-gray-600 font-semibold mb-1">
-                          Email
+                          Thư điện tử
                         </p>
                         <p className="text-base text-gray-900">
                           ✉️ {selectedOrder.account.customer.email}
@@ -633,7 +633,7 @@ export default function Orders() {
                 selectedOrder.orderDetails.length > 0 && (
                   <div className="bg-green-50 border-2 border-green-200 rounded-xl p-6">
                     <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                      🛍️ Order Items ({selectedOrder.orderDetails.length})
+                      🛍️ Sản phẩm trong đơn ({selectedOrder.orderDetails.length})
                     </h3>
                     <div className="overflow-x-auto">
                       <table className="w-full">
@@ -643,16 +643,16 @@ export default function Orders() {
                               #
                             </th>
                             <th className="px-4 py-3 text-left text-sm font-bold">
-                              Product Name
+                              Tên sản phẩm
                             </th>
                             <th className="px-4 py-3 text-center text-sm font-bold">
-                              Quantity
+                              Số lượng
                             </th>
                             <th className="px-4 py-3 text-right text-sm font-bold">
-                              Unit Price
+                              Đơn giá
                             </th>
                             <th className="px-4 py-3 text-right text-sm font-bold">
-                              Total Price
+                              Thành tiền
                             </th>
                           </tr>
                         </thead>
@@ -666,7 +666,7 @@ export default function Orders() {
                                 {idx + 1}
                               </td>
                               <td className="px-4 py-4 text-sm font-semibold text-gray-900">
-                                {item.productName || "Unknown Product"}
+                                {item.productName || "Sản phẩm không xác định"}
                               </td>
                               <td className="px-4 py-4 text-center text-sm font-bold text-gray-900">
                                 {item.quantity}
@@ -686,7 +686,7 @@ export default function Orders() {
                               colSpan="4"
                               className="px-4 py-4 text-right text-base font-bold text-gray-900"
                             >
-                              Grand Total:
+                              Tổng cộng:
                             </td>
                             <td className="px-4 py-4 text-right text-xl font-bold text-red-600">
                               {formatPrice(
@@ -706,7 +706,7 @@ export default function Orders() {
                 onClick={() => setShowDetailModal(false)}
                 className="px-8 py-3 text-gray-700 hover:text-gray-900 font-bold border-2 border-gray-400 rounded-lg hover:bg-gray-200 transition-all text-base"
               >
-                Close
+                Đóng
               </button>
               {selectedOrder.statusOrder === "PENDING" && (
                 <button
@@ -716,7 +716,7 @@ export default function Orders() {
                   className="px-8 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 font-bold flex items-center gap-2 transition-all shadow-lg text-base"
                 >
                   <FaCheck size={18} />
-                  Confirm Order
+                  Xác nhận đơn hàng
                 </button>
               )}
             </div>
@@ -726,3 +726,14 @@ export default function Orders() {
     </div>
   );
 }
+
+
+
+
+
+
+
+
+
+
+

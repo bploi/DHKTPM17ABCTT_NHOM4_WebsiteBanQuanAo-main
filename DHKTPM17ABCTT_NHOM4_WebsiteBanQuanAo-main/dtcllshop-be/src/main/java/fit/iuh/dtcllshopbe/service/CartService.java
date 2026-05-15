@@ -68,12 +68,10 @@ public class CartService {
 
     public CartResponse updateCartDelete(int cartId, CartUpdateRequest cartPriceRequest) {
         Cart cart = cartRepository.findById(cartId).orElse(null);
-        cart.setTotalQuantity(cart.getTotalQuantity() - cartPriceRequest.getQuantity());
-        if(cart.getTotalQuantity() > 0) {
-            cart.setTotalAmount(cart.getTotalAmount() - cartPriceRequest.getPrice());
-        }else {
-            cart.setTotalQuantity(0);
-        }
+        int totalQuantity = Math.max(0, cart.getTotalQuantity() - cartPriceRequest.getQuantity());
+        double totalAmount = Math.max(0, cart.getTotalAmount() - cartPriceRequest.getPrice());
+        cart.setTotalQuantity(totalQuantity);
+        cart.setTotalAmount(totalQuantity == 0 ? 0 : totalAmount);
         cartRepository.save(cart);
         return cartMapper.toCartResponse(cart);
     }

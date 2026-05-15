@@ -12,14 +12,14 @@ const ResetPassword = () => {
         const otp = sessionStorage.getItem("otp");
 
         if (!token) {
-            alert("Please initiate the forgot password request first!");
+            alert("Vui lòng thực hiện yêu cầu quên mật khẩu trước!");
             navigate("/forget_password");
         }
     }, [navigate])
 
     const handleResetSubmit = async () => {
         if (!otp || !newPassword) {
-            alert("Please enter both the OTP and the new password.");
+            alert("Vui lòng nhập OTP và mật khẩu mới.");
             return;
         }
         // Retrieve token from sessionStorage to prepare for sending
@@ -33,14 +33,14 @@ const ResetPassword = () => {
                 body: JSON.stringify({
                     token: token,        // Token retrieved from Session
                     otp: otp,            // OTP entered by user
-                    newPassword: newPassword // New password entered by user
+                    newPassword: newPassword // Mật khẩu mới người dùng nhập
                 }),
             });
 
             const data = await response.json();
 
             if (response.ok && data.code === 0) {
-                alert("Password changed successfully! Please log in again.");
+                alert("Đổi mật khẩu thành công! Vui lòng đăng nhập lại.");
 
                 // --- IMPORTANT: CLEAN UP SESSION ---
                 sessionStorage.removeItem("resetToken");
@@ -52,7 +52,7 @@ const ResetPassword = () => {
             }
         } catch (error) {
             console.error("Error:", error);
-            alert("Server connection error!");
+            alert("Lỗi kết nối máy chủ!");
         } finally {
             setLoading(false);
         }
@@ -64,7 +64,7 @@ const ResetPassword = () => {
         
         {/* Left side - Form */}
         <div className="p-8 md:p-12">
-          <h2 className="font-bold text-4xl mb-3">Reset Password</h2>
+          <h2 className="font-bold text-4xl mb-3">Đặt lại mật khẩu</h2>
           
 
           <div className="grid gap-6">
@@ -84,7 +84,7 @@ const ResetPassword = () => {
               />
             </div>
 
-            {/* Input New Password */}
+            {/* Input New Mật khẩu */}
             <div>
               <div className="flex items-center gap-2 mb-2">
                  <label className="text-gray-700 font-medium">Mật khẩu mới:</label>
@@ -111,13 +111,13 @@ const ResetPassword = () => {
             <button 
               className="text-sm text-gray-500 hover:underline text-center mt-2"
               onClick={() => {
-                // Nếu muốn quay lại nhập lại email, xóa session cũ đi
+                // Nếu muốn quay lại nhập lại thư điện tử, xóa session cũ đi
                 sessionStorage.removeItem("resetToken");
                 sessionStorage.removeItem("resetEmail");
                 navigate("/forgot_password");
               }}
             >
-              Quay lại nhập Email khác
+              Quay lại nhập thư điện tử khác
             </button>
           </div>
         </div>
@@ -139,3 +139,4 @@ const ResetPassword = () => {
   );
 };
 export default ResetPassword;
+

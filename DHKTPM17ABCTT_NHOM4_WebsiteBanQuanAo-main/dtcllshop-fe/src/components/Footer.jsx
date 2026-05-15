@@ -1,4 +1,4 @@
-import { Facebook, Instagram, Mail, Phone, MapPin } from "lucide-react";
+﻿import { Facebook, Instagram, Mail, Phone, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export default function Footer() {
@@ -16,19 +16,19 @@ export default function Footer() {
               </div>
 
               <p className="max-w-xs text-sm leading-7 text-white/70">
-                A modern fashion store with a clean identity, minimalist styling,
-                and an easy shopping experience for everyday wear.
+                Cửa hàng thời trang hiện đại với phong cách tối giản, dễ phối
+                và trải nghiệm mua sắm thuận tiện cho mỗi ngày.
               </p>
 
               <div className="inline-flex rounded-full border border-white/15 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.24em] text-white/70">
-                Minimal fashion concept
+                Phong cách thời trang tối giản
               </div>
             </div>
 
             {/* Navigation */}
             <div>
               <h3 className="mb-5 text-lg font-bold tracking-tight text-white">
-                Navigation
+                Điều hướng
               </h3>
 
               <div className="flex flex-col gap-3">
@@ -36,25 +36,25 @@ export default function Footer() {
                     to="/"
                     className="text-sm text-white/70 transition hover:translate-x-1 hover:text-white"
                 >
-                  Home
+                  Trang chủ
                 </Link>
                 <Link
                     to="/product"
                     className="text-sm text-white/70 transition hover:translate-x-1 hover:text-white"
                 >
-                  Catalog
+                  Sản phẩm
                 </Link>
                 <Link
                     to="/about"
                     className="text-sm text-white/70 transition hover:translate-x-1 hover:text-white"
                 >
-                  Brand
+                  Thương hiệu
                 </Link>
                 <Link
                     to="/policy"
                     className="text-sm text-white/70 transition hover:translate-x-1 hover:text-white"
                 >
-                  Service
+                  Dịch vụ
                 </Link>
               </div>
             </div>
@@ -62,7 +62,7 @@ export default function Footer() {
             {/* Contact */}
             <div>
               <h3 className="mb-5 text-lg font-bold tracking-tight text-white">
-                Contact
+                Liên hệ
               </h3>
 
               <div className="space-y-4">
@@ -72,7 +72,7 @@ export default function Footer() {
                   </div>
                   <div>
                     <p className="text-[11px] uppercase tracking-[0.18em] text-white/40">
-                      Hotline
+                      Đường dây nóng
                     </p>
                     <p className="mt-1 text-sm text-white/80">093 - 3462 - 6578</p>
                   </div>
@@ -84,7 +84,7 @@ export default function Footer() {
                   </div>
                   <div>
                     <p className="text-[11px] uppercase tracking-[0.18em] text-white/40">
-                      Email
+                      Thư điện tử
                     </p>
                     <p className="mt-1 text-sm text-white/80">
                       support@dtcllshop.com
@@ -98,10 +98,10 @@ export default function Footer() {
                   </div>
                   <div>
                     <p className="text-[11px] uppercase tracking-[0.18em] text-white/40">
-                      Address
+                      Địa chỉ
                     </p>
                     <p className="mt-1 max-w-xs text-sm leading-6 text-white/80">
-                      Ho Chi Minh City, Viet Nam
+                      Thành phố Hồ Chí Minh, Việt Nam
                     </p>
                   </div>
                 </div>
@@ -111,7 +111,7 @@ export default function Footer() {
             {/* Social */}
             <div>
               <h3 className="mb-5 text-lg font-bold tracking-tight text-white">
-                Connect
+                Kết nối
               </h3>
 
               <div className="flex items-center gap-3">
@@ -150,15 +150,15 @@ export default function Footer() {
                 <a
                     href="mailto:support@dtcllshop.com"
                     className="flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white transition hover:-translate-y-1 hover:bg-white hover:text-black"
-                    aria-label="Email"
+                    aria-label="Thư điện tử"
                 >
                   <Mail size={18} />
                 </a>
               </div>
 
               <p className="mt-5 max-w-xs text-sm leading-7 text-white/68">
-                Stay connected for product updates, new arrivals, and simple
-                style inspiration from DTCLL SHOP.
+                Theo dõi DTCLL SHOP để cập nhật sản phẩm mới, ưu đãi và cảm
+                hứng phối đồ hằng ngày.
               </p>
             </div>
           </div>
@@ -166,16 +166,19 @@ export default function Footer() {
           {/* Bottom */}
           <div className="mt-10 flex flex-col items-center justify-between gap-3 border-t border-white/10 pt-6 text-center sm:flex-row sm:text-left">
             <p className="text-sm text-white/45">
-              © 2025 DTCLL SHOP. All rights reserved.
+              © 2025 DTCLL SHOP. Đã đăng ký bản quyền.
             </p>
 
             <div className="flex items-center gap-4 text-[11px] uppercase tracking-[0.18em] text-white/35">
-              <span>Minimal layout</span>
+              <span>Bố cục tối giản</span>
               <span className="hidden sm:inline">•</span>
-              <span>Modern fashion</span>
+              <span>Thời trang hiện đại</span>
             </div>
           </div>
         </div>
       </footer>
   );
 }
+
+
+

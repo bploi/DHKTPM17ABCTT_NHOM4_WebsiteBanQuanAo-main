@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 import {
   Package,
   Shield,
@@ -18,53 +18,53 @@ const Policy = () => {
   const conditions = [
     {
       icon: <Package className="h-6 w-6" />,
-      title: "Condition of Item",
+      title: "Tình trạng sản phẩm",
       description:
-          "Items must be unused, unwashed, and free of any odors (body odor, perfume, chemicals, etc.).",
+          "Sản phẩm phải chưa sử dụng, chưa giặt và không có mùi lạ như mùi cơ thể, nước hoa hoặc hóa chất.",
     },
     {
       icon: <Shield className="h-6 w-6" />,
-      title: "Tags and Labels",
+      title: "Tem mác và nhãn sản phẩm",
       description:
-          "Tags and labels must remain intact, not be torn, removed, or altered.",
+          "Tem mác và nhãn sản phẩm phải còn nguyên, không bị rách, tháo bỏ hoặc chỉnh sửa.",
     },
     {
       icon: <Package className="h-6 w-6" />,
-      title: "Original Packaging",
+      title: "Bao bì gốc",
       description:
-          "The item must be returned with all original packaging and accessories in the same condition it was received.",
+          "Sản phẩm cần được gửi lại cùng bao bì và phụ kiện gốc, trong tình trạng như khi nhận hàng.",
     },
   ];
 
   const freeReturnCases = [
     {
-      title: "Manufacturer Defects",
+      title: "Lỗi từ nhà sản xuất",
       description:
-          "Items with verifiable manufacturer defects (e.g., torn seams, dye/print issues, poor workmanship).",
+          "Sản phẩm có lỗi sản xuất có thể xác minh như rách đường may, lỗi màu/in hoặc hoàn thiện kém.",
       icon: <AlertCircle className="h-5 w-5" />,
     },
     {
-      title: "Incorrect Item Sent",
+      title: "Gửi sai sản phẩm",
       description:
-          "Items sent incorrectly (wrong size, color, or product) compared to the original order.",
+          "Sản phẩm nhận được sai kích cỡ, màu sắc hoặc mẫu so với đơn hàng ban đầu.",
       icon: <RefreshCw className="h-5 w-5" />,
     },
     {
-      title: "Out of Stock for Exchange",
+      title: "Hết hàng để đổi",
       description:
-          "If a size exchange is requested, but the item is confirmed to be out of stock.",
+          "Khách hàng yêu cầu đổi kích cỡ nhưng sản phẩm đã được xác nhận hết hàng.",
       icon: <Package className="h-5 w-5" />,
     },
   ];
 
   const requestFields = [
-    "Customer Full Name",
-    "Contact Phone Number",
-    "Order Number",
-    "Product Name",
-    "Reason for Request",
-    "Detailed Issue / Request",
-    "Attachments",
+    "Họ tên khách hàng",
+    "Số điện thoại liên hệ",
+    "Mã đơn hàng",
+    "Tên sản phẩm",
+    "Lý do yêu cầu",
+    "Mô tả chi tiết vấn đề / yêu cầu",
+    "Tệp đính kèm",
   ];
 
   return (
@@ -75,29 +75,28 @@ const Policy = () => {
             <div className="grid grid-cols-1 gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
               <div>
                 <p className="inline-flex rounded-full border border-black/10 bg-[#f6f6f6] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#666]">
-                  DTCLL SHOP • SUPPORT CENTER
+                  DTCLL SHOP • TRUNG TÂM HỖ TRỢ
                 </p>
 
                 <h1 className="mt-6 text-4xl font-extrabold leading-[1.04] tracking-[-0.04em] sm:text-5xl lg:text-6xl">
-                  Return & Exchange,
-                  <span className="block text-[#666]">Made Clear</span>
+                  Chính sách đổi trả,
+                  <span className="block text-[#666]">Rõ ràng và minh bạch</span>
                 </h1>
 
                 <p className="mt-6 max-w-2xl text-base leading-8 text-[#5f6368] sm:text-lg">
-                  This page explains when returns are accepted, which cases are
-                  supported, and how customers can submit a request in the
-                  clearest possible way.
+                  Trang này giải thích các trường hợp được đổi trả, điều kiện áp dụng
+                  và cách gửi yêu cầu hỗ trợ rõ ràng nhất.
                 </p>
 
                 <div className="mt-8 flex flex-wrap gap-3">
                   <div className="rounded-full border border-black/10 bg-black px-5 py-3 text-sm font-semibold text-white">
-                    15-Day Eligibility
+                    Áp dụng trong 15 ngày
                   </div>
                   <div className="rounded-full border border-black/10 bg-white px-5 py-3 text-sm font-semibold text-black">
-                    One-Way Free Return Cases
+                    Miễn phí một chiều cho trường hợp hợp lệ
                   </div>
                   <div className="rounded-full border border-black/10 bg-white px-5 py-3 text-sm font-semibold text-black">
-                    Contact Support
+                    Liên hệ hỗ trợ
                   </div>
                 </div>
               </div>
@@ -105,34 +104,34 @@ const Policy = () => {
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div className="group rounded-[28px] border border-black/10 bg-white p-6 text-black transition hover:-translate-y-1 hover:bg-black hover:text-white">
                   <p className="text-[11px] uppercase tracking-[0.18em] text-[#7a7a7a] transition group-hover:text-white/50">
-                    Eligibility
+                    Điều kiện
                   </p>
                   <p className="mt-3 text-5xl font-extrabold">15</p>
                   <p className="mt-2 text-sm leading-7 text-[#5f6368] transition group-hover:text-white/75">
-                    Days from the date the customer receives the product.
+                    Ngày kể từ khi khách hàng nhận sản phẩm.
                   </p>
                 </div>
 
                 <div className="group rounded-[28px] border border-black/10 bg-white p-6 text-black transition hover:-translate-y-1 hover:bg-black hover:text-white">
                   <p className="text-[11px] uppercase tracking-[0.18em] text-[#7a7a7a] transition group-hover:text-white/50">
-                    Supported Shipping
+                    Hỗ trợ vận chuyển
                   </p>
-                  <p className="mt-3 text-2xl font-extrabold">One-Way Free</p>
+                  <p className="mt-3 text-2xl font-extrabold">Miễn phí một chiều</p>
                   <p className="mt-2 text-sm leading-7 text-[#5f6368] transition group-hover:text-white/75">
-                    Applied in verified eligible return or exchange cases.
+                    Áp dụng cho các trường hợp đổi trả hợp lệ đã được xác minh.
                   </p>
                 </div>
 
                 <div className="group rounded-[28px] border border-black/10 bg-white p-6 text-black transition hover:-translate-y-1 hover:bg-black hover:text-white sm:col-span-2">
                   <p className="text-[11px] uppercase tracking-[0.18em] text-[#7a7a7a] transition group-hover:text-white/50">
-                    Important
+                    Lưu ý quan trọng
                   </p>
                   <p className="mt-3 text-lg font-bold">
-                    Keep product evidence and unboxing video if possible.
+                    Nên giữ bằng chứng sản phẩm và video mở hàng nếu có thể.
                   </p>
                   <p className="mt-2 text-sm leading-7 text-[#5f6368] transition group-hover:text-white/75">
-                    This helps customer support verify issues faster and process
-                    requests more accurately.
+                    Điều này giúp bộ phận hỗ trợ xác minh vấn đề nhanh hơn và xử lý
+                    yêu cầu chính xác hơn.
                   </p>
                 </div>
               </div>
@@ -143,10 +142,10 @@ const Policy = () => {
           <section className="mt-20">
             <div className="mb-10 text-center">
               <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#7a7a7a]">
-                Quick process
+                Quy trình nhanh
               </p>
               <h2 className="mt-3 text-3xl font-extrabold tracking-[-0.03em] sm:text-4xl">
-                How This Works
+                Cách thực hiện
               </h2>
             </div>
 
@@ -155,10 +154,9 @@ const Policy = () => {
                 <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-full bg-black text-lg font-bold text-white transition group-hover:bg-white group-hover:text-black">
                   1
                 </div>
-                <h3 className="text-2xl font-bold">Check Conditions</h3>
+                <h3 className="text-2xl font-bold">Kiểm tra điều kiện</h3>
                 <p className="mt-3 leading-8 text-[#5f6368] transition group-hover:text-white/75">
-                  Review the mandatory return conditions and confirm the product
-                  still qualifies for return or exchange.
+                  Kiểm tra các điều kiện bắt buộc và xác nhận sản phẩm vẫn đủ điều kiện đổi trả.
                 </p>
               </div>
 
@@ -166,10 +164,9 @@ const Policy = () => {
                 <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-full bg-black text-lg font-bold text-white transition group-hover:bg-white group-hover:text-black">
                   2
                 </div>
-                <h3 className="text-2xl font-bold">Prepare Evidence</h3>
+                <h3 className="text-2xl font-bold">Chuẩn bị minh chứng</h3>
                 <p className="mt-3 leading-8 text-[#5f6368] transition group-hover:text-white/75">
-                  Keep packaging, tags, issue photos, and unboxing proof if
-                  available before contacting support.
+                  Giữ bao bì, tem mác, ảnh lỗi và video mở hàng nếu có trước khi liên hệ hỗ trợ.
                 </p>
               </div>
 
@@ -177,10 +174,9 @@ const Policy = () => {
                 <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-full bg-black text-lg font-bold text-white transition group-hover:bg-white group-hover:text-black">
                   3
                 </div>
-                <h3 className="text-2xl font-bold">Send Request</h3>
+                <h3 className="text-2xl font-bold">Gửi yêu cầu</h3>
                 <p className="mt-3 leading-8 text-[#5f6368] transition group-hover:text-white/75">
-                  Use the request template below and contact DTCLL SHOP through
-                  the listed support channels.
+                  Dùng mẫu yêu cầu bên dưới và liên hệ DTCLL SHOP qua các kênh hỗ trợ đã liệt kê.
                 </p>
               </div>
             </div>
@@ -190,14 +186,13 @@ const Policy = () => {
           <section className="mt-20 rounded-[36px] border border-black/10 bg-white p-8 shadow-[0_16px_40px_rgba(0,0,0,0.05)] sm:p-10">
             <div className="mb-10">
               <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#7a7a7a]">
-                Return requirements
+                Yêu cầu đổi trả
               </p>
               <h2 className="mt-3 text-3xl font-extrabold tracking-[-0.03em] sm:text-4xl">
-                Mandatory Conditions
+                Điều kiện bắt buộc
               </h2>
               <p className="mt-4 max-w-3xl text-base leading-8 text-[#5f6368]">
-                For a return or exchange to be accepted, the item must meet all of
-                the conditions listed below.
+                Để được đổi trả, sản phẩm phải đáp ứng đầy đủ các điều kiện bên dưới.
               </p>
             </div>
 
@@ -224,10 +219,9 @@ const Policy = () => {
                   <AlertCircle className="h-5 w-5" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold">Important Note</h3>
+                  <h3 className="text-xl font-bold">Lưu ý quan trọng</h3>
                   <p className="mt-2 leading-8 text-white/75">
-                    Recording an unboxing video is strongly recommended to support
-                    future claims and speed up verification.
+                    Khuyến nghị quay video mở hàng để hỗ trợ khiếu nại và rút ngắn thời gian xác minh.
                   </p>
                 </div>
               </div>
@@ -238,18 +232,17 @@ const Policy = () => {
           <section className="mt-20 grid grid-cols-1 gap-8 lg:grid-cols-[0.95fr_1.05fr]">
             <div className="rounded-[36px] border border-black/10 bg-black p-8 text-white shadow-[0_16px_40px_rgba(0,0,0,0.08)] sm:p-10">
               <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-white/50">
-                Supported cases
+                Trường hợp hỗ trợ
               </p>
               <h2 className="mt-4 text-3xl font-extrabold tracking-[-0.03em] sm:text-4xl">
-                Eligible Return / Exchange Cases
+                Trường hợp được đổi trả
               </h2>
               <p className="mt-4 text-base leading-8 text-white/75">
-                These are the cases in which DTCLL SHOP supports the return or
-                exchange process and covers one-way return shipping.
+                Đây là các trường hợp DTCLL SHOP hỗ trợ đổi trả và chi trả phí vận chuyển một chiều.
               </p>
 
               <div className="mt-8 inline-flex rounded-full border border-white/15 bg-white/10 px-5 py-3 text-sm font-semibold text-white">
-                ✓ Free Return Shipping One-Way
+                ✓ Miễn phí vận chuyển đổi trả một chiều
               </div>
             </div>
 
@@ -274,20 +267,19 @@ const Policy = () => {
               ))}
 
               <p className="px-2 text-sm italic text-[#5f6368]">
-                DTCLL SHOP covers shipping costs incurred for the return or
-                exchange in the supported cases above.
+                DTCLL SHOP chi trả phí vận chuyển phát sinh cho các trường hợp đổi trả được hỗ trợ ở trên.
               </p>
             </div>
           </section>
 
-          {/* CUSTOMER PAID */}
+          {/* KHÁCH HÀNG PAID */}
           <section className="mt-20">
             <div className="mb-10 text-center">
               <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#7a7a7a]">
-                Customer-paid shipping
+                Khách hàng tự thanh toán phí vận chuyển
               </p>
               <h2 className="mt-3 text-3xl font-extrabold tracking-[-0.03em] sm:text-4xl">
-                Cases Subject to Customer-Paid Fees
+                Trường hợp khách hàng chịu phí
               </h2>
             </div>
 
@@ -297,10 +289,10 @@ const Policy = () => {
                   <Truck className="h-5 w-5" />
                 </div>
                 <div>
-                  <h3 className="text-2xl font-bold">Size Exchange</h3>
+                  <h3 className="text-2xl font-bold">Đổi size</h3>
                   <p className="mt-3 leading-8 text-[#5f6368]">
-                    Customer-paid shipping applies when exchanging a size due to
-                    fit issues, subject to stock availability.
+                    Khách hàng tự thanh toán phí vận chuyển khi đổi kích cỡ do không vừa,
+                    tùy theo tình trạng hàng còn trong kho.
                   </p>
                 </div>
               </div>
@@ -311,14 +303,14 @@ const Policy = () => {
           <section className="mt-20 rounded-[36px] border border-black/10 bg-white p-8 shadow-[0_16px_40px_rgba(0,0,0,0.05)] sm:p-10">
             <div className="mb-10">
               <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#7a7a7a]">
-                Support template
+                Mẫu hỗ trợ
               </p>
               <h2 className="mt-3 text-3xl font-extrabold tracking-[-0.03em] sm:text-4xl">
-                Return / Exchange Request Format
+                Mẫu yêu cầu đổi trả
               </h2>
               <p className="mt-4 max-w-3xl text-base leading-8 text-[#5f6368]">
-                To ensure the fastest support, please copy the template below and
-                include all relevant information when contacting customer service.
+                Để được hỗ trợ nhanh nhất, vui lòng cung cấp đầy đủ các thông tin bên dưới
+                khi liên hệ bộ phận chăm sóc khách hàng.
               </p>
             </div>
 
@@ -326,7 +318,7 @@ const Policy = () => {
               <div className="border-b border-black/10 bg-[#f8f8f8] px-6 py-5">
                 <h3 className="flex items-center gap-3 text-2xl font-bold">
                   <ArrowRightLeft className="h-6 w-6" />
-                  DTCLL SHOP REQUEST TEMPLATE
+                  MẪU YÊU CẦU DTCLL SHOP
                 </h3>
               </div>
 
@@ -335,18 +327,18 @@ const Policy = () => {
                     <div
                         key={index}
                         className={`rounded-2xl border border-black/10 bg-[#f8f8f8] p-4 ${
-                            field === "Order Number" ||
-                            field === "Product Name" ||
-                            field === "Reason for Request" ||
-                            field === "Detailed Issue / Request" ||
-                            field === "Attachments"
+                            field === "Mã đơn hàng" ||
+                            field === "Tên sản phẩm" ||
+                            field === "Lý do yêu cầu" ||
+                            field === "Mô tả chi tiết vấn đề / yêu cầu" ||
+                            field === "Tệp đính kèm"
                                 ? "sm:col-span-2"
                                 : ""
                         }`}
                     >
                       <p className="text-sm font-bold">{field}</p>
                       <p className="mt-2 text-sm text-[#5f6368]">
-                        [Fill in this information]
+                        [Điền thông tin tại đây]
                       </p>
                     </div>
                 ))}
@@ -358,14 +350,13 @@ const Policy = () => {
           <section className="mt-20">
             <div className="mb-10 text-center">
               <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#7a7a7a]">
-                Contact channels
+                Kênh liên hệ
               </p>
               <h2 className="mt-3 text-3xl font-extrabold tracking-[-0.03em] sm:text-4xl">
-                Contact Information
+                Thông tin liên hệ
               </h2>
               <p className="mx-auto mt-4 max-w-3xl text-base leading-8 text-[#5f6368]">
-                For all questions, return/exchange inquiries, or complaints,
-                please contact our support team through the channels below.
+                Nếu có câu hỏi, yêu cầu đổi trả hoặc khiếu nại, vui lòng liên hệ đội ngũ hỗ trợ qua các kênh bên dưới.
               </p>
             </div>
 
@@ -374,7 +365,7 @@ const Policy = () => {
                 <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-black text-white transition group-hover:bg-white group-hover:text-black">
                   <Mail className="h-8 w-8" />
                 </div>
-                <h3 className="text-xl font-bold">Support Email</h3>
+                <h3 className="text-xl font-bold">Thư điện tử hỗ trợ</h3>
                 <p className="mt-3 text-[#5f6368] transition group-hover:text-white/75">
                   support@dtcllshop.com
                 </p>
@@ -384,7 +375,7 @@ const Policy = () => {
                 <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-black text-white transition group-hover:bg-white group-hover:text-black">
                   <Phone className="h-8 w-8" />
                 </div>
-                <h3 className="text-xl font-bold">Hotline / Zalo</h3>
+                <h3 className="text-xl font-bold">Đường dây nóng / Zalo</h3>
                 <p className="mt-3 text-[#5f6368] transition group-hover:text-white/75">
                   +84 901 234 567
                 </p>
@@ -394,9 +385,9 @@ const Policy = () => {
                 <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-black text-white transition group-hover:bg-white group-hover:text-black">
                   <MapPin className="h-8 w-8" />
                 </div>
-                <h3 className="text-xl font-bold">Return Warehouse</h3>
+                <h3 className="text-xl font-bold">Kho nhận hàng hoàn</h3>
                 <p className="mt-3 text-[#5f6368] transition group-hover:text-white/75">
-                  [Detailed address for returns]
+                  [Địa chỉ nhận hàng đổi trả]
                 </p>
               </div>
             </div>
@@ -406,10 +397,10 @@ const Policy = () => {
           <section className="mt-20 rounded-[36px] border border-black/10 bg-white p-8 shadow-[0_16px_40px_rgba(0,0,0,0.05)] sm:p-10">
             <div className="mb-10 text-center">
               <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#7a7a7a]">
-                Service promise
+                Cam kết dịch vụ
               </p>
               <h2 className="mt-3 text-3xl font-extrabold tracking-[-0.03em] sm:text-4xl">
-                Commitment & Right to Refuse
+                Cam kết và quyền từ chối
               </h2>
             </div>
 
@@ -420,10 +411,9 @@ const Policy = () => {
                     <CheckCircle2 className="h-5 w-5" />
                   </div>
                   <div>
-                    <h3 className="text-xl font-bold">Our Commitment</h3>
+                    <h3 className="text-xl font-bold">Cam kết của chúng tôi</h3>
                     <p className="mt-2 leading-8 text-[#5f6368] transition group-hover:text-white/75">
-                      We are committed to providing fast and reliable support upon
-                      receiving your inquiry.
+                      Chúng tôi cam kết hỗ trợ nhanh chóng và đáng tin cậy sau khi nhận được yêu cầu của bạn.
                     </p>
                   </div>
                 </div>
@@ -435,10 +425,9 @@ const Policy = () => {
                     <Shield className="h-5 w-5" />
                   </div>
                   <div>
-                    <h3 className="text-xl font-bold">Right to Refuse</h3>
+                    <h3 className="text-xl font-bold">Quyền từ chối</h3>
                     <p className="mt-2 leading-8 text-[#5f6368] transition group-hover:text-white/75">
-                      DTCLL SHOP reserves the right to reject returns that do not
-                      meet the mandatory conditions listed above.
+                      DTCLL SHOP có quyền từ chối các yêu cầu đổi trả không đáp ứng điều kiện bắt buộc nêu trên.
                     </p>
                   </div>
                 </div>
@@ -454,3 +443,7 @@ const Policy = () => {
 };
 
 export default Policy;
+
+
+
+

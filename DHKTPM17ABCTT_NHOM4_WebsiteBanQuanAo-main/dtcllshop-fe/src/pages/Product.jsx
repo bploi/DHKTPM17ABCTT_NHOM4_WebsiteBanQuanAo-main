@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+﻿import { useState, useEffect, useMemo } from "react";
 import { useLocation } from "react-router-dom";
 import {
   Search,
@@ -24,7 +24,7 @@ const Product = () => {
   const [priceRange, setPriceRange] = useState([0, 2000000]);
   const [showPriceRange, setShowPriceRange] = useState(false);
   const [sortBy, setSortBy] = useState("default");
-  const [viewMode, setViewMode] = useState("grid");
+  const [viewMode, setXemMode] = useState("grid");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = viewMode === "grid" ? 9 : 9;
 
@@ -146,11 +146,11 @@ const Product = () => {
   };
 
   const sortOptions = [
-    { value: "default", label: "Default Order" },
-    { value: "price-low", label: "Price: Low to High" },
-    { value: "price-high", label: "Price: High to Low" },
-    { value: "newest", label: "Newest First" },
-    { value: "bestselling", label: "Best Selling" },
+    { value: "default", label: "Sắp xếp mặc định" },
+    { value: "price-low", label: "Giá: thấp đến cao" },
+    { value: "price-high", label: "Giá: cao đến thấp" },
+    { value: "newest", label: "Mới nhất trước" },
+    { value: "bestselling", label: "Bán chạy nhất" },
   ];
 
   return (
@@ -161,15 +161,15 @@ const Product = () => {
             <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-end">
               <div>
                 <p className="inline-flex rounded-full border border-black/10 bg-white px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-black">
-                  DTCLL SHOP • CATALOG
+                  DTCLL SHOP • DANH MỤC
                 </p>
                 <h1 className="mt-5 text-4xl font-extrabold leading-[1.05] tracking-[-0.04em] sm:text-5xl lg:text-6xl">
-                  A Different Way
-                  <span className="block text-[#666]">To Browse Fashion</span>
+                  Khám phá thời trang
+                  <span className="block text-[#666]">theo cách riêng</span>
                 </h1>
                 <p className="mt-5 max-w-2xl text-base leading-8 text-[#5f6368] sm:text-lg">
-                  Explore our full collection with a cleaner browsing experience,
-                  sharper layout, and modern catalog presentation.
+                  Khám phá toàn bộ bộ sưu tập với trải nghiệm duyệt sản phẩm rõ ràng,
+                  bố cục gọn gàng và cách trình bày hiện đại.
                 </p>
               </div>
 
@@ -177,19 +177,19 @@ const Product = () => {
                 <div className="rounded-[24px] border border-black/10 bg-white p-5 text-center shadow-sm">
                   <div className="text-3xl font-bold">{products.length}+</div>
                   <div className="mt-1 text-[11px] uppercase tracking-[0.16em] text-[#7a7a7a]">
-                    Products
+                    Sản phẩm
                   </div>
                 </div>
                 <div className="rounded-[24px] border border-black/10 bg-white p-5 text-center shadow-sm">
                   <div className="text-3xl font-bold">{categories.length}</div>
                   <div className="mt-1 text-[11px] uppercase tracking-[0.16em] text-[#7a7a7a]">
-                    Categories
+                    Danh mục
                   </div>
                 </div>
                 <div className="rounded-[24px] border border-black/10 bg-white p-5 text-center shadow-sm">
                   <div className="text-3xl font-bold">100%</div>
                   <div className="mt-1 text-[11px] uppercase tracking-[0.16em] text-[#7a7a7a]">
-                    Quality
+                    Chất lượng
                   </div>
                 </div>
               </div>
@@ -209,7 +209,7 @@ const Product = () => {
                 />
                 <input
                     type="text"
-                    placeholder="Search in catalog..."
+                    placeholder="Tìm trong danh mục..."
                     className="w-full rounded-full border border-black/10 bg-[#fafafa] py-3 pl-11 pr-4 text-sm text-black outline-none transition focus:border-black"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
@@ -235,27 +235,27 @@ const Product = () => {
                 />
               </div>
 
-              {/* View mode */}
+              {/* Xem mode */}
               <div className="inline-flex w-fit rounded-full border border-black/10 bg-[#f5f5f5] p-1.5">
                 <button
-                    onClick={() => setViewMode("grid")}
+                    onClick={() => setXemMode("grid")}
                     className={`rounded-full px-4 py-2.5 transition ${
                         viewMode === "grid"
                             ? "bg-black text-white"
                             : "text-[#555] hover:bg-white"
                     }`}
-                    title="Grid View"
+                    title="Dạng lưới"
                 >
                   <Grid3x3 size={17} />
                 </button>
                 <button
-                    onClick={() => setViewMode("list")}
+                    onClick={() => setXemMode("list")}
                     className={`rounded-full px-4 py-2.5 transition ${
                         viewMode === "list"
                             ? "bg-black text-white"
                             : "text-[#555] hover:bg-white"
                     }`}
-                    title="List View"
+                    title="Dạng danh sách"
                 >
                   <List size={17} />
                 </button>
@@ -270,7 +270,7 @@ const Product = () => {
               <div className="rounded-[28px] border border-black/10 bg-white p-6 shadow-[0_10px_24px_rgba(0,0,0,0.04)]">
                 <h3 className="mb-5 flex items-center gap-2 text-lg font-bold text-black">
                   <Folder size={18} />
-                  Categories
+                  Danh mục
                 </h3>
 
                 <div className="flex flex-col gap-2">
@@ -282,7 +282,7 @@ const Product = () => {
                               : "bg-[#f5f5f5] text-[#333] hover:bg-[#ececec]"
                       }`}
                   >
-                    All Products
+                    Tất cả sản phẩm
                   </button>
 
                   {categories.map((category) => (
@@ -305,12 +305,12 @@ const Product = () => {
               <div className="rounded-[28px] border border-black/10 bg-white p-6 shadow-[0_10px_24px_rgba(0,0,0,0.04)]">
                 <h3 className="mb-5 flex items-center gap-2 text-lg font-bold text-black">
                   <DollarSign size={18} />
-                  Price Range
+                  Khoảng giá
                 </h3>
 
                 <div className="rounded-2xl bg-[#f5f5f5] p-4 text-center">
                   <div className="text-xs uppercase tracking-[0.16em] text-[#7a7a7a]">
-                    Selected Range
+                    Khoảng giá đã chọn
                   </div>
                   <div className="mt-2 text-sm font-bold text-black">
                     {formatPrice(priceRange[0])} - {formatPrice(priceRange[1])}
@@ -350,19 +350,19 @@ const Product = () => {
               <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                   <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#7a7a7a]">
-                    Catalog Result
+                    Kết quả sản phẩm
                   </p>
                   <p className="mt-2 text-sm font-medium text-[#4b5563]">
-                    Showing {(currentPage - 1) * itemsPerPage + 1} -{" "}
+                    Hiển thị {(currentPage - 1) * itemsPerPage + 1} -{" "}
                     {Math.min(currentPage * itemsPerPage, processedProducts.length)}{" "}
-                    of {processedProducts.length} products
+                    trên {processedProducts.length} sản phẩm
                   </p>
                 </div>
 
                 <div className="rounded-full border border-black/10 bg-white px-4 py-2 text-sm text-[#4b5563] shadow-sm">
-                  View Mode:{" "}
+                  Kiểu hiển thị:{" "}
                   <span className="font-semibold text-black">
-                  {viewMode === "grid" ? "Grid" : "List"}
+                  {viewMode === "grid" ? "Dạng lưới" : "Dạng danh sách"}
                 </span>
                 </div>
               </div>
@@ -447,17 +447,17 @@ const Product = () => {
                   </>
               )}
 
-              {/* Empty state */}
+              {/* Trống state */}
               {!loading && processedProducts.length === 0 && (
                   <div className="rounded-[32px] border border-dashed border-black/15 bg-white px-6 py-20 text-center shadow-sm">
                     <div className="mb-5 text-gray-400">
                       <Search size={56} className="mx-auto" />
                     </div>
                     <h3 className="text-3xl font-bold text-black">
-                      No products found
+                      Không tìm thấy sản phẩm
                     </h3>
                     <p className="mt-4 text-[#6b7280]">
-                      Try adjusting your filters or search terms.
+                      Thử thay đổi bộ lọc hoặc từ khóa tìm kiếm.
                     </p>
                   </div>
               )}
@@ -472,3 +472,5 @@ const Product = () => {
 };
 
 export default Product;
+
+

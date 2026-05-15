@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 import { Quote, MapPin } from "lucide-react";
 import ChatBot from "../components/ChatBot";
 import Contact from "../components/Contact";
@@ -18,49 +18,49 @@ const About = () => {
     const quotes = [
         {
             id: 1,
-            shortText: "We focus on high-quality products aligned with modern trends.",
+            shortText: "Chúng tôi tập trung vào sản phẩm chất lượng, hợp xu hướng.",
             fullText:
-                "We focus on high quality products that are in line with modern trends for potential and intelligent customers.",
+                "DTCLL SHOP chọn lọc sản phẩm chất lượng, hợp xu hướng và phù hợp với khách hàng trẻ yêu thời trang.",
         },
         {
             id: 2,
-            shortText: "We deliver trendy, refined, and modern everyday fashion.",
-            fullText: "We bring the most trendy, luxurious and fashionable.",
+            shortText: "Chúng tôi mang đến thời trang hằng ngày hiện đại và chỉn chu.",
+            fullText: "Chúng tôi hướng đến những thiết kế bắt mắt, tinh gọn và có tính ứng dụng cao.",
         },
         {
             id: 3,
-            shortText: "Fashion should naturally become part of daily life.",
+            shortText: "Thời trang nên trở thành một phần tự nhiên của đời sống.",
             fullText:
-                "Fashion is closely linked to life and life must have fashion as a highlight.",
+                "Mỗi sản phẩm đều được tạo ra để giúp phong cách cá nhân xuất hiện rõ hơn trong cuộc sống hằng ngày.",
         },
         {
             id: 4,
-            shortText: "Our mission is to help people express style with confidence.",
+            shortText: "Sứ mệnh của chúng tôi là giúp bạn tự tin thể hiện phong cách riêng.",
             fullText:
-                "Our mission is to empower you to 'live your truth' and define your own unique style through our creative and bold designs.",
+                "DTCLL SHOP đồng hành để bạn sống đúng cá tính và định hình phong cách riêng qua những lựa chọn sáng tạo.",
         },
     ];
 
     const timeline = [
         {
             year: "2020 - 2024",
-            title: "The Foundation",
-            desc: "Founded and developed by 5 passionate members who shared a vision of bringing quality fashion to Vietnamese youth.",
+            title: "Nền tảng",
+            desc: "Được xây dựng bởi 5 thành viên cùng chung định hướng mang thời trang chất lượng đến giới trẻ Việt Nam.",
         },
         {
-            year: "Early Vision",
+            year: "Định hướng ban đầu",
             title: "Basic & Classic",
-            desc: "Our initial direction focused on timeless basic and classic pieces, creating wardrobe essentials for everyday style.",
+            desc: "Định hướng ban đầu tập trung vào các sản phẩm basic và classic dễ mặc, dễ phối cho phong cách hằng ngày.",
         },
         {
-            year: "The Shift",
-            title: "Evolution & Adaptation",
-            desc: "Everything changed when fashion trends evolved rapidly. We adapted, transformed, and found our unique voice in the dynamic streetwear scene.",
+            year: "Chuyển mình",
+            title: "Thích nghi và phát triển",
+            desc: "Khi xu hướng thời trang thay đổi nhanh, DTCLL SHOP thích nghi, làm mới hình ảnh và tìm được bản sắc riêng.",
         },
         {
             year: "2025",
-            title: "Official Launch",
-            desc: "DTCLL SHOP officially launched with a cleaner visual identity, bringing modern style and a new shopping experience.",
+            title: "Ra mắt chính thức",
+            desc: "DTCLL SHOP chính thức ra mắt với nhận diện tinh gọn, phong cách hiện đại và trải nghiệm mua sắm mới.",
         },
     ];
 
@@ -71,37 +71,37 @@ const About = () => {
                 <section className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr_1fr] lg:items-stretch">
                     <div className="flex flex-col justify-center rounded-[36px] border border-black/10 bg-white p-8 shadow-[0_16px_40px_rgba(0,0,0,0.05)] sm:p-10">
                         <p className="inline-flex w-fit rounded-full border border-black/10 bg-[#f5f5f5] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#666]">
-                            DTCLL SHOP • BRAND MANIFESTO
+                            DTCLL SHOP • TUYÊN NGÔN THƯƠNG HIỆU
                         </p>
 
                         <h1 className="mt-6 text-4xl font-extrabold leading-[1.04] tracking-[-0.04em] sm:text-5xl lg:text-6xl">
-                            Built For
-                            <span className="block text-[#6a6a6a]">Modern Expression</span>
+                            Sinh ra cho
+                            <span className="block text-[#6a6a6a]">Cá tính hiện đại</span>
                         </h1>
 
                         <p className="mt-6 max-w-2xl text-base leading-8 text-[#5f6368] sm:text-lg">
-                            DTCLL SHOP is a modern fashion concept shaped around simplicity,
-                            individuality, and a cleaner sense of style. We believe daily
-                            fashion should feel effortless, confident, and visually refined.
+                            DTCLL SHOP là thương hiệu thời trang hiện đại được xây dựng quanh
+                            sự tối giản, cá tính riêng và cảm giác chỉn chu. Chúng tôi tin
+                            thời trang hằng ngày nên dễ mặc, tự tin và tinh tế.
                         </p>
 
                         <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3">
                             <div className="rounded-[24px] border border-black/10 bg-[#f7f7f7] p-4">
                                 <p className="text-2xl font-bold">2025</p>
                                 <p className="mt-1 text-[11px] uppercase tracking-[0.16em] text-[#7a7a7a]">
-                                    Launch
+                                    Ra mắt
                                 </p>
                             </div>
                             <div className="rounded-[24px] border border-black/10 bg-[#f7f7f7] p-4">
-                                <p className="text-2xl font-bold">Local</p>
+                                <p className="text-2xl font-bold">Việt Nam</p>
                                 <p className="mt-1 text-[11px] uppercase tracking-[0.16em] text-[#7a7a7a]">
-                                    Identity
+                                    Bản sắc
                                 </p>
                             </div>
                             <div className="rounded-[24px] border border-black/10 bg-[#f7f7f7] p-4 col-span-2 sm:col-span-1">
-                                <p className="text-2xl font-bold">Clean</p>
+                                <p className="text-2xl font-bold">Tối giản</p>
                                 <p className="mt-1 text-[11px] uppercase tracking-[0.16em] text-[#7a7a7a]">
-                                    Direction
+                                    Định hướng
                                 </p>
                             </div>
                         </div>
@@ -110,7 +110,7 @@ const About = () => {
                     <div className="overflow-hidden rounded-[36px] border border-black/10 bg-black shadow-[0_16px_40px_rgba(0,0,0,0.08)]">
                         <img
                             src={headerImage}
-                            alt="DTCLL Brand Hero"
+                            alt="Hình ảnh thương hiệu DTCLL"
                             className="h-full min-h-[360px] w-full object-cover opacity-90"
                         />
                     </div>
@@ -122,23 +122,23 @@ const About = () => {
                     <div className="self-start overflow-hidden rounded-[32px] border border-black/10 bg-white shadow-[0_14px_34px_rgba(0,0,0,0.05)]">                        <div className="relative">
                             <img
                                 src={mainImage}
-                                alt="Fashion inspiration"
+                                alt="Cảm hứng thời trang"
                                 className="h-[560px] w-full object-cover"
                             />
 
                             <div className="absolute left-5 top-5 rounded-full bg-black px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-white">
-                                Est 2025
+                                Từ 2025
                             </div>
 
                             <div className="absolute bottom-5 left-5 right-5 rounded-[24px] border border-black/10 bg-white/92 p-5 backdrop-blur-md">
                                 <p className="text-base font-semibold text-black sm:text-lg">
                                     <MapPin className="mr-2 inline h-5 w-5 text-black" />
-                                    Based in Viet Nam
+                                    Phát triển tại Việt Nam
                                 </p>
                                 <p className="mt-2 text-sm leading-7 text-[#5f6368]">
-                                    We are inspired by everyday life, clean aesthetics, and modern
-                                    youth culture — then transform those ideas into wearable
-                                    products.
+                                    Chúng tôi lấy cảm hứng từ đời sống hằng ngày, thẩm mỹ gọn
+                                    gàng và văn hóa trẻ hiện đại, rồi chuyển hóa thành sản phẩm
+                                    dễ mặc.
                                 </p>
                             </div>
                         </div>
@@ -148,16 +148,16 @@ const About = () => {
                     <div className="space-y-5">
                         <div className="rounded-[32px] border border-black/10 bg-white p-7 shadow-[0_14px_34px_rgba(0,0,0,0.05)]">
                             <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#7a7a7a]">
-                                Brand Overview
+                                Tổng quan thương hiệu
                             </p>
                             <h2 className="mt-4 text-3xl font-extrabold tracking-[-0.03em] sm:text-4xl">
-                                A Cleaner Brand Story
+                                Câu chuyện thương hiệu tinh gọn
                             </h2>
                             <p className="mt-4 text-base leading-8 text-[#5f6368]">
-                                Instead of following loud fashion formulas, DTCLL SHOP focuses
-                                on a minimal visual language and a more balanced shopping
-                                experience. Our direction is modern, local, and shaped by
-                                simplicity.
+                                Thay vì chạy theo những công thức thời trang ồn ào, DTCLL SHOP
+                                tập trung vào ngôn ngữ hình ảnh tối giản và trải nghiệm mua sắm
+                                cân bằng hơn. Định hướng của chúng tôi hiện đại, gần gũi và
+                                được tạo nên từ sự tinh gọn.
                             </p>
                         </div>
 
@@ -187,10 +187,10 @@ const About = () => {
                 <section className="mt-20">
                     <div className="mb-10 text-center">
                         <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#7a7a7a]">
-                            Timeline
+                            Dòng thời gian
                         </p>
                         <h2 className="mt-3 text-3xl font-extrabold tracking-[-0.03em] sm:text-4xl">
-                            Our Story
+                            Câu chuyện của chúng tôi
                         </h2>
                     </div>
 
@@ -220,18 +220,18 @@ const About = () => {
                 <section className="mt-20">
                     <div className="mb-10 text-center">
                         <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#7a7a7a]">
-                            Brand visual
+                            Hình ảnh thương hiệu
                         </p>
                         <h2 className="mt-3 text-3xl font-extrabold tracking-[-0.03em] sm:text-4xl">
-                            Store View
+                            Không gian cửa hàng
                         </h2>
                     </div>
 
                     <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
                         {[
-                            { src: image2, label: "Luxury" },
-                            { src: image3, label: "Trendy" },
-                            { src: image4, label: "Fashionable" },
+                            { src: image2, label: "Tinh tế" },
+                            { src: image3, label: "Hợp xu hướng" },
+                            { src: image4, label: "Thời trang" },
                         ].map((item, index) => (
                             <div
                                 key={index}
@@ -256,29 +256,29 @@ const About = () => {
                     <div className="rounded-[36px] border border-black/10 bg-white p-8 shadow-[0_16px_40px_rgba(0,0,0,0.05)] sm:p-12">
                         <div className="mx-auto max-w-4xl text-center">
                             <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#7a7a7a]">
-                                Brand statement
+                                Tuyên ngôn thương hiệu
                             </p>
 
                             <h2 className="mt-4 text-3xl font-extrabold tracking-[-0.03em] sm:text-4xl">
-                                Less Noise. More Style.
+                                Ít ồn ào. Nhiều phong cách.
                             </h2>
 
                             <p className="mt-5 text-base leading-8 text-[#5f6368] sm:text-lg">
-                                DTCLL SHOP follows a cleaner visual direction, focusing on
-                                simplicity, modern form, and a more refined everyday fashion
-                                experience.
+                                DTCLL SHOP theo đuổi định hướng hình ảnh tinh gọn, tập trung
+                                vào sự tối giản, phom dáng hiện đại và trải nghiệm thời trang
+                                hằng ngày chỉn chu hơn.
                             </p>
 
                             <div className="mt-10 rounded-[32px] bg-black px-6 py-12 text-white sm:px-12">
                                 <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-white/50">
-                                    Core line
+                                    Tinh thần cốt lõi
                                 </p>
 
                                 <p className="mt-6 text-3xl font-extrabold leading-tight tracking-[-0.03em] sm:text-5xl">
-                                    Less noise.
+                                    Ít ồn ào.
                                 </p>
                                 <p className="mt-2 text-3xl font-extrabold leading-tight tracking-[-0.03em] text-white/70 sm:text-5xl">
-                                    More style.
+                                    Nhiều phong cách.
                                 </p>
                             </div>
                         </div>
@@ -293,3 +293,4 @@ const About = () => {
 };
 
 export default About;
+

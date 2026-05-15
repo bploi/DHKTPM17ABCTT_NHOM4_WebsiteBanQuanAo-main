@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 import { Navigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode"; // npm install jwt-decode
 
@@ -10,7 +10,7 @@ const StaffRoute = ({ children }) => {
 
   // 1. No token → Redirect to login
   if (!token) {
-    alert("You must log in to access the staff area.");
+    alert("Bạn cần đăng nhập để truy cập khu vực nhân viên.");
     return <Navigate to="/login" replace />;
   }
 
@@ -32,7 +32,7 @@ const StaffRoute = ({ children }) => {
     );
 
     if (!isStaff) {
-      alert("You do not have permission to access this area. Staff only.");
+      alert("Bạn không có quyền truy cập khu vực này. Chỉ dành cho nhân viên.");
       return <Navigate to="/" replace />;
     }
 
@@ -40,10 +40,12 @@ const StaffRoute = ({ children }) => {
 
   } catch (error) {
     console.error("Invalid or expired token:", error);
-    alert("Your session is invalid or has expired. Please log in again.");
+    alert("Phiên đăng nhập không hợp lệ hoặc đã hết hạn. Vui lòng đăng nhập lại.");
     localStorage.removeItem("accessToken");
     return <Navigate to="/login" replace />;
   }
 };
 
 export default StaffRoute;
+
+

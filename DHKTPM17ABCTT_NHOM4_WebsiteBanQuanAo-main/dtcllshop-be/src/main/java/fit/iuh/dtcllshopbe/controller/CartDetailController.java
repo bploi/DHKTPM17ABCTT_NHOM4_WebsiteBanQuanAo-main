@@ -23,7 +23,7 @@ public class CartDetailController {
 
     @PostMapping("/add-to-cart")
     public CartDetailResponse addToCartDetail(@RequestBody CartDetailRequest cartDetailRequest){
-       return cartDetailService.addCartDetail(cartDetailRequest);
+        return cartDetailService.addCartDetail(cartDetailRequest);
     }
 
     @GetMapping("/cart/{cartId}")

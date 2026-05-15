@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { FaTrash } from "react-icons/fa";
 import { toast } from "sonner";
@@ -43,6 +43,13 @@ const calculateSummary = (items) => {
         minFreeShipping,
     };
 };
+
+const normalizeCartItem = (item) => ({
+    ...item,
+    selected: item.selected ?? item.isSelected ?? false,
+    subtotal: Number(item.subtotal || 0),
+    priceAtTime: Number(item.priceAtTime || 0),
+});
 
 const Cart = () => {
     const navigate = useNavigate();
@@ -123,7 +130,7 @@ const Cart = () => {
             const items = Array.isArray(data)
                 ? data
                 : data.result || data.cartDetails || [];
-            setCartItems(items);
+            setCartItems(items.map(normalizeCartItem));
         } catch (err) {
             console.error("Lỗi: ", err);
         }
@@ -267,7 +274,7 @@ const Cart = () => {
         }
     };
 
-    const handleDelete = async (cartDetailId, quantity, subtotal) => {
+    const handleDelete = async (cartDetailId) => {
         try {
             const token = localStorage.getItem("accessToken");
             const res = await fetch(
@@ -283,22 +290,7 @@ const Cart = () => {
 
             if (res.ok) {
                 setCartItems(cartItems.filter((item) => item.id !== cartDetailId));
-                const resCart = await fetch(
-                    `http://localhost:8080/carts/update/${cart.id}/delete`,
-                    {
-                        method: "PUT",
-                        headers: {
-                            "Content-Type": "application/json",
-                            Authorization: `Bearer ${token}`,
-                        },
-                        body: JSON.stringify({ price: subtotal, quantity: quantity }),
-                    }
-                );
-
-                const dataCart = await resCart.json();
-                if (resCart.ok) {
-                    window.dispatchEvent(new Event("cartUpdated"));
-                }
+                window.dispatchEvent(new Event("cartUpdated"));
             } else {
                 console.error("Delete failed:", res.statusText);
             }
@@ -334,15 +326,15 @@ const Cart = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
                     <div className="lg:col-span-2">
                         <div className="flex justify-between items-center mb-10">
-                            <h1 className="text-4xl font-bold text-gray-900">Cart</h1>
+                            <h1 className="text-4xl font-bold text-gray-900">Giỏ hàng</h1>
                             <span className="text-sm font-semibold text-gray-500 cursor-pointer hover:text-red-500">
-                🔍︎ Track Order
+                🔍︎ Theo dõi đơn hàng
               </span>
                         </div>
                         <div className="grid grid-cols-6 font-semibold border-b pb-3 text-gray-700 text-sm uppercase">
-                            <div className="col-span-3">Item</div>
-                            <div className="text-center">Quantity</div>
-                            <div className="text-right">Unit Price</div>
+                            <div className="col-span-3">Sản phẩm</div>
+                            <div className="text-center">Số lượng</div>
+                            <div className="text-right">Đơn giá</div>
                             <div className="text-center"></div>
                         </div>
                         {cartItems.length > 0 ? (
@@ -373,7 +365,7 @@ const Cart = () => {
                                                 {item.productName ? item.productName.split(",")[0] : ""}
                                             </div>
                                             <div className="text-gray-500 text-sm">
-                                                Size: {item.sizeName}
+                                                Kích cỡ: {item.sizeName}
                                             </div>
                                         </div>
                                     </div>
@@ -411,9 +403,7 @@ const Cart = () => {
                                     </div>
                                     <div className="text-center">
                                         <button
-                                            onClick={() =>
-                                                handleDelete(item.id, item.quantity, item.subtotal)
-                                            }
+                                            onClick={() => handleDelete(item.id)}
                                             className="text-gray-500 hover:text-red-500"
                                         >
                                             <FaTrash size={18} />
@@ -423,7 +413,7 @@ const Cart = () => {
                             ))
                         ) : (
                             <div className="text-center py-10 text-gray-500">
-                                Cart is empty.
+                                Giỏ hàng đang trống.
                             </div>
                         )}
 
@@ -432,51 +422,51 @@ const Cart = () => {
                                 onClick={() => navigate("/product")}
                                 className="px-6 py-3 border border-gray-300 text-gray-700 rounded-md transition font-semibold hover:bg-black hover:text-white"
                             >
-                                Continue Shopping
+                                Tiếp tục mua sắm
                             </button>
                         </div>
                     </div>
 
                     <div className="lg:col-span-1 border-t-4 border-red-500 p-6 rounded-lg bg-gray-50 shadow-md h-fit">
-                        <h2 className="text-3xl font-bold mb-6 text-red-500">Summary</h2>
+                        <h2 className="text-3xl font-bold mb-6 text-red-500">Tóm tắt</h2>
 
                         <div className="mb-6 pb-4 border-b">
                             <div className="flex">
                                 <input
                                     type="text"
-                                    placeholder="Discount Code"
+                                    placeholder="Mã giảm giá"
                                     className="flex-grow border border-gray-300 p-3 rounded-l focus:outline-none focus:ring-1 focus:ring-gray-400"
                                 />
                                 <button className="bg-black text-white px-4 py-3 rounded-r font-semibold hover:bg-gray-800 transition">
-                                    Apply
+                                    Áp dụng
                                 </button>
                             </div>
                         </div>
                         <div className="space-y-4 mb-6">
                             <div className="flex justify-between text-lg text-gray-800">
-                                <span>Subtotal:</span>
+                                <span>Tạm tính:</span>
                                 <span className="font-semibold">
                   {formatVND(summary.subtotal)}
                 </span>
                             </div>
                             <div className="flex justify-between text-gray-600">
-                                <span>Shipping fee:</span>
+                                <span>Phí vận chuyển:</span>
                                 <span>{summary.shippingText}</span>
                             </div>
                             <div className="flex justify-between text-gray-600">
-                                <span>Discount:</span>
+                                <span>Giảm giá:</span>
                                 <span>{formatVND(summary.discount)}</span>
                             </div>
                         </div>
                         <div className="flex justify-between font-bold text-xl border-t pt-4">
-                            <span>Total:</span>
+                            <span>Tổng cộng:</span>
                             <span className="text-red-500">{formatVND(summary.total)}</span>
                         </div>
                         <button
                             onClick={handleCheckout}
                             className="w-full mt-8 bg-black text-white py-3 rounded font-bold text-lg hover:bg-gray-800 transition shadow-lg"
                         >
-                            Proceed to Checkout
+                            Tiến hành thanh toán
                         </button>
                     </div>
                 </div>
@@ -488,3 +478,7 @@ const Cart = () => {
 };
 
 export default Cart;
+
+
+
+

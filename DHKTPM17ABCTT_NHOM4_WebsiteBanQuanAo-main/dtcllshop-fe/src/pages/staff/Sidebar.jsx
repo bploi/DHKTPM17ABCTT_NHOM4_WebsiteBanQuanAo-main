@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { FaBox, FaFileInvoice, FaSignOutAlt } from "react-icons/fa";
 
@@ -17,13 +17,13 @@ export default function StaffSidebar() {
       {/* Logo */}
       <div className="mb-8">
         <h1 className="text-2xl font-bold">
-          KH<span className="text-red-500">3</span>T Staff Panel
+          DTCLL Nhân viên
         </h1>
       </div>
 
       {/* Navigation */}
       <nav className="flex-1 space-y-2">
-        {/* Orders Link */}
+        {/* Order Link */}
         <Link
           to="/staff/orders"
           className={`flex items-center gap-3 px-4 py-3 rounded-lg transition ${
@@ -33,10 +33,10 @@ export default function StaffSidebar() {
           }`}
         >
           <FaBox size={18} />
-          <span>Orders</span>
+          <span>Đơn hàng</span>
         </Link>
         
-        {/* Invoices Link */}
+        {/* Invoice Link */}
         <Link
           to="/staff/invoices"
           className={`flex items-center gap-3 px-4 py-3 rounded-lg transition ${
@@ -46,18 +46,23 @@ export default function StaffSidebar() {
           }`}
         >
           <FaFileInvoice size={18} />
-          <span>Invoices</span>
+          <span>Hóa đơn</span>
         </Link>
       </nav>
 
-      {/* Logout */}
+      {/* Đăng xuất */}
       <button
         onClick={handleLogout}
         className="flex items-center gap-3 w-full px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800 transition"
       >
         <FaSignOutAlt size={18} />
-        <span>Logout</span>
+        <span>Đăng xuất</span>
       </button>
     </div>
   );
 }
+
+
+
+
+

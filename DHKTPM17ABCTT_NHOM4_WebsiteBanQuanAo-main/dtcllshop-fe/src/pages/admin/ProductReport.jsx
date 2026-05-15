@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import {BarChart,Bar,XAxis,YAxis,Tooltip,ResponsiveContainer,PieChart,Pie,Cell,LineChart,Line,} from "recharts";
 
 // Product Report Page with time filter, export CSV, and product selector for sales line chart
@@ -6,7 +6,7 @@ export default function ProductReport() {
   const [bestSeller, setBestSeller] = useState([]);
   const [inventory, setInventory] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
-  const [salesHistory, setSalesHistory] = useState([]);
+  const [salesHistory, setDoanh sốHistory] = useState([]);
 
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
@@ -62,14 +62,14 @@ export default function ProductReport() {
     }
   };
 
-  const loadSalesHistory = async (id, start = startDate, end = endDate) => {
-    if (!id) return setSalesHistory([]);
+  const loadDoanh sốHistory = async (id, start = startDate, end = endDate) => {
+    if (!id) return setDoanh sốHistory([]);
     try {
       const url = buildQuery(`http://localhost:8080/reports/products/${id}/sales`, { days: 30, start, end });
       const res = await fetch(url);
       if (!res.ok) throw new Error(`API lỗi: ${res.status}`);
       const data = await res.json();
-      setSalesHistory(data.result || data || []);
+      setDoanh sốHistory(data.result || data || []);
     } catch (e) {
       console.error(e);
     }
@@ -79,13 +79,13 @@ export default function ProductReport() {
     // reload best seller with date range
     loadBestSeller(startDate, endDate);
     // if a product is selected, reload its history
-    if (selectedProduct) loadSalesHistory(selectedProduct.productId, startDate, endDate);
+    if (selectedProduct) loadDoanh sốHistory(selectedProduct.productId, startDate, endDate);
   };
 
   const handleSelectProduct = (productId) => {
     const p = bestSeller.find((b) => b.productId === Number(productId));
     setSelectedProduct(p || null);
-    if (p) loadSalesHistory(p.productId, startDate, endDate);
+    if (p) loadDoanh sốHistory(p.productId, startDate, endDate);
   };
 
   const pieData = [
@@ -126,7 +126,7 @@ export default function ProductReport() {
     <div className="p-6 space-y-6">
       <h1 className="text-3xl font-bold text-gray-800">📊 Thống Kê Sản Phẩm</h1>
 
-      {/* Time Filters + Export */}
+      {/* Time Filters + ExportFile */}
       <div className="flex flex-wrap items-end gap-4 bg-white p-4 rounded shadow">
         <div>
           <label className="text-sm text-gray-600">Từ ngày</label>
@@ -231,7 +231,7 @@ export default function ProductReport() {
         </div>
       </div>
 
-      {/* Sales history chart */}
+      {/* Doanh số history chart */}
       {selectedProduct && (
         <div className="bg-white p-4 rounded shadow">
           <h2 className="font-bold mb-3">Biểu đồ doanh số: {selectedProduct.name}</h2>
@@ -252,3 +252,6 @@ export default function ProductReport() {
     </div>
   );
 }
+
+
+
