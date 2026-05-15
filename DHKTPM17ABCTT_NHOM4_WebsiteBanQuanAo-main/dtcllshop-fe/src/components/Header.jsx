@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import {
   Search,
@@ -66,6 +66,9 @@ export default function Header() {
       });
       const data = await res.json();
       setUser(data.result);
+      if (data.result?.id) {
+        localStorage.setItem("accountId", data.result.id);
+      }
     } catch (error) {
       console.error("Lỗi fetch user", error);
     }

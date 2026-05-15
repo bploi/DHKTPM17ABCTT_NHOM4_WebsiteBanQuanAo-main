@@ -1,4 +1,4 @@
-﻿// File: src/pages/Profile.jsx
+// File: src/pages/Profile.jsx
 
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
@@ -94,6 +94,170 @@ const isProfileChanged = (profile, initialProfile) => {
     );
 };
 
+// --- PROVINCES HOOK ---
+const useProvinces = () => {
+    const [provinces, setProvinces] = useState([]);
+    useEffect(() => {
+        fetch("https://provinces.open-api.vn/api/v2/?depth=2")
+            .then(r => r.json())
+            .then(d => setProvinces(Array.isArray(d) ? d : []))
+            .catch(() => setProvinces([]));
+    }, []);
+    return provinces;
+};
+
+// --- FORM THÊM ĐỊA CHỈ MỚI (có dropdown tỉnh/phường) ---
+const AddForm = ({ form, onChange, onProvinceChange, onSubmit, isLoading }) => {
+    const provinces = useProvinces();
+    const [wards, setWards] = useState([]);
+    const [selectedWard, setSelectedWard] = useState("");
+
+    const handleProvinceChange = (e) => {
+        const name = e.target.value;
+        onProvinceChange(name);
+        setSelectedWard("");
+        const found = provinces.find(p => p.name === name);
+        setWards(found?.wards || []);
+    };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        // Nếu chọn phường/xã, tự động ghép vào delivery_address
+        if (selectedWard && !form.delivery_address.includes(selectedWard)) {
+            onChange({ target: { name: "delivery_address", value: form.delivery_address + `, ${selectedWard}` } });
+        }
+        onSubmit(e);
+    };
+
+    return (
+        <form onSubmit={handleSubmit} className="mt-4 bg-red-50 rounded-lg p-4 space-y-3">
+            <h4 className="font-bold text-red-700">Thêm địa chỉ mới</h4>
+            <input
+                name="delivery_address"
+                value={form.delivery_address}
+                onChange={onChange}
+                placeholder="Số nhà, tên đường..."
+                required
+                className="w-full p-2 border border-gray-300 rounded"
+            />
+            <div className="grid grid-cols-2 gap-2">
+                <select
+                    value={form.province}
+                    onChange={handleProvinceChange}
+                    required
+                    className="p-2 border border-gray-300 rounded"
+                >
+                    <option value="">-- Chọn tỉnh/thành --</option>
+                    {provinces.map(p => (
+                        <option key={p.code} value={p.name}>{p.name}</option>
+                    ))}
+                </select>
+                <select
+                    value={selectedWard}
+                    onChange={(e) => setSelectedWard(e.target.value)}
+                    disabled={!form.province || wards.length === 0}
+                    className="p-2 border border-gray-300 rounded disabled:bg-gray-100"
+                >
+                    <option value="">-- Phường/Xã (tuỳ chọn) --</option>
+                    {wards.map(w => (
+                        <option key={w.code} value={w.name}>{w.name}</option>
+                    ))}
+                </select>
+            </div>
+            <input
+                name="delivery_note"
+                value={form.delivery_note}
+                onChange={onChange}
+                placeholder="Ghi chú giao hàng (không bắt buộc)"
+                className="w-full p-2 border border-gray-300 rounded"
+            />
+            <button type="submit" disabled={isLoading}
+                className="w-full bg-red-600 text-white p-2 rounded font-semibold hover:bg-red-700 disabled:opacity-50">
+                {isLoading ? "Đang lưu..." : "Lưu địa chỉ"}
+            </button>
+        </form>
+    );
+};
+
+// --- FORM SỬA ĐỊA CHỈ (có dropdown tỉnh/phường) ---
+const EditForm = ({ form, onChange, onProvinceChange, onSubmit, onCancel, isLoading }) => {
+    const provinces = useProvinces();
+    const [wards, setWards] = useState([]);
+
+    useEffect(() => {
+        if (form.province && provinces.length > 0) {
+            const found = provinces.find(p => p.name === form.province);
+            setWards(found?.wards || []);
+        }
+    }, [form.province, provinces]);
+
+    const handleProvinceChange = (e) => {
+        const name = e.target.value;
+        onProvinceChange(name);
+        const found = provinces.find(p => p.name === name);
+        setWards(found?.wards || []);
+    };
+
+    return (
+        <form onSubmit={onSubmit} className="bg-red-100 rounded-lg p-4 border-2 border-red-500 space-y-2">
+            <h4 className="font-bold text-red-700">Sửa địa chỉ</h4>
+            <input
+                name="delivery_address"
+                value={form.delivery_address}
+                onChange={onChange}
+                placeholder="Số nhà, tên đường..."
+                required
+                className="w-full p-2 border border-red-300 rounded"
+            />
+            <div className="grid grid-cols-2 gap-2">
+                <select
+                    value={form.province}
+                    onChange={handleProvinceChange}
+                    required
+                    className="p-2 border border-red-300 rounded"
+                >
+                    <option value="">-- Chọn tỉnh/thành --</option>
+                    {provinces.map(p => (
+                        <option key={p.code} value={p.name}>{p.name}</option>
+                    ))}
+                </select>
+                <select
+                    disabled={wards.length === 0}
+                    className="p-2 border border-red-300 rounded disabled:bg-gray-100"
+                    onChange={(e) => {
+                        const w = e.target.value;
+                        if (w && !form.delivery_address.includes(w)) {
+                            onChange({ target: { name: "delivery_address", value: form.delivery_address + `, ${w}` } });
+                        }
+                    }}
+                >
+                    <option value="">-- Phường/Xã (tuỳ chọn) --</option>
+                    {wards.map(w => (
+                        <option key={w.code} value={w.name}>{w.name}</option>
+                    ))}
+                </select>
+            </div>
+            <input
+                name="delivery_note"
+                value={form.delivery_note}
+                onChange={onChange}
+                placeholder="Ghi chú giao hàng..."
+                className="w-full p-2 border border-red-300 rounded"
+            />
+            <div className="flex gap-2 pt-1">
+                <button type="submit" disabled={isLoading}
+                    className="flex-1 bg-red-600 text-white p-2 rounded hover:bg-red-700 disabled:opacity-50">
+                    {isLoading ? "Đang cập nhật..." : "Lưu thay đổi"}
+                </button>
+                <button type="button" onClick={onCancel}
+                    className="bg-gray-300 text-gray-800 p-2 rounded hover:bg-gray-400">
+                    Hủy
+                </button>
+            </div>
+        </form>
+    );
+};
+
 // --- ADDRESS SECTION ---
 const AddressSection = ({ accountId, isCustomerProfile }) => {
     const [addresses, setAddresses] = useState([]);
@@ -120,7 +284,7 @@ const AddressSection = ({ accountId, isCustomerProfile }) => {
     });
 
     const fetchAddresses = async () => {
-        if (!accountId) return;
+        if (!accountId || accountId <= 0) return;
 
         setAddressLoading(true);
         try {
@@ -292,60 +456,14 @@ const AddressSection = ({ accountId, isCustomerProfile }) => {
                         <div key={addr.id}>
                             {editingAddress === addr.id ? (
                                 // --- FORM EDIT ---
-                                <form
+                                <EditForm
+                                    form={editForm}
+                                    onChange={handleEditFormChange}
+                                    onProvinceChange={(val) => setEditForm(prev => ({ ...prev, province: val }))}
                                     onSubmit={handleEditAddress}
-                                    className="bg-red-100 rounded-lg p-4 border-2 border-red-500"
-                                >
-                                    <h4 className="font-bold mb-3 text-red-700">
-                                        Sửa địa chỉ
-                                    </h4>
-
-                                    <input
-                                        name="delivery_address"
-                                        value={editForm.delivery_address}
-                                        onChange={handleEditFormChange}
-                                        placeholder="Địa chỉ, đường, số nhà..."
-                                        required
-                                        className="w-full p-2 mb-2 border border-red-300 rounded"
-                                    />
-
-                                    <input
-                                        name="province"
-                                        value={editForm.province}
-                                        onChange={handleEditFormChange}
-                                        placeholder="Tỉnh/Thành phố"
-                                        required
-                                        className="w-full p-2 mb-2 border border-red-300 rounded"
-                                    />
-
-                                    <input
-                                        name="delivery_note"
-                                        value={editForm.delivery_note}
-                                        onChange={handleEditFormChange}
-                                        placeholder="Ghi chú giao hàng..."
-                                        className="w-full p-2 mb-3 border border-red-300 rounded"
-                                    />
-
-                                    <div className="flex gap-2">
-                                        <button
-                                            type="submit"
-                                            disabled={isAddressLoading(editForm.id)}
-                                            className="flex-1 bg-red-600 text-white p-2 rounded hover:bg-red-700 disabled:opacity-50"
-                                        >
-                                            {isAddressLoading(editForm.id)
-                                                ? "Đang cập nhật..."
-                                                : "Lưu thay đổi"}
-                                        </button>
-
-                                        <button
-                                            type="button"
-                                            onClick={handleCancelEdit}
-                                            className="bg-gray-300 text-gray-800 p-2 rounded hover:bg-gray-400"
-                                        >
-                                            Hủy
-                                        </button>
-                                    </div>
-                                </form>
+                                    onCancel={handleCancelEdit}
+                                    isLoading={isAddressLoading(editForm.id)}
+                                />
                             ) : (
                                 // --- CARD ADDRESS ---
                                 <div className="bg-gray-50 rounded-lg p-4 hover:shadow-md flex justify-between">
@@ -392,46 +510,13 @@ const AddressSection = ({ accountId, isCustomerProfile }) => {
 
             {/* ADD FORM */}
             {showAddForm && (
-                <form
+                <AddForm
+                    form={newAddress}
+                    onChange={handleNewAddressChange}
+                    onProvinceChange={(val) => setNewAddress(prev => ({ ...prev, province: val }))}
                     onSubmit={handleAddAddress}
-                    className="mt-6 bg-red-50 rounded-lg p-4"
-                >
-                    <h4 className="font-bold mb-3 text-red-700">Thêm địa chỉ mới</h4>
-
-                    <input
-                        name="delivery_address"
-                        value={newAddress.delivery_address}
-                        onChange={handleNewAddressChange}
-                        placeholder="Địa chỉ, đường, số nhà..."
-                        required
-                        className="w-full p-3 mb-3 border border-gray-300 rounded"
-                    />
-
-
-                    <input
-                        name="province"
-                        value={newAddress.province}
-                        onChange={handleNewAddressChange}
-                        placeholder="Tỉnh/Thành phố"
-                        required
-                        className="w-full p-3 mb-3 border border-gray-300 rounded"
-                    />
-
-                    <input
-                        name="delivery_note"
-                        value={newAddress.delivery_note}
-                        onChange={handleNewAddressChange}
-                        placeholder="Ghi chú giao hàng"
-                        className="w-full p-3 mb-4 border border-gray-300 rounded"
-                    />
-
-                    <button
-                        disabled={isAddressLoading("ADD_NEW")}
-                        className="w-full bg-red-600 text-white p-3 rounded font-semibold hover:bg-red-700 disabled:opacity-50"
-                    >
-                        {isAddressLoading("ADD_NEW") ? "Đang lưu..." : "Lưu địa chỉ"}
-                    </button>
-                </form>
+                    isLoading={isAddressLoading("ADD_NEW")}
+                />
             )}
         </div>
     );
@@ -695,7 +780,10 @@ const Profile = () => {
                         </div>
                     </form>
 
-                    <AddressSection accountId={formData.accountId} isCustomerProfile={true} />
+                    <AddressSection
+                        accountId={formData.accountId > 0 ? formData.accountId : parseInt(localStorage.getItem("accountId") || "0")}
+                        isCustomerProfile={true}
+                    />
                 </div>
             </div>
             <ChatBot/>

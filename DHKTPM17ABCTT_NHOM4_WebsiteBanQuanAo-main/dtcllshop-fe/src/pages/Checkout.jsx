@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 import { toast } from "sonner";
 
@@ -105,6 +105,7 @@ const Checkout = () => {
   const location = useLocation();
 
   const userId = location.state?.userId || localStorage.getItem("userId");
+  const accountId = location.state?.userId || localStorage.getItem("accountId") || localStorage.getItem("userId");
   const product = location.state?.product || null;
   const quantity = location.state?.quantity || 1;
   const selectedCartItems = Array.isArray(location.state?.select)
@@ -147,11 +148,11 @@ const Checkout = () => {
 
   const fetchAddresses = async () => {
     try {
-      if (!userId) return;
+      if (!accountId) return;
 
       const token = localStorage.getItem("accessToken");
 
-      const res = await fetch(`http://localhost:8080/addresses/${userId}`, {
+      const res = await fetch(`http://localhost:8080/addresses/${accountId}`, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -170,7 +171,7 @@ const Checkout = () => {
 
   useEffect(() => {
     fetchAddresses();
-  }, [userId]);
+  }, [accountId]);
 
   useEffect(() => {
     const handleFetchCustomer = async () => {
@@ -290,7 +291,7 @@ const Checkout = () => {
           : formAddress.delivery_address;
 
       const requestBody = {
-        accountId: Number(userId),
+        accountId: Number(accountId),
         province: selectedProvince,
         deliveryAddress: finalDeliveryAddress,
         deliveryNote: formAddress.delivery_note,
@@ -314,13 +315,10 @@ const Checkout = () => {
 
       const savedAddress = await res.json().catch(() => null);
 
-      const addressForDropdown = savedAddress || {
-        province: selectedProvince,
-        deliveryAddress: finalDeliveryAddress,
-        deliveryNote: formAddress.delivery_note,
-      };
+      toast.success("Thêm địa chỉ thành công!");
 
-      setAddresses((prev) => [...prev, addressForDropdown]);
+      // Re-fetch from server to stay in sync with Profile page
+      await fetchAddresses();
 
       setForm((prev) => ({
         ...prev,
@@ -328,8 +326,6 @@ const Checkout = () => {
         province: selectedProvince,
         note: formAddress.delivery_note || "",
       }));
-
-      toast.success("Thêm địa chỉ thành công!");
 
       setIsAddAddress(false);
       setSelectedProvince("");

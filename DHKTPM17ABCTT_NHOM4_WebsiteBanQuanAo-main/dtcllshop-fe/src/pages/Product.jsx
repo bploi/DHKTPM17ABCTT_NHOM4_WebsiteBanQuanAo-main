@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useLocation } from "react-router-dom";
 import {
   Search,
@@ -109,25 +109,27 @@ const Product = () => {
     }
 
     filtered = filtered.filter(
-        (p) => p.price >= priceRange[0] && p.price <= priceRange[1]
+        (p) => p.costPrice >= priceRange[0] && p.costPrice <= priceRange[1]
     );
 
-    switch (sortBy) {
-      case "price-low":
-        filtered.sort((a, b) => a.price - b.price);
-        break;
-      case "price-high":
-        filtered.sort((a, b) => b.price - a.price);
-        break;
-      case "newest":
-        filtered.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
-        break;
-      case "bestselling":
-        filtered.sort((a, b) => (b.soldQuantity || 0) - (a.soldQuantity || 0));
-        break;
-      default:
-        break;
-    }
+    filtered.sort((a, b) => {
+      const stockA = a.quantity > 0 ? 0 : 1;
+      const stockB = b.quantity > 0 ? 0 : 1;
+      if (stockA !== stockB) return stockA - stockB;
+
+      switch (sortBy) {
+        case "price-low":
+          return a.costPrice - b.costPrice;
+        case "price-high":
+          return b.costPrice - a.costPrice;
+        case "newest":
+          return new Date(b.updatedAt) - new Date(a.updatedAt);
+        case "bestselling":
+          return (b.soldQuantity || 0) - (a.soldQuantity || 0);
+        default:
+          return 0;
+      }
+    });
 
     return filtered;
   }, [products, searchTerm, selectedCategory, priceRange, sortBy]);
