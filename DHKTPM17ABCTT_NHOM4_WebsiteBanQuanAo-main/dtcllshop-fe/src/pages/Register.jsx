@@ -1,4 +1,4 @@
-﻿import React, { useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { ArrowRight, Calendar, Lock, Mail, Phone, User } from "lucide-react";
@@ -137,13 +137,21 @@ const Register = () => {
       if (response.ok) {
         const result = await response.json();
         console.log("Tạo tài khoản thành công", result);
-        toast.success("Đăng ký thành công");
+        toast.success("Đăng ký thành công! Chuyển đến trang đăng nhập...");
+        setTimeout(() => {
+          navigate("/login");
+        }, 1500);
       } else {
         const errorData = await response.json();
         console.error("Lỗi tạo tài khoản:", errorData);
-        toast.error(
-            `Đăng ký thất bại: ${errorData.message || "Vui lòng thử lại."}`
-        );
+        // Kiểm tra lỗi username/email trùng từ backend
+        if (errorData.code === 1001 || errorData.message === "User already exists") {
+          toast.error("Tên đăng nhập hoặc email đã tồn tại. Vui lòng dùng thông tin khác.");
+        } else {
+          toast.error(
+              `Đăng ký thất bại: ${errorData.message || "Vui lòng thử lại."}`
+          );
+        }
       }
     } catch (error) {
       console.error("Lỗi mạng hoặc lỗi không xác định:", error);

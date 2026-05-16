@@ -35,4 +35,16 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
 
     List<Order> findByAccount(Account account);
 
+    // ── Dùng cho ChatController: load kèm orderDetails và invoice để tránh LazyInit ──
+    @Query("""
+        SELECT DISTINCT o FROM Order o
+        LEFT JOIN FETCH o.orderDetails od
+        LEFT JOIN FETCH o.invoice
+        LEFT JOIN FETCH o.customerTrading
+        WHERE o.account = :account
+        ORDER BY o.orderDate DESC
+    """)
+    List<Order> findByAccountWithDetails(@Param("account") Account account);
+
 }
+

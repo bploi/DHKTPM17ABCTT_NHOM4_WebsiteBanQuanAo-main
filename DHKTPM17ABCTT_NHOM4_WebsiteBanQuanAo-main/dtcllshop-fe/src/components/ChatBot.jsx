@@ -1,4 +1,4 @@
-﻿// src/components/ChatBot.jsx
+// src/components/ChatBot.jsx
 import { useState, useEffect, useRef } from "react";
 
 const ChatBot = () => {
@@ -46,7 +46,7 @@ const ChatBot = () => {
   // ====================================================================
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoXem({ behavior: "smooth" });
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   useEffect(() => {
