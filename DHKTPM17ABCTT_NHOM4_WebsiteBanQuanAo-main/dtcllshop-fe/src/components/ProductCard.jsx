@@ -47,13 +47,19 @@ const ProductCard = ({
   };
 
   const checkWishlistStatus = async () => {
+    if (!localStorage.getItem("accessToken")) {
+      setIsInAnyWishlist(false);
+      setLoadingStatus(false);
+      return;
+    }
+
     try {
       setLoadingStatus(true);
       const data = await api.get(
         `/wishlists/products/${product.id}/in-wishlist`
       );
       setIsInAnyWishlist(data.result === true);
-    } catch (err) {
+    } catch {
       setIsInAnyWishlist(false);
     } finally {
       setLoadingStatus(false);

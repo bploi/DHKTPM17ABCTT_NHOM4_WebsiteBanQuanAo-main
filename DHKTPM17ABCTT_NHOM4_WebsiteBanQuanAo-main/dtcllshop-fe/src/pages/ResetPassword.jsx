@@ -9,8 +9,6 @@ const ResetPassword = () => {
 
     useEffect(() => {
         const token = sessionStorage.getItem("resetToken");
-        const otp = sessionStorage.getItem("otp");
-
         if (!token) {
             alert("Vui lòng thực hiện yêu cầu quên mật khẩu trước!");
             navigate("/forget_password");

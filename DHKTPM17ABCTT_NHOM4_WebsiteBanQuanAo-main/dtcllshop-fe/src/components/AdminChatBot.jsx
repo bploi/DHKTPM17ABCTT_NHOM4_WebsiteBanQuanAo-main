@@ -9,7 +9,7 @@ const AdminChatBot = () => {
   const messagesEndRef = useRef(null);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoXem({ behavior: "smooth" });
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   useEffect(() => {
@@ -70,7 +70,7 @@ useEffect(() => {
         sender: "bot",
         text: reply || "Em đang phân tích dữ liệu giúp sếp..."
       }]);
-    } catch (err) {
+    } catch {
       setMessages(prev => [...prev, {
         sender: "bot",
         text: "Lỗi kết nối rồi sếp ơi, em đang thử lại..."

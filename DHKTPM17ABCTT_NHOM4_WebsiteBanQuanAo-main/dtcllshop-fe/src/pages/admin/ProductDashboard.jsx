@@ -1,5 +1,4 @@
 ﻿import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import {
   Package, AlertTriangle, TrendingUp, Download,
   Calendar, ChevronRight, Star, Sparkles, CheckCircle,
@@ -21,7 +20,6 @@ const satisfactionData = [
 const COLORS = ['#4f46e5', '#06b6d4', '#f59e0b', '#ec4899', '#8b5cf6'];
 
 const ProductDashboard = ({ onNavigate }) => {
-  const navigate = useNavigate();
   const token = localStorage.getItem("accessToken");
 
   // --- STATE ---
@@ -98,7 +96,7 @@ const ProductDashboard = ({ onNavigate }) => {
       const res = await fetch(`http://localhost:8080/products/top-trending?type=${type}`);
       const data = await res.json();
       setTopProducts(data);
-    } catch (error) {
+    } catch {
       setTopProducts([]); // Fallback empty
     }
   };
@@ -114,7 +112,7 @@ const ProductDashboard = ({ onNavigate }) => {
         if (item.id === "lowstock") return { ...item, value: data.result?.lowStock || 0 };
         return item;
       }));
-    } catch (error) {
+    } catch {
         // Silent fail or default values
     }
   };

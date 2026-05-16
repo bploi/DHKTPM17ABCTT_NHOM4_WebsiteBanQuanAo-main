@@ -18,6 +18,7 @@ public enum ErrorCode {
     Password_Failed(1004, "Password failed", HttpStatus.BAD_REQUEST),
     User_Not_Authorized(1007, "User not authorized", HttpStatus.UNAUTHORIZED),
     INVALID_TOKEN(1008,"Toke is not available" , HttpStatus.BAD_REQUEST),
+    EMAIL_SEND_FAILED(1009, "Không gửi được mã xác minh qua email. Vui lòng kiểm tra cấu hình Gmail SMTP/app password.", HttpStatus.SERVICE_UNAVAILABLE),
     CUSTOMER_NOT_FOUND(2001, "Customer not found", HttpStatus.NOT_FOUND),
     CATEGORY_NOT_FOUND(3001, "Category not found", HttpStatus.NOT_FOUND),
     PRODUCT_NOT_FOUND(3000,"Product not found" , HttpStatus.NOT_FOUND),

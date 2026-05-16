@@ -122,7 +122,6 @@ const Cart = () => {
                 }
             );
             const data = await res.json();
-            const newCartItems = [];
             for (const cd of data) {
                 console.log(cd);
             }
@@ -202,7 +201,7 @@ const Cart = () => {
                 }
             );
 
-            const dataCart = await resCart.json();
+            await resCart.json().catch(() => null);
             if (resCart.ok) {
                 window.dispatchEvent(new Event("cartUpdated"));
             }
@@ -241,7 +240,7 @@ const Cart = () => {
                     }
                 );
 
-                const dataCart = await resCart.json();
+                await resCart.json().catch(() => null);
                 if (resCart.ok) {
                     window.dispatchEvent(new Event("cartUpdated"));
                 }
@@ -264,7 +263,7 @@ const Cart = () => {
                 }
             );
 
-            const dataCart = await resCart.json();
+            await resCart.json().catch(() => null);
             if (resCart.ok) {
                 window.dispatchEvent(new Event("cartUpdated"));
             }

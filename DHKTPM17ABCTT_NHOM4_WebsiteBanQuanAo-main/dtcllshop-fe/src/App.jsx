@@ -107,7 +107,7 @@ const SmartRedirect = () => {
       const role = decoded.scope || decoded.role || decoded.authorities?.[0];
       if (role === "ADMIN") return <Navigate to="/admin" replace />;
       if (role === "STAFF") return <Navigate to="/staff/orders" replace />;
-    } catch (e) {
+    } catch {
       // token lỗi → xóa luôn
       localStorage.removeItem("accessToken");
     }

@@ -103,7 +103,7 @@ export default function WishlistDetail() {
       setProducts(prev => prev.filter(p => p.id !== productToDelete.id));
       toast.success(`Đã xóa "${productToDelete.name}" khỏi danh sách yêu thích`);
       closeDeleteModal();
-    } catch (err) {
+    } catch {
       toast.error("Xóa sản phẩm thất bại");
     }
   };

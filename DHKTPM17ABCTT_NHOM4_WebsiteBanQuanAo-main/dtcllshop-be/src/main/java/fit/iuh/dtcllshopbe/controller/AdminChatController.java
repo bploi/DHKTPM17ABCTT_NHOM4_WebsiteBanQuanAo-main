@@ -92,8 +92,8 @@ public class AdminChatController {
 
         try {
             String reply = geminiService.generateText(finalPrompt);
-            String botReply = reply == null || reply.trim().isEmpty()
-                    ? "Em đang tính toán giúp sếp..."
+            String botReply = isGeminiUnavailable(reply)
+                    ? "Em chưa kết nối được Gemini, nên trả sếp thống kê nội bộ trước:\n" + stats
                     : reply.trim();
 
             // Lưu tin nhắn bot
@@ -112,6 +112,15 @@ public class AdminChatController {
         while (deque.size() > max) {
             deque.removeLast();
         }
+    }
+
+    private boolean isGeminiUnavailable(String reply) {
+        if (reply == null || reply.trim().isEmpty()) return true;
+        String normalized = reply.trim();
+        return normalized.startsWith("Gemini API error:")
+                || normalized.startsWith("Error calling Gemini API:")
+                || normalized.startsWith("Gemini API response is empty")
+                || normalized.startsWith("No candidates returned");
     }
 
     // ======== Chức năng cũ ========

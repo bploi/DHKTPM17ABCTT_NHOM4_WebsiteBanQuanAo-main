@@ -75,7 +75,7 @@ export default function WishlistSelectorModal({ productId, isOpen, onClose, onSu
           })
         );
         setWishlist(updated);
-      } catch (err) {
+      } catch {
         toast.error("Không thể tải danh sách yêu thích");
       } finally {
         setLoading(false);
@@ -130,6 +130,7 @@ export default function WishlistSelectorModal({ productId, isOpen, onClose, onSu
       });
 
       const newWishlist = data.result;
+      await api.post(`/wishlists/${newWishlist.id}/items`, { productId });
       setWishlist(prev => [...prev, { ...newWishlist, hasProduct: true }]);
       toast.success(`Đã tạo "${newWishlist.name}" và lưu sản phẩm vào danh sách yêu thích`);
 

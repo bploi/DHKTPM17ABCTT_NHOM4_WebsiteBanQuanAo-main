@@ -16,15 +16,49 @@ const Order = () => {
   const [activeTab, setActiveTab] = useState("all");
   const [orders, setOrder] = useState([]);
   const [loading, setLoading] = useState(true);
-  const userId = localStorage.getItem("userId");
   const navigate = useNavigate();
+
+  const resolveUserId = async () => {
+    const storedUserId =
+      localStorage.getItem("userId") || localStorage.getItem("accountId");
+
+    if (storedUserId) return storedUserId;
+
+    const token = localStorage.getItem("accessToken");
+    if (!token) return null;
+
+    const res = await fetch("http://localhost:8080/accounts/myinfor", {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!res.ok) return null;
+
+    const data = await res.json();
+    const accountId = data.result?.id;
+
+    if (accountId) {
+      localStorage.setItem("userId", accountId);
+      localStorage.setItem("accountId", accountId);
+    }
+
+    return accountId;
+  };
 
   const fetchOrder = async () => {
     try {
       const token = localStorage.getItem("accessToken");
+      const accountId = await resolveUserId();
+
+      if (!accountId) {
+        setOrder([]);
+        return;
+      }
 
       const res = await fetch(
-        `http://localhost:8080/orders/account/${userId}`,
+        `http://localhost:8080/orders/account/${accountId}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -158,7 +192,7 @@ const Order = () => {
                   await fetchOrder();
 
                   toast.success("Hủy đơn hàng thành công!!!");
-                } catch (error) {
+                } catch {
                   toast.error("Lỗi khi hủy đơn hàng!");
                 }
               }}

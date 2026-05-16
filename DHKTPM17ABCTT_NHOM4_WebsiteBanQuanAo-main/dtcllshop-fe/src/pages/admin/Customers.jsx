@@ -24,7 +24,6 @@ const roleText = (role) =>
   }[role] || role || "Chưa có");
 export default function Customers() {
   const [accounts, setAccounts] = useState([]);
-  const [selectedAccount, setSelectedAccount] = useState(null);
   const [selectedCustomer, setSelectedCustomer] = useState(null);
   const [showDetail, setShowDetail] = useState(false);
   const [searchName, setSearchName] = useState("");

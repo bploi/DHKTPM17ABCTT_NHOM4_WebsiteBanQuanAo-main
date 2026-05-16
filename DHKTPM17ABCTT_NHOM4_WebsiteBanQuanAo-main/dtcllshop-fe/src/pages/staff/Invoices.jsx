@@ -97,11 +97,10 @@ export default function Invoice() {
       }
     });
 
-  // Xem invoice details
-  //   const handleXemDetails = (invoice) => {
-  //     setSelectedInvoice(invoice);
-  //     setShowDetailModal(true);
-  //   };
+  const handleViewDetails = (invoice) => {
+    setSelectedInvoice(invoice);
+    setShowDetailModal(true);
+  };
 
   // Get payment status badge color
   // Get payment status badge color
@@ -271,9 +270,9 @@ export default function Invoice() {
                           TỔNG TIỀN {getSortIcon("amount")}
                         </div>
                       </th>
-                      {/* <th className="px-6 py-5 text-center text-base font-bold tracking-wide">
+                      <th className="px-6 py-5 text-center text-base font-bold tracking-wide">
                         VIEW
-                      </th> */}
+                      </th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200">
@@ -309,17 +308,17 @@ export default function Invoice() {
                         <td className="px-6 py-5 text-base font-bold text-red-600">
                           {formatPrice(invoice.totalAmount || 0)}
                         </td>
-                        {/* <td className="px-6 py-5">
+                        <td className="px-6 py-5">
                           <div className="flex justify-center">
                             <button
-                              onClick={() => handleXemDetails(invoice)}
+                              onClick={() => handleViewDetails(invoice)}
                               className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 font-semibold transition-all shadow-sm text-sm"
                             >
                               <FaEye size={16} />
                               <span>Xem</span>
                             </button>
                           </div>
-                        </td> */}
+                        </td>
                       </tr>
                     ))}
                   </tbody>

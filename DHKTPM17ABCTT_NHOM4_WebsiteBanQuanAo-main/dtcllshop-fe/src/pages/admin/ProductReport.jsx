@@ -6,7 +6,7 @@ export default function ProductReport() {
   const [bestSeller, setBestSeller] = useState([]);
   const [inventory, setInventory] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
-  const [salesHistory, setDoanh sốHistory] = useState([]);
+  const [salesHistory, setSalesHistory] = useState([]);
 
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
@@ -62,14 +62,14 @@ export default function ProductReport() {
     }
   };
 
-  const loadDoanh sốHistory = async (id, start = startDate, end = endDate) => {
-    if (!id) return setDoanh sốHistory([]);
+  const loadSalesHistory = async (id, start = startDate, end = endDate) => {
+    if (!id) return setSalesHistory([]);
     try {
       const url = buildQuery(`http://localhost:8080/reports/products/${id}/sales`, { days: 30, start, end });
       const res = await fetch(url);
       if (!res.ok) throw new Error(`API lỗi: ${res.status}`);
       const data = await res.json();
-      setDoanh sốHistory(data.result || data || []);
+      setSalesHistory(data.result || data || []);
     } catch (e) {
       console.error(e);
     }
@@ -79,13 +79,13 @@ export default function ProductReport() {
     // reload best seller with date range
     loadBestSeller(startDate, endDate);
     // if a product is selected, reload its history
-    if (selectedProduct) loadDoanh sốHistory(selectedProduct.productId, startDate, endDate);
+    if (selectedProduct) loadSalesHistory(selectedProduct.productId, startDate, endDate);
   };
 
   const handleSelectProduct = (productId) => {
     const p = bestSeller.find((b) => b.productId === Number(productId));
     setSelectedProduct(p || null);
-    if (p) loadDoanh sốHistory(p.productId, startDate, endDate);
+    if (p) loadSalesHistory(p.productId, startDate, endDate);
   };
 
   const pieData = [

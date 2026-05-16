@@ -313,7 +313,7 @@ const Checkout = () => {
         return;
       }
 
-      const savedAddress = await res.json().catch(() => null);
+      await res.json().catch(() => null);
 
       toast.success("Thêm địa chỉ thành công!");
 

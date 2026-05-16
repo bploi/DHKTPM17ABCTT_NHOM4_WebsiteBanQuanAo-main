@@ -2,13 +2,27 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import { ArrowRight, Mail } from "lucide-react";
 
+const getForgotPasswordError = (data) => {
+  if (data?.message) {
+    return data.message;
+  }
+
+  if (typeof data?.result === "string") {
+    return data.result;
+  }
+
+  return "Không gửi được mã xác minh. Vui lòng thử lại sau!";
+};
+
 const ForgotPassword = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleForgotPassword = async () => {
-    if (!email) {
+    const normalizedEmail = email.trim();
+
+    if (!normalizedEmail) {
       alert("Vui lòng nhập thư điện tử!");
       return;
     }
@@ -21,18 +35,18 @@ const ForgotPassword = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email: normalizedEmail }),
       });
 
-      const data = await response.json();
-      if (response.ok) {
+      const data = await response.json().catch(() => ({}));
+      if (response.ok && data?.result?.token && data?.result?.otp) {
         sessionStorage.setItem("resetToken", data.result.token);
         sessionStorage.setItem("otp", data.result.otp);
 
         alert("OTP đã được gửi tới thư điện tử. Vui lòng kiểm tra!");
         navigate("/reset_password");
       } else {
-        alert(data.message || "Thư điện tử không tồn tại hoặc hệ thống đang lỗi!");
+        alert(getForgotPasswordError(data));
       }
     } catch (error) {
       console.error("Lỗi:", error);

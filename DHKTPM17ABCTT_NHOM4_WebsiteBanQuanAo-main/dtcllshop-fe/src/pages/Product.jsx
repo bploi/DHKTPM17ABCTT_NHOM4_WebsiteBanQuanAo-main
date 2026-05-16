@@ -22,7 +22,6 @@ const Product = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [priceRange, setPriceRange] = useState([0, 2000000]);
-  const [showPriceRange, setShowPriceRange] = useState(false);
   const [sortBy, setSortBy] = useState("default");
   const [viewMode, setXemMode] = useState("grid");
   const [currentPage, setCurrentPage] = useState(1);

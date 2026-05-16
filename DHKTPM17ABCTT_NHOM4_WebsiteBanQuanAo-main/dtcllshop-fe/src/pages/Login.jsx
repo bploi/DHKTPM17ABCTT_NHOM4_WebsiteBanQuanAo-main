@@ -59,7 +59,7 @@ const Login = () => {
         let errorData = { message: "Tên đăng nhập hoặc mật khẩu không đúng." };
         try {
           errorData = await response.json();
-        } catch (jsonError) {
+        } catch {
           console.error("Không thể đọc phản hồi lỗi JSON.");
         }
         console.error("Lỗi đăng nhập:", errorData);

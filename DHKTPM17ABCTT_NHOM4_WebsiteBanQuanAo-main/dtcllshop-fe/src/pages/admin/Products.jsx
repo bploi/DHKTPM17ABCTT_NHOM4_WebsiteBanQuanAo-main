@@ -270,7 +270,6 @@ export default function Products({ initialFilter = 'ALL' }) {
 
     loadProducts();
   };
-  const handleImport = (e) => { /* ... */ };
   const handleExportFile = () => {
     const csv = [
       ["id", "name", "price", "quantity"],

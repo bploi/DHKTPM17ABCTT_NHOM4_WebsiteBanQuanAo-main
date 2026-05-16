@@ -180,7 +180,7 @@ const ComparePage = () => {
                                 Tiêu chí
                             </th>
                             {/* Các cột Sản phẩm */}
-                            {products.map((p, index) => (
+                            {products.map((p) => (
                                 <th key={p.id} className="px-6 py-4 text-center text-sm font-semibold text-gray-700 w-64 border-l">
                                     <div className="flex justify-center relative">
                                         <Link to={`/product/${p.id}`} className="hover:opacity-80 transition block">
@@ -202,7 +202,7 @@ const ComparePage = () => {
                                     {feature.label}
                                 </td>
                                 {/* Các cột Giá trị Sản phẩm */}
-                                {products.map((p, colIndex) => (
+                                {products.map((p) => (
                                     <td key={`${p.id}-${feature.key}`} className="px-6 py-4 text-center border-l w-64 align-top">
                                         {feature.render(p)}
                                     </td>

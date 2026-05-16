@@ -2,6 +2,7 @@ package fit.iuh.dtcllshopbe.exception;
 
 import fit.iuh.dtcllshopbe.dto.response.ApiResponse;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.MailException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -28,6 +29,17 @@ public class GlobalExceptionHandler {
         apiResponse.setMessage(ex.getErrorCode().getMessage());
         return ResponseEntity
                 .status(ex.getErrorCode().getHttpStatusCode())
+                .body(apiResponse);
+    }
+
+    @ExceptionHandler(value = MailException.class)
+    ResponseEntity<ApiResponse> handleMailException(MailException ex) {
+        ApiResponse apiResponse = new ApiResponse();
+        ErrorCode errorCode = ErrorCode.EMAIL_SEND_FAILED;
+        apiResponse.setCode(errorCode.getCode());
+        apiResponse.setMessage(errorCode.getMessage());
+        return ResponseEntity
+                .status(errorCode.getHttpStatusCode())
                 .body(apiResponse);
     }
 

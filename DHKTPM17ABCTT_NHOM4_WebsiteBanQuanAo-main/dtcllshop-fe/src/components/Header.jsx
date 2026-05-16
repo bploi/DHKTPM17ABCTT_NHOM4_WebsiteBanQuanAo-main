@@ -35,6 +35,10 @@ export default function Header() {
   useEffect(() => {
     const checkAuth = () => {
       const token = localStorage.getItem("accessToken");
+      if (!token) {
+        setUser(null);
+        return;
+      }
       setIsLoggedIn(!!token);
     };
     checkAuth();
@@ -64,10 +68,17 @@ export default function Header() {
           Authorization: `Bearer ${token}`,
         },
       });
+      if (!res.ok) {
+        localStorage.removeItem("accessToken");
+        setIsLoggedIn(false);
+        setUser(null);
+        return;
+      }
       const data = await res.json();
       setUser(data.result);
       if (data.result?.id) {
         localStorage.setItem("accountId", data.result.id);
+        localStorage.setItem("user", JSON.stringify(data.result));
       }
     } catch (error) {
       console.error("Lỗi fetch user", error);

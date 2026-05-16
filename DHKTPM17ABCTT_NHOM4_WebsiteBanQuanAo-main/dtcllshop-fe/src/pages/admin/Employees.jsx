@@ -26,7 +26,6 @@ const roleText = (role) =>
 
 export default function Employees() {
   const [accounts, setAccounts] = useState([]);
-  const [selectedAccount, setSelectedAccount] = useState(null);
   const [selectedCustomer, setSelectedCustomer] = useState(null);
   const [showDetail, setShowDetail] = useState(false);
   const [searchName, setSearchName] = useState("");
