@@ -23,6 +23,9 @@ public class SePayService {
     @Autowired
     private InvoiceRepository invoiceRepository;
 
+    @Autowired
+    private fit.iuh.dtcllshopbe.repository.OrderRepository orderRepository;
+
     public SePayResponse handleCallback(SePayRequest callbackRequest, String authorizationHeader) {
         if (!sePayConfig.getApiKey().equals(authorizationHeader)) {
             return new SePayResponse(false, "Unauthorized callback " + authorizationHeader);
@@ -58,6 +61,13 @@ public class SePayService {
         }
         invoice.setPaymentStatus(StatusPayment.PAID);
         invoiceRepository.save(invoice);
+
+        if (invoice.getOrder() != null) {
+            fit.iuh.dtcllshopbe.entities.Order order = invoice.getOrder();
+            order.setStatusOrder(fit.iuh.dtcllshopbe.enums.StatusOrdering.CONFIRMED);
+            orderRepository.save(order);
+        }
+
         System.out.println(invoice);
 
         return new SePayResponse(true, "Payment processed successfully");

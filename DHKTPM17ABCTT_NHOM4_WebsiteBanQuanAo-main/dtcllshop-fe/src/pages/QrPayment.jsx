@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 import dauTick from "../assets/dauTick.png";
 import ChatBot from "../components/ChatBot";
@@ -9,13 +9,15 @@ const QrPayment = () => {
   const navigate = useNavigate();
   const [isSuccess, setIsSuccess] = useState(false);
 
-  const orderId = params.get("orderId");
-  const amount = params.get("amount");
   const invoiceId = params.get("invoiceId");
-  const invoiceCode = params.get("invoiceCode");
+  const [realAmount, setRealAmount] = useState(0);
+  const [realInvoiceCode, setRealInvoiceCode] = useState("");
+  const [realOrderId, setRealOrderId] = useState(null);
   const interval = useRef(null);
 
-  const qrCode = `https://qr.sepay.vn/img?acc=VQRQAFTEV8402&bank=MBBank&amount=${amount}&des=${invoiceCode}`;
+  const qrCode = realAmount > 0 && realInvoiceCode
+    ? `https://qr.sepay.vn/img?acc=0398757483&bank=MBBank&amount=${realAmount}&des=${realInvoiceCode}`
+    : "";
 
   const handleFetchInvoiceById = async () => {
     try {
@@ -28,20 +30,23 @@ const QrPayment = () => {
       });
       const invoice = await res.json();
       console.log("new invoice", invoice);
-      if (invoice.paymentStatus === "PAID") {
-        clearInterval(interval.current);
-        await fetch(`http://localhost:8080/orders/status/${orderId}`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({ statusOrder: "CONFIRMED" }),
-        });
-
-        setIsSuccess(true);
-      } else {
-        setIsSuccess(false);
+      if (invoice) {
+        if (invoice.totalAmount) {
+          setRealAmount(invoice.totalAmount);
+        }
+        if (invoice.invoiceCode) {
+          setRealInvoiceCode(invoice.invoiceCode);
+        }
+        if (invoice.order && invoice.order.id) {
+          setRealOrderId(invoice.order.id);
+        }
+        
+        if (invoice.paymentStatus === "PAID") {
+          clearInterval(interval.current);
+          setIsSuccess(true);
+        } else {
+          setIsSuccess(false);
+        }
       }
     } catch (error) {
       console.log("Invoice not found", error);
@@ -49,7 +54,7 @@ const QrPayment = () => {
   };
 
   useEffect(() => {
-    // handleFetchInvoiceById();
+    handleFetchInvoiceById();
     interval.current = setInterval(() => {
       handleFetchInvoiceById();
     }, 5000);
@@ -119,19 +124,21 @@ const QrPayment = () => {
         <div className="space-y-3 text-gray-700">
           <div className="flex justify-between border-b pb-2 border-gray-200">
             <span>Tên tài khoản:</span>
-            <span className="font-medium">NGUYEN HO VIET KHOA</span>
+            <span className="font-medium">NGUYEN HOANG LONG</span>
           </div>
           <div className="flex justify-between border-b pb-2 border-gray-200">
             <span>Số tài khoản:</span>
-            <span className="font-medium">0812777990</span>
+            <span className="font-medium">0398757483</span>
           </div>
           <div className="flex justify-between border-b pb-2 border-gray-200">
             <span>Số tiền:</span>
-            <span className="font-semibold text-blue-600">{amount} VNĐ</span>
+            <span className="font-semibold text-blue-600">
+              {realAmount ? realAmount.toLocaleString("vi-VN") : "..."} VNĐ
+            </span>
           </div>
           <div className="flex justify-between border-b pb-2 border-gray-200">
             <span>Nội dung chuyển khoản:</span>
-            <span className="font-semibold">{invoiceCode}</span>
+            <span className="font-semibold">{realInvoiceCode || "..."}</span>
           </div>
         </div>
 

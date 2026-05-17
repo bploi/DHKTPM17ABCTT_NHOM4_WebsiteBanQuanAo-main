@@ -46,5 +46,14 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
     """)
     List<Order> findByAccountWithDetails(@Param("account") Account account);
 
+    @org.springframework.data.jpa.repository.Lock(jakarta.persistence.LockModeType.PESSIMISTIC_WRITE)
+    @Query("SELECT o FROM Order o WHERE o.id = :id")
+    java.util.Optional<Order> findByIdWithPessimisticLock(@Param("id") int id);
+
+    @Query("SELECT DISTINCT o FROM Order o LEFT JOIN FETCH o.invoice")
+    List<Order> findAllWithInvoice();
+
+    @Query("SELECT DISTINCT o FROM Order o LEFT JOIN FETCH o.invoice LEFT JOIN FETCH o.orderDetails WHERE o.orderDate BETWEEN :start AND :end")
+    List<Order> findByOrderDateBetweenWithDetails(@Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
 }
 

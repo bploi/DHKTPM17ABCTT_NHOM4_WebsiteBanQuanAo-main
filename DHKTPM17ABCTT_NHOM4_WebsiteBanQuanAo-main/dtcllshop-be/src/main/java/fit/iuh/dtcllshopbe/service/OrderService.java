@@ -35,9 +35,85 @@ public class OrderService {
     CustomerTradingService customerTradingService;
     CustomerTradingMapper customerTradingMapper;
     AccountRepository accountRepository;
+    fit.iuh.dtcllshopbe.repository.ProductRepository productRepository;
+    fit.iuh.dtcllshopbe.repository.InvoiceRepository invoiceRepository;
     OrderMapper orderMapper;
 
-    public OrderResponse createOrder(OrderRequest request) throws ParseException {
+    @org.springframework.transaction.annotation.Transactional
+    public fit.iuh.dtcllshopbe.dto.response.CheckoutResponse checkout(fit.iuh.dtcllshopbe.dto.request.CheckoutRequest req) {
+        Account acc = accountRepository.findById(req.getAccountId())
+                .orElseThrow(() -> new AppException(ErrorCode.ACCOUNT_NOT_FOUND));
+
+        double subtotal = 0;
+        List<fit.iuh.dtcllshopbe.entities.OrderDetail> details = new ArrayList<>();
+        
+        for (fit.iuh.dtcllshopbe.dto.request.CheckoutItemRequest item : req.getItems()) {
+            fit.iuh.dtcllshopbe.entities.Product p = productRepository.findById(item.getProductId())
+                    .orElseThrow(() -> new RuntimeException("Product not found: " + item.getProductId()));
+            
+            double price = p.getPrice() > 0 ? p.getPrice() : p.getCostPrice();
+            double itemTotal = price * item.getQuantity();
+            subtotal += itemTotal;
+            
+            fit.iuh.dtcllshopbe.entities.OrderDetail od = new fit.iuh.dtcllshopbe.entities.OrderDetail();
+            od.setProduct(p);
+            od.setProductName(p.getName());
+            od.setQuantity(item.getQuantity());
+            od.setUnitPrice(price);
+            od.setTotalPrice(itemTotal);
+            details.add(od);
+        }
+        
+        double shippingFee = 30000;
+        double totalAmount = subtotal + shippingFee;
+        
+        CustomerTrading ct = new CustomerTrading();
+        ct.setReceiverName(req.getReceiverName());
+        ct.setReceiverPhone(req.getReceiverPhone());
+        ct.setReceiverEmail(req.getReceiverEmail());
+        ct.setReceiverAddress(req.getReceiverAddress());
+        ct.setTotalAmount(totalAmount);
+        
+        Order order = new Order();
+        order.setOrderCode(generateOrderCode());
+        order.setNote(req.getNote());
+        order.setOrderDate(new Date());
+        order.setStatusOrder(StatusOrdering.PENDING);
+        order.setCustomerTrading(ct);
+        order.setAccount(acc);
+        order.setPaymentMethod(req.getPaymentMethod());
+        
+        for (fit.iuh.dtcllshopbe.entities.OrderDetail od : details) {
+            od.setOrder(order);
+        }
+        order.setOrderDetails(details);
+        
+        Order savedOrder = orderRepository.save(order);
+        
+        fit.iuh.dtcllshopbe.dto.response.CheckoutResponse res = new fit.iuh.dtcllshopbe.dto.response.CheckoutResponse();
+        res.setOrderId(savedOrder.getId());
+        res.setTotalAmount(totalAmount);
+        
+        if (req.getPaymentMethod() == fit.iuh.dtcllshopbe.enums.PaymentMethod.BANK_TRANSFER) {
+            fit.iuh.dtcllshopbe.entities.Invoice invoice = new fit.iuh.dtcllshopbe.entities.Invoice();
+            invoice.setInvoiceCode("INV" + System.currentTimeMillis());
+            invoice.setPaymentMethod(fit.iuh.dtcllshopbe.enums.PaymentMethod.BANK_TRANSFER);
+            invoice.setPaymentStatus(fit.iuh.dtcllshopbe.enums.StatusPayment.UNPAID);
+            invoice.setSubtotalAmount(subtotal);
+            invoice.setTaxAmount(0);
+            invoice.setTotalAmount(totalAmount);
+            invoice.setCreatedAt(new Date());
+            invoice.setOrder(savedOrder);
+            
+            fit.iuh.dtcllshopbe.entities.Invoice savedInvoice = invoiceRepository.save(invoice);
+            res.setInvoiceId(savedInvoice.getId());
+            res.setInvoiceCode(savedInvoice.getInvoiceCode());
+        }
+        
+        return res;
+    }
+
+    public OrderResponse createOrder(OrderRequest request) {
         CustomerTrading ct = customerTradingService.getCustomerTradingById(request.getCustomerTradingId());
         Account acc = accountRepository.findById(request.getAccount_id()).orElseThrow(() -> new AppException(ErrorCode.ACCOUNT_NOT_FOUND));
         Order order = new Order();
@@ -76,8 +152,9 @@ public class OrderService {
                 .orElseThrow(() -> new RuntimeException("Order not found with id: " + id));
     }
 
+    @org.springframework.transaction.annotation.Transactional
     public OrderResponse updateOrderStatus(int orderId, StatusOrdering statusOrder) {
-        Order order = orderRepository.findById(orderId)
+        Order order = orderRepository.findByIdWithPessimisticLock(orderId)
                 .orElseThrow(() -> new RuntimeException("Order not found with id: " + orderId));
         order.setStatusOrder(statusOrder);
         Order updated = orderRepository.save(order);
@@ -88,19 +165,10 @@ public class OrderService {
 //    public OrderResponse confirmOrder(int orderId) {
 //        return updateOrderStatus(orderId, StatusOrdering.CONFIRMED);
 //    }
-    private String generateOrderCode() throws ParseException {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        String todayStr = sdf.format(new Date());
-
-        SimpleDateFormat fullSdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date start = fullSdf.parse(todayStr + " 00:00:00");
-        Date end = fullSdf.parse(todayStr + " 23:59:59");
-
-        int countToday = orderRepository.countOrderByOrderDateBetween(start, end) + 1;
-        String index = String.format("%03d", countToday);
-
+    private String generateOrderCode() {
         SimpleDateFormat codeDate = new SimpleDateFormat("yyyyMMdd");
-        return "ORD" + codeDate.format(new Date()) + index;
+        String randomStr = UUID.randomUUID().toString().substring(0, 5).toUpperCase();
+        return "ORD" + codeDate.format(new Date()) + "_" + randomStr;
     }
 
 
@@ -175,7 +243,7 @@ public class OrderService {
         return null;
     }
     public List<TimeSlotStatisticResponse> getTimeSlotStats() {
-        List<Order> orders = orderRepository.findAll(); // LẤY TỪ DATABASE
+        List<Order> orders = orderRepository.findAllWithInvoice(); // LẤY TỪ DATABASE CÙNG VỚI INVOICE
         Map<String, TimeSlotStatisticResponse> result = initSlots();
         for (Order o : orders) {
             if (o.getOrderDate() == null) continue;
@@ -196,7 +264,7 @@ public class OrderService {
         return new ArrayList<>(result.values());
     }
     public List<DailyStatisticResponse> getDailyStats(LocalDateTime start, LocalDateTime  end) {
-        List<Order> orders = orderRepository.findByOrderDateBetween(start, end);
+        List<Order> orders = orderRepository.findByOrderDateBetweenWithDetails(start, end);
         Map<String, DailyStatisticResponse> map = new TreeMap<>();
         for (Order o : orders) {
             String day = new SimpleDateFormat("yyyy-MM-dd").format(o.getOrderDate());

@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import {
   ChevronLeft,
@@ -251,7 +251,6 @@ const ProductDetail = () => {
     }
 
     if (!user?.id) {
-      toast.warning("Vui lòng đăng nhập trước khi thêm vào giỏ hàng");
       return toast.warning("Vui lòng đăng nhập trước khi thêm vào giỏ hàng");
     }
     if (quantity < 1) return toast.warning("Số lượng phải lớn hơn hoặc bằng 1");

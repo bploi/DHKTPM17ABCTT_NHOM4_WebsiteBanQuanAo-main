@@ -93,6 +93,12 @@ const getAddressNote = (addr) => {
   return addr?.deliveryNote || addr?.delivery_note || "";
 };
 
+const getFullAddress = (addr) => {
+  const address = addr?.deliveryAddress || addr?.delivery_address || "";
+  const province = addr?.province || "";
+  return [address, province].filter(Boolean).join(", ");
+};
+
 const getAddressList = (data) => {
   if (Array.isArray(data)) return data;
   if (Array.isArray(data?.data)) return data.data;
@@ -253,21 +259,20 @@ const Checkout = () => {
     if (!addr) return;
 
     const addressText =
-        getAddressText(addr) ||
-        addr.deliveryAddress ||
-        addr.delivery_address ||
-        addr.address ||
-        addr.receiverAddress ||
-        "";
+      addr?.deliveryAddress ||
+      addr?.delivery_address ||
+      addr?.address ||
+      addr?.receiverAddress ||
+      "";
 
-    const provinceText = addr.province || selectedProvince || "";
+    const provinceText = addr?.province || "";
 
     setForm((prev) => ({
       ...prev,
-      address: addressText || provinceText,
+      address: addressText,
       province: provinceText,
-      district: addr.city || "",
-      ward: addr.ward || "",
+      district: "",
+      ward: "",
       note: getAddressNote(addr),
     }));
   };
@@ -279,22 +284,25 @@ const Checkout = () => {
         return;
       }
 
-      if (!formAddress.delivery_address) {
+      if (!formAddress.delivery_address?.trim()) {
         toast.warning("Vui lòng nhập địa chỉ giao hàng!");
         return;
       }
 
       const token = localStorage.getItem("accessToken");
 
-      const finalDeliveryAddress = selectedWard
-          ? `${formAddress.delivery_address}, ${selectedWard}`
-          : formAddress.delivery_address;
+      const finalDeliveryAddress = [
+        formAddress.delivery_address.trim(),
+        selectedWard,
+      ]
+        .filter(Boolean)
+        .join(", ");
 
       const requestBody = {
         accountId: Number(accountId),
         province: selectedProvince,
-        deliveryAddress: finalDeliveryAddress,
-        deliveryNote: formAddress.delivery_note,
+        delivery_address: finalDeliveryAddress,
+        delivery_note: formAddress.delivery_note,
       };
 
       const res = await fetch(`http://localhost:8080/addresses/add`, {
@@ -314,16 +322,16 @@ const Checkout = () => {
       }
 
       await res.json().catch(() => null);
-
       toast.success("Thêm địa chỉ thành công!");
 
-      // Re-fetch from server to stay in sync with Profile page
       await fetchAddresses();
 
       setForm((prev) => ({
         ...prev,
         address: finalDeliveryAddress,
         province: selectedProvince,
+        district: "",
+        ward: "",
         note: formAddress.delivery_note || "",
       }));
 
@@ -375,20 +383,25 @@ const Checkout = () => {
 
       const token = localStorage.getItem("accessToken");
 
-      const productUnitPrice = product ? getProductPrice(product) : 0;
-      const totalAmount = product
-          ? productUnitPrice * Number(quantity) + 30000
-          : summary.total || 0;
+      const items = product
+        ? [{ productId: getDirectProductId(product), quantity: Number(quantity) }]
+        : checkoutItems.map(item => ({
+            productId: getCartProductId(item),
+            quantity: Number(item.quantity || 1)
+          }));
 
       const requestBody = {
+        accountId: Number(userId),
         receiverName: form.name,
         receiverPhone: form.phone,
         receiverEmail: form.email,
-        receiverAddress: `${form.address || ""}, ${form.province || ""}`,
-        totalAmount: Number(totalAmount),
+        receiverAddress: [form.address, form.province].filter(Boolean).join(", "),
+        note: form.note || "",
+        paymentMethod: payment === "bank" ? "BANK_TRANSFER" : "CASH",
+        items: items
       };
 
-      const res = await fetch("http://localhost:8080/customer-trading/create", {
+      const res = await fetch("http://localhost:8080/orders/checkout", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -399,155 +412,34 @@ const Checkout = () => {
 
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
-        console.log("KHÁCH HÀNG TRADING ERROR:", err);
-        throw new Error(err.message || "Tạo thông tin giao dịch khách hàng thất bại");
-      }
-
-      const customerTradingData = await res.json();
-
-      const orderBody = {
-        customerTradingId:
-            customerTradingData.id ||
-            customerTradingData.tradingId ||
-            customerTradingData.customerTradingId,
-        note: form.note || "",
-        account_id: Number(userId),
-        paymentMethod: payment === "bank" ? "BANK_TRANSFER" : "CASH",
-      };
-
-      const orderRes = await fetch("http://localhost:8080/orders/create", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(orderBody),
-      });
-
-      if (!orderRes.ok) {
-        const err = await orderRes.json().catch(() => ({}));
-        console.log("ORDER ERROR:", err);
+        console.log("CHECKOUT ERROR:", err);
         throw new Error(err.message || "Tạo đơn hàng thất bại");
       }
 
-      const orderData = await orderRes.json();
+      const checkoutResponse = await res.json();
 
-      const orderId = orderData.id || orderData.orderId;
-
-      if (!orderId) {
-        throw new Error("Missing order id");
-      }
-
-      if (product) {
-        const productId = getDirectProductId(product);
-
-        if (!productId) {
-          throw new Error("Missing product id");
-        }
-
-        const orderDetailRes = await fetch("http://localhost:8080/order-details/create", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            productName: product.name || product.productName,
-            quantity,
-            unitPrice: productUnitPrice,
-            totalPrice: productUnitPrice * Number(quantity),
-            orderId,
-            productId,
-          }),
-        });
-
-        if (!orderDetailRes.ok) {
-          const err = await orderDetailRes.json().catch(() => ({}));
-          console.log("ORDER DETAIL ERROR:", err);
-          throw new Error(err.message || "Tạo chi tiết đơn hàng thất bại");
-        }
-      } else {
-        for (const item of checkoutItems) {
-          const itemProductId = getCartProductId(item);
-          const itemQuantity = Number(item.quantity || 1);
-          const itemUnitPrice = getCartItemPrice(item);
-          const itemTotalPrice = Number(item.subtotal || itemUnitPrice * itemQuantity);
-
-          if (!itemProductId) {
-            throw new Error(`Thiếu mã sản phẩm cho ${item.productName || "sản phẩm trong giỏ hàng"}`);
-          }
-
-          const orderDetailRes = await fetch("http://localhost:8080/order-details/create", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({
-              productName: item.productName,
-              quantity: itemQuantity,
-              unitPrice: itemUnitPrice,
-              totalPrice: itemTotalPrice,
-              orderId,
-              productId: itemProductId,
-            }),
-          });
-
-          if (!orderDetailRes.ok) {
-            const err = await orderDetailRes.json().catch(() => ({}));
-            throw new Error(err.message || "Tạo chi tiết đơn hàng thất bại");
-          }
-        }
-
+      if (!product) {
         try {
           await deletePurchasedCartItems(checkoutItems, token);
           window.dispatchEvent(new Event("cartUpdated"));
         } catch (cleanupError) {
           console.log("CART CLEANUP ERROR:", cleanupError);
         }
-
         localStorage.removeItem("cartItems");
       }
 
       toast.success("Đặt hàng thành công!");
 
       if (payment === "bank") {
-        const invoiceRequest = {
-          orderId: orderData.id || orderData.orderId,
-          paymentMethod: "BANK_TRANSFER",
-          paymentStatus: "UNPAID",
-        };
-
-        const invoiceRes = await fetch("http://localhost:8080/invoices", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(invoiceRequest),
-        });
-
-        if (!invoiceRes.ok) {
-          const err = await invoiceRes.json().catch(() => ({}));
-          console.log("INVOICE ERROR:", err);
-          throw new Error(err.message || "Không thể tạo hóa đơn");
-        }
-
-        const newInvoice = await invoiceRes.json();
-
         navigate(
-            `/payment?orderId=${
-                orderData.id || orderData.orderId
-            }&amount=${totalAmount}&invoiceId=${
-                newInvoice.id || newInvoice.invoiceId
-            }&invoiceCode=${newInvoice.invoiceCode}`
+          `/payment?orderId=${checkoutResponse.orderId}&amount=${checkoutResponse.totalAmount}&invoiceId=${checkoutResponse.invoiceId}&invoiceCode=${checkoutResponse.invoiceCode}`
         );
       } else {
         navigate("/");
       }
     } catch (error) {
       console.error("Lỗi khi tạo đơn hàng:", error);
-      toast.error("Đặt hàng thất bại!");
+      toast.error("Đặt hàng thất bại: " + error.message);
     }
   };
 
@@ -605,9 +497,9 @@ const Checkout = () => {
                     <option value="">-- Chọn địa chỉ đã lưu --</option>
 
                     {addresses.map((addr, index) => (
-                        <option key={index} value={index}>
-                          {getAddressText(addr)} ({addr.province})
-                        </option>
+                      <option key={addr.id || addr.addressId || index} value={index}>
+                        {getFullAddress(addr)}
+                      </option>
                     ))}
                   </select>
               ) : (

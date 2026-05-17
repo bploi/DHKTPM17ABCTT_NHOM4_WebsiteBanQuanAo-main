@@ -44,7 +44,7 @@ const Register = () => {
           isValid = value.trim().length > 0;
           break;
         case "username":
-          isValid = value.trim().length > 0;
+          isValid = value.trim().length >= 3;
           break;
         case "email":
           isValid = REGEX.email.test(value);
@@ -53,7 +53,7 @@ const Register = () => {
           isValid = REGEX.phoneNumber.test(value);
           break;
         case "password":
-          isValid = value.length > 8;
+          isValid = value.length >= 6;
           if (formData.password_confirmed) {
             setValidationStatus((prev) => ({
               ...prev,
@@ -108,9 +108,23 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!formData.fullName.trim()) {
+      return toast.warning("Vui lòng điền đầy đủ họ và tên");
+    }
+    if (!formData.phoneNumber.trim() || !REGEX.phoneNumber.test(formData.phoneNumber)) {
+      return toast.warning("Số điện thoại không hợp lệ (Phải bắt đầu bằng 03, 05, 07, 08, 09 và gồm 10 chữ số)");
+    }
+    if (!formData.email.trim() || !REGEX.email.test(formData.email)) {
+      return toast.warning("Thư điện tử không hợp lệ (Ví dụ: user@example.com)");
+    }
+    if (formData.username.trim().length < 3) {
+      return toast.warning("Tên đăng nhập phải có ít nhất 3 ký tự");
+    }
+    if (formData.password.length < 6) {
+      return toast.warning("Mật khẩu phải có ít nhất 6 ký tự");
+    }
     if (formData.password !== formData.password_confirmed) {
-      toast.warning("Mật khẩu xác nhận không khớp");
-      return;
+      return toast.warning("Mật khẩu xác nhận không khớp");
     }
 
     const accountData = {

@@ -258,6 +258,12 @@ const EditForm = ({ form, onChange, onProvinceChange, onSubmit, onCancel, isLoad
     );
 };
 
+const getFullAddress = (addr) => {
+  const address = addr?.delivery_address || addr?.deliveryAddress || "";
+  const province = addr?.province || "";
+  return [address, province].filter(Boolean).join(", ");
+};
+
 // --- ADDRESS SECTION ---
 const AddressSection = ({ accountId, isCustomerProfile }) => {
     const [addresses, setAddresses] = useState([]);
@@ -346,7 +352,6 @@ const AddressSection = ({ accountId, isCustomerProfile }) => {
 
         if (!editForm.id) return;
 
-        // Validation for Edit Address Form (optional but recommended)
         if (!editForm.delivery_address.trim() || !editForm.province.trim()) {
             toast.error("Vui lòng nhập địa chỉ và tỉnh/thành phố.");
             return;
@@ -355,17 +360,22 @@ const AddressSection = ({ accountId, isCustomerProfile }) => {
         setCurrentActionId(editForm.id);
 
         try {
-            await api.put("/addresses/update", editForm);
+            const payload = {
+            ...editForm,
+            delivery_address: editForm.delivery_address.trim(),
+            province: editForm.province.trim(),
+            accountId: accountId,
+            };
 
+            await api.put("/addresses/update", payload);
             toast.success("Cập nhật địa chỉ thành công!");
+
             handleCancelEdit();
             await fetchAddresses();
-
         } catch (error) {
             console.error("Lỗi khi cập nhật địa chỉ:", error);
             toast.error("Cập nhật địa chỉ thất bại: " + (error.message || "Lỗi không xác định"));
         } finally {
-            // Reset loading state
             setCurrentActionId(null);
         }
     };
@@ -373,26 +383,33 @@ const AddressSection = ({ accountId, isCustomerProfile }) => {
     const handleAddAddress = async (e) => {
         e.preventDefault();
 
-        // Validation for Add Address Form
         if (!newAddress.delivery_address.trim() || !newAddress.province.trim()) {
             toast.error("Vui lòng nhập địa chỉ và tỉnh/thành phố.");
             return;
         }
 
         setCurrentActionId("ADD_NEW");
-        try {
-            await api.post("/addresses/add", newAddress);
-            toast.success("Đã thêm địa chỉ!");
-            setShowAddForm(false);
 
+        try {
+            const payload = {
+            ...newAddress,
+            delivery_address: newAddress.delivery_address.trim(),
+            province: newAddress.province.trim(),
+            accountId: accountId,
+            };
+
+            await api.post("/addresses/add", payload);
+            toast.success("Đã thêm địa chỉ!");
+
+            setShowAddForm(false);
             setNewAddress({
-                delivery_address: "",
-                delivery_note: "",
-                province: "",
-                accountId,
+            delivery_address: "",
+            delivery_note: "",
+            province: "",
+            accountId,
             });
 
-            fetchAddresses();
+            await fetchAddresses();
         } catch {
             toast.error("Không thể thêm địa chỉ");
         } finally {
@@ -469,13 +486,7 @@ const AddressSection = ({ accountId, isCustomerProfile }) => {
                                 <div className="bg-gray-50 rounded-lg p-4 hover:shadow-md flex justify-between">
                                     <div>
                                         {/* BỔ SUNG: Hiển thị địa chỉ chi tiết */}
-                                        <p className="font-semibold text-black mb-1">
-                                            {addr.delivery_address}
-                                        </p>
-
-                                        <p className="text-sm text-gray-600 mb-1">
-                                            {addr.province}
-                                        </p>
+                                        <p>{getFullAddress(addr)}</p>
 
                                         <p className="text-sm text-gray-500 italic">
                                             Ghi chú: {addr.delivery_note || "Không có"}

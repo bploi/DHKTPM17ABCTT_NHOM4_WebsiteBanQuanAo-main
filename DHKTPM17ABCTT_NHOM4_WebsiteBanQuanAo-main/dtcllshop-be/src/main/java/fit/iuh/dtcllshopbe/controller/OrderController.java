@@ -43,6 +43,11 @@ public class OrderController {
     public List<OrderResponse> getAllOrders() {
         return orderService.getAllOrders();
     }
+    @PostMapping("/checkout")
+    public fit.iuh.dtcllshopbe.dto.response.CheckoutResponse checkout(@RequestBody fit.iuh.dtcllshopbe.dto.request.CheckoutRequest checkoutRequest) {
+        return orderService.checkout(checkoutRequest);
+    }
+
     @PostMapping("/create")
     public OrderResponse createOrder(@RequestBody OrderRequest orderRequest) throws ParseException {
         return orderService.createOrder(orderRequest);

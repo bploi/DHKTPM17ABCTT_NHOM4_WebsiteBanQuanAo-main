@@ -47,13 +47,18 @@ public class GlobalExceptionHandler {
     ResponseEntity<ApiResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
         ApiResponse apiResponse = new ApiResponse();
         String keynum = ex.getBindingResult().getAllErrors().get(0).getDefaultMessage();
-        ErrorCode errorCode = ErrorCode.valueOf(keynum);
-        apiResponse.setCode(errorCode.getCode());
-        apiResponse.setMessage(errorCode.getMessage());
-        String errorMessage = ex.getBindingResult().getAllErrors().get(0).getDefaultMessage();
-        return ResponseEntity
-                .status(errorCode.getHttpStatusCode())
-                .body(apiResponse);
+        try {
+            ErrorCode errorCode = ErrorCode.valueOf(keynum);
+            apiResponse.setCode(errorCode.getCode());
+            apiResponse.setMessage(errorCode.getMessage());
+            return ResponseEntity
+                    .status(errorCode.getHttpStatusCode())
+                    .body(apiResponse);
+        } catch (IllegalArgumentException e) {
+            apiResponse.setCode(400);
+            apiResponse.setMessage(keynum);
+            return ResponseEntity.badRequest().body(apiResponse);
+        }
     }
 
     @ExceptionHandler(value = AccessDeniedException.class)

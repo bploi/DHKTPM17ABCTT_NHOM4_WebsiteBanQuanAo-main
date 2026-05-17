@@ -92,9 +92,9 @@ public class AccountService {
 
         return accounts.stream()
                 .filter(acc -> acc.getId() != 1)
-                .filter(acc -> name == null || acc.getCustomer().getFullName().toLowerCase().contains(name.toLowerCase()))
-                .filter(acc -> status == null || acc.getStatusLogin().name().equals(status))
-                .filter(acc -> role == null || acc.getRole().name().equals(role))
+                .filter(acc -> name == null || name.isEmpty() || (acc.getCustomer() != null && acc.getCustomer().getFullName() != null && acc.getCustomer().getFullName().toLowerCase().contains(name.toLowerCase())))
+                .filter(acc -> status == null || status.isEmpty() || (acc.getStatusLogin() != null && acc.getStatusLogin().name().equals(status)))
+                .filter(acc -> role == null || role.isEmpty() || (acc.getRole() != null && acc.getRole().name().equals(role)))
                 .map(accountMapper::toAccountResponse)
                 .toList();
     }
