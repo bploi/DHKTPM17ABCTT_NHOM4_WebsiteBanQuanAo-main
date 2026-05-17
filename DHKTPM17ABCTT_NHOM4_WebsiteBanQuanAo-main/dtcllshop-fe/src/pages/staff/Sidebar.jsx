@@ -13,11 +13,11 @@ export default function StaffSidebar() {
   const isActive = (path) => location.pathname === path;
 
   return (
-    <div className="fixed left-0 top-0 w-64 h-screen bg-gray-900 text-white p-6 flex flex-col z-50">
+    <div className="admin-sidebar fixed left-0 top-0 w-64 h-screen p-6 flex flex-col z-50">
       {/* Logo */}
       <div className="mb-8">
-        <h1 className="text-2xl font-bold">
-          DTCLL Nhân viên
+        <h1 className="admin-sidebar-title">
+          DTCLL Staff
         </h1>
       </div>
 
@@ -26,10 +26,10 @@ export default function StaffSidebar() {
         {/* Order Link */}
         <Link
           to="/staff/orders"
-          className={`flex items-center gap-3 px-4 py-3 rounded-lg transition ${
+          className={`admin-sidebar-link flex items-center gap-3 px-4 py-3 transition ${
             isActive("/staff/orders")
-              ? "bg-red-500 text-white"
-              : "text-gray-300 hover:bg-gray-800"
+              ? "is-active"
+              : ""
           }`}
         >
           <FaBox size={18} />
@@ -39,10 +39,10 @@ export default function StaffSidebar() {
         {/* Invoice Link */}
         <Link
           to="/staff/invoices"
-          className={`flex items-center gap-3 px-4 py-3 rounded-lg transition ${
+          className={`admin-sidebar-link flex items-center gap-3 px-4 py-3 transition ${
             isActive("/staff/invoices")
-              ? "bg-red-500 text-white"
-              : "text-gray-300 hover:bg-gray-800"
+              ? "is-active"
+              : ""
           }`}
         >
           <FaFileInvoice size={18} />
@@ -53,7 +53,7 @@ export default function StaffSidebar() {
       {/* Đăng xuất */}
       <button
         onClick={handleLogout}
-        className="flex items-center gap-3 w-full px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800 transition"
+        className="admin-sidebar-logout flex items-center gap-3 w-full px-4 py-3 transition"
       >
         <FaSignOutAlt size={18} />
         <span>Đăng xuất</span>
@@ -61,7 +61,6 @@ export default function StaffSidebar() {
     </div>
   );
 }
-
 
 
 
