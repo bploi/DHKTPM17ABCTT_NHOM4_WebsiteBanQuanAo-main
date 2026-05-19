@@ -31,9 +31,26 @@ const Contact = () => {
       >
         <div className="absolute -inset-1 bg-red-600/60 rounded-full blur-xl opacity-70 group-hover:opacity-100 transition"></div>
 
-        {/* ICON DẤU HỎI (?) */}
-        <svg className="w-10 h-10 text-white relative z-10" fill="currentColor" viewBox="0 0 24 24">
-          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/>
+        {/* ICON HỖ TRỢ KHÁCH HÀNG */}
+        <svg className="w-9 h-9 text-white relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M4 12a8 8 0 0 1 16 0v4.5A2.5 2.5 0 0 1 17.5 19H16"
+          />
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M4 12v3a2 2 0 0 0 2 2h1v-6H6a2 2 0 0 0-2 2Zm16 0v3a2 2 0 0 1-2 2h-1v-6h1a2 2 0 0 1 2 2Z"
+          />
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M9 19a3 3 0 0 0 6 0m-3-8.5v2.25m0 3.75h.01"
+          />
         </svg>
       </button>
 
@@ -70,5 +87,4 @@ const Contact = () => {
 };
 
 export default Contact;
-
 

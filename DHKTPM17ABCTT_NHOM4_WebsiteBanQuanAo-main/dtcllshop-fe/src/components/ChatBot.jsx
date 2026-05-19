@@ -1,33 +1,59 @@
 // src/components/ChatBot.jsx
 import { useState, useEffect, useRef } from "react";
 
+const INITIAL_MESSAGE =
+  "Xin chào! Mình là trợ lý mua sắm đây. Bạn đang tìm sản phẩm nào hôm nay?";
+
+const QUICK_REPLIES = [
+  "Xem hàng mới về",
+  "Hỏi chính sách đổi trả",
+  "Cần tư vấn size",
+];
+
+const AssistantAvatar = ({ className = "h-10 w-10" }) => (
+  <div
+    className={`${className} flex shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-sky-400 via-blue-500 to-indigo-600 text-white shadow-md ring-2 ring-white`}
+  >
+    <svg viewBox="0 0 48 48" className="h-[78%] w-[78%]" fill="none" aria-hidden="true">
+      <rect x="12" y="15" width="24" height="21" rx="10" fill="white" />
+      <path d="M18 15a6 6 0 0 1 12 0" stroke="white" strokeWidth="3" strokeLinecap="round" />
+      <circle cx="20" cy="27" r="2.4" fill="#2563eb" />
+      <circle cx="28" cy="27" r="2.4" fill="#2563eb" />
+      <path d="M20 32c2.4 2 5.6 2 8 0" stroke="#2563eb" strokeWidth="2.4" strokeLinecap="round" />
+      <path d="M38 25.5h2.5a3.5 3.5 0 0 1 0 7H38v-7Z" fill="white" />
+      <path d="M10 25.5H7.5a3.5 3.5 0 0 0 0 7H10v-7Z" fill="white" />
+      <path d="M36 10.5 37.3 14l3.2 1.3-3.2 1.2L36 20l-1.3-3.5-3.2-1.2 3.2-1.3L36 10.5Z" fill="#bfdbfe" />
+    </svg>
+  </div>
+);
+
 const ChatBot = () => {
   const [chatOpen, setChatOpen] = useState(false);
   const [messages, setMessages] = useState([
-    { sender: "bot", text: "Xin chào! Mình là trợ lý mua sắm đây. Bạn đang tìm sản phẩm nào hôm nay?" }
+    { sender: "bot", text: INITIAL_MESSAGE },
   ]);
   const [input, setInput] = useState("");
   const [chatLoading, setChatLoading] = useState(false);
   const messagesEndRef = useRef(null);
 
-  // ================== LOCALSTORAGE - F5 KHÔNG MẤT CHAT ==================
   useEffect(() => {
     const saved = localStorage.getItem("DTCLL_chat_history");
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        if (parsed.length > 1 || (parsed.length === 1 && parsed[0].sender === "user")) {
-          setMessages(parsed);
-        }
-      } catch (e) {
-        console.error("Lỗi parse chat history:", e);
+    if (!saved) return;
+
+    try {
+      const parsed = JSON.parse(saved);
+      if (parsed.length > 1 || (parsed.length === 1 && parsed[0].sender === "user")) {
+        setMessages(parsed);
       }
+    } catch (e) {
+      console.error("Lỗi parse chat history:", e);
     }
   }, []);
 
   useEffect(() => {
-    const hasRealMessage = messages.length > 1 || 
-      (messages.length === 1 && messages[0].sender === "user");
+    const hasRealMessage =
+      messages.length > 1 || (messages.length === 1 && messages[0].sender === "user");
+
     if (hasRealMessage) {
       localStorage.setItem("DTCLL_chat_history", JSON.stringify(messages));
     }
@@ -36,70 +62,75 @@ const ChatBot = () => {
   useEffect(() => {
     const handleLogout = () => {
       localStorage.removeItem("DTCLL_chat_history");
-      setMessages([
-        { sender: "bot", text: "Xin chào! Mình là trợ lý mua sắm đây. Bạn đang tìm sản phẩm nào hôm nay?" }
-      ]);
+      setMessages([{ sender: "bot", text: INITIAL_MESSAGE }]);
     };
+
     window.addEventListener("logout", handleLogout);
     return () => window.removeEventListener("logout", handleLogout);
   }, []);
-  // ====================================================================
-
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
 
   useEffect(() => {
-    scrollToBottom();
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, chatLoading]);
 
-  // ================== CHỖ SỬA 1: NHẬN JSON TỪ BACKEND ==================
-  const sendMessage = async () => {
-  if (!input.trim() || chatLoading) return;
+  const openChat = () => {
+    setChatOpen(true);
+    window.dispatchEvent(new Event("chatbotOpened"));
+  };
 
-  const userMessage = input.trim();
-  setMessages(prev => [...prev, { sender: "user", text: userMessage }]);
-  setInput("");
-  setChatLoading(true);
+  const closeChat = () => {
+    setChatOpen(false);
+    window.dispatchEvent(new Event("chatbotClosed"));
+  };
 
-  try {
-    const token = localStorage.getItem("accessToken");
+  const sendMessage = async (messageOverride) => {
+    const userMessage = (messageOverride ?? input).trim();
+    if (!userMessage || chatLoading) return;
 
-    const res = await fetch("http://localhost:8080/chat/ask", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        ...(token ? { Authorization: `Bearer ${token}` } : {})
-      },
-      body: JSON.stringify({ prompt: userMessage }),
-    });
+    setMessages((prev) => [...prev, { sender: "user", text: userMessage }]);
+    setInput("");
+    setChatLoading(true);
 
-    // Nếu backend trả lỗi HTTP thì throw luôn
-    if (!res.ok) {
-      throw new Error(`HTTP ${res.status}`);
+    try {
+      const token = localStorage.getItem("accessToken");
+
+      const res = await fetch("http://localhost:8080/chat/ask", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify({ prompt: userMessage }),
+      });
+
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}`);
+      }
+
+      const data = await res.json();
+
+      setMessages((prev) => [
+        ...prev,
+        {
+          sender: "bot",
+          text: data.message || "Dạ em chưa hiểu lắm ạ!",
+          suggestedProducts: data.suggestedProducts || [],
+          compareIds: data.compareIds || null,
+        },
+      ]);
+    } catch (err) {
+      console.error("Chat error:", err);
+      setMessages((prev) => [
+        ...prev,
+        {
+          sender: "bot",
+          text: "Oops! Có lỗi kết nối rồi, thử lại sau ít phút nhé!",
+        },
+      ]);
+    } finally {
+      setChatLoading(false);
     }
-
-    const data = await res.json();
-
-    setMessages(prev => [...prev, {
-      sender: "bot",
-      text: data.message || "Dạ em chưa hiểu lắm ạ!",
-      suggestedProducts: data.suggestedProducts || [],
-      compareIds: data.compareIds || null,
-    }]);
-  } 
-  catch (err) {
-    console.error("Chat error:", err);
-    setMessages(prev => [...prev, {
-      sender: "bot",
-      text: "Oops! Có lỗi kết nối rồi, thử lại sau ít phút nhé!"
-    }]);
-  } 
-  finally {
-    setChatLoading(false);
-  }
-};
-
+  };
 
   const handleKeyPress = (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -108,71 +139,78 @@ const ChatBot = () => {
     }
   };
 
+  const hasUserMessage = messages.some((msg) => msg.sender === "user");
+
   return (
     <>
-      {/* Nút nổi góc dưới phải */}
-      <button
-        onClick={() => {
-          setChatOpen(!chatOpen);
-          window.dispatchEvent(new Event(chatOpen ? "chatbotClosed" : "chatbotOpened"));
-        }}
-        className="group fixed bottom-6 right-6 z-50 w-16 h-16 bg-gradient-to-br from-red-500 to-pink-600 rounded-full shadow-2xl flex items-center justify-center hover:scale-110 transition-all duration-300 ring-4 ring-white/50"
-      >
-        <div className="absolute inset-0 -z-10 rounded-full bg-red-600/60 blur-xl opacity-70 group-hover:opacity-100 transition duration-300"></div>
+      {!chatOpen && (
+        <button
+          type="button"
+          onClick={openChat}
+          aria-label="Mở trợ lý mua sắm"
+          className="group fixed bottom-6 right-6 z-50 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-blue-600 to-sky-500 text-white shadow-2xl shadow-blue-500/30 ring-4 ring-white/70 transition-all duration-300 hover:scale-110"
+        >
+          <div className="absolute inset-0 -z-10 rounded-full bg-blue-500/60 blur-xl opacity-70 transition duration-300 group-hover:opacity-100" />
+          <AssistantAvatar className="h-12 w-12 transition duration-300 group-hover:rotate-3 group-hover:scale-105" />
+        </button>
+      )}
 
-        {chatOpen ? (
-          <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        ) : (
-          <svg className="w-8 h-8 text-white" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M17 8h2a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2v3l-3-3H9a2 2 0 0 1-2-2v-1" />
-            <path d="M3 6a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H9l-3 3v-3H5a2 2 0 0 1-2-2V6z" />
-            <circle cx="9" cy="9" r="1" />
-            <circle cx="13" cy="9" r="1" />
-          </svg>
-        )}
-      </button>
-
-      {/* Cửa sổ chat */}
       {chatOpen && (
-        <div className="fixed right-6 bottom-24 z-50 w-96 h-120 bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-gray-200">
-          {/* Header */}
-          <div className="bg-gradient-to-r from-red-500 to-pink-500 text-white p-4 flex justify-between items-center">
+        <div className="fixed bottom-4 right-4 z-50 flex h-[34rem] max-h-[calc(100vh-2rem)] w-[calc(100vw-2rem)] max-w-[24rem] flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-2xl shadow-slate-900/20 sm:bottom-6 sm:right-6">
+          <div className="flex items-center justify-between border-b border-slate-200 bg-gradient-to-r from-blue-50 via-white to-sky-50 px-4 py-3">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-white rounded-full overflow-hidden border-2 border-white shadow-lg">
-                <img
-                  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTPJteM29wDFaITjbx1jOkFsIPRa6JKw-508w&s"
-                  alt="Trợ lý"
-                  className="w-full h-full object-cover"
-                />
-              </div>
+              <AssistantAvatar className="h-11 w-11" />
               <div>
-                <h3 className="font-bold">Trợ lý mua sắm</h3>
-                <p className="text-xs opacity-90">Luôn online • Hỗ trợ 24/7</p>
+                <h3 className="text-sm font-bold text-slate-900">Trợ lý mua sắm</h3>
+                <p className="text-xs text-slate-500">Online - Hỗ trợ 24/7</p>
               </div>
             </div>
+
+            <button
+              type="button"
+              onClick={closeChat}
+              aria-label="Thu nhỏ trợ lý mua sắm"
+              className="flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-500 shadow-sm transition hover:border-slate-300 hover:bg-slate-100 hover:text-slate-800"
+            >
+              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
           </div>
 
-          {/* Tin nhắn */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-gray-50">
+          <div className="flex-1 space-y-3 overflow-y-auto bg-slate-50 p-4">
             {messages.map((msg, i) => (
               <div
-                key={i}
+                key={`${msg.sender}-${i}`}
                 className={`flex ${msg.sender === "user" ? "justify-end" : "justify-start"}`}
               >
-                {/* ================== CHỖ SỬA 2: RENDER TIN NHẮN BOT CÓ LINK SẢN PHẨM ================== */}
                 {msg.sender === "user" ? (
-                  <div className="max-w-xs px-4 py-3 rounded-2xl bg-red-500 text-white rounded-tr-none">
+                  <div className="max-w-[78%] rounded-2xl rounded-tr-md bg-blue-600 px-4 py-3 text-sm leading-relaxed text-white shadow-sm">
                     {msg.text}
                   </div>
                 ) : (
-                  <div className="max-w-lg">
-                    <div className="px-4 py-3 bg-white rounded-2xl shadow rounded-tl-none whitespace-pre-wrap">
+                  <div className="flex max-w-[92%] items-start gap-2">
+                    <AssistantAvatar className="mt-1 h-8 w-8" />
+                    <div className="min-w-0 flex-1">
+                    <div className="whitespace-pre-wrap rounded-2xl rounded-tl-md border border-slate-200 bg-slate-100 px-4 py-3 text-sm leading-relaxed text-slate-800 shadow-sm">
                       {msg.text}
                     </div>
 
-                    {/* Hiển thị sản phẩm gợi ý nếu có */}
+                    {i === 0 && !hasUserMessage && !chatLoading && (
+                      <div className="mt-3 flex flex-wrap gap-2">
+                        {QUICK_REPLIES.map((reply) => (
+                          <button
+                            type="button"
+                            key={reply}
+                            onClick={() => sendMessage(reply)}
+                            className="rounded-full border border-blue-100 bg-white px-3 py-2 text-xs font-medium text-blue-700 shadow-sm transition hover:border-blue-300 hover:bg-blue-50"
+                          >
+                            {reply}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+
                     {msg.suggestedProducts && msg.suggestedProducts.length > 0 && (
                       <div className="mt-3 space-y-2">
                         {msg.suggestedProducts.map((product) => (
@@ -181,38 +219,43 @@ const ChatBot = () => {
                             href={`/product/${product.id}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="block p-4 bg-gradient-to-r from-red-50 to-pink-50 rounded-xl border border-red-200 hover:border-red-400 hover:shadow-lg transition-all transform hover:scale-105"
+                            className="block rounded-xl border border-blue-100 bg-white p-4 shadow-sm transition hover:border-blue-300 hover:shadow-md"
                           >
-                            <div className="flex items-center justify-between">
+                            <div className="flex items-center justify-between gap-3">
                               <div>
-                                <p className="font-semibold text-red-700">Xem ngay: {product.name}</p>
-                                <p className="text-xs text-gray-600 mt-1">Click để xem chi tiết sản phẩm</p>
+                                <p className="font-semibold text-blue-700">Xem ngay: {product.name}</p>
+                                <p className="mt-1 text-xs text-slate-500">Click để xem chi tiết sản phẩm</p>
                               </div>
-                              <span className="text-2xl ml-3">→</span>
+                              <span className="text-xl text-blue-500">→</span>
                             </div>
                           </a>
                         ))}
                       </div>
                     )}
-                    {msg.compareIds && msg.compareIds.length >= 2 && (
-<div className="mt-3 space-y-2">
-<a
-href={`/compare?ids=${msg.compareIds.join(',')}`}
-target="_blank"
-rel="noopener noreferrer"
-className="block p-4 bg-red-50 rounded-xl border border-red-200 hover:border-red-400 hover:shadow-lg transition-all transform hover:scale-105"
->
-<div className="flex items-center justify-between">
-<div>
-<p className="font-semibold text-red-700">So sánh {msg.compareIds.length} sản phẩm</p>
-<p className="text-xs text-gray-600 mt-1">Bảng so sánh sẽ hiển thị chi tiết form, chất liệu, giá, size...</p>
-</div>
-<span className="text-2xl ml-3">→</span>
-</div>
-</a>
-</div>
-)}
 
+                    {msg.compareIds && msg.compareIds.length >= 2 && (
+                      <div className="mt-3">
+                        <a
+                          href={`/compare?ids=${msg.compareIds.join(",")}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="block rounded-xl border border-blue-100 bg-white p-4 shadow-sm transition hover:border-blue-300 hover:shadow-md"
+                        >
+                          <div className="flex items-center justify-between gap-3">
+                            <div>
+                              <p className="font-semibold text-blue-700">
+                                So sánh {msg.compareIds.length} sản phẩm
+                              </p>
+                              <p className="mt-1 text-xs text-slate-500">
+                                Bảng so sánh sẽ hiển thị form, chất liệu, giá và size.
+                              </p>
+                            </div>
+                            <span className="text-xl text-blue-500">→</span>
+                          </div>
+                        </a>
+                      </div>
+                    )}
+                    </div>
                   </div>
                 )}
               </div>
@@ -220,11 +263,14 @@ className="block p-4 bg-red-50 rounded-xl border border-red-200 hover:border-red
 
             {chatLoading && (
               <div className="flex justify-start">
-                <div className="bg-white px-4 py-3 rounded-2xl shadow rounded-tl-none">
-                  <div className="flex space-x-2">
-                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce delay-100"></div>
-                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce delay-200"></div>
+                <div className="flex items-start gap-2">
+                  <AssistantAvatar className="mt-1 h-8 w-8" />
+                  <div className="rounded-2xl rounded-tl-md border border-slate-200 bg-slate-100 px-4 py-3 shadow-sm">
+                    <div className="flex space-x-2">
+                      <div className="h-2 w-2 animate-bounce rounded-full bg-blue-500" />
+                      <div className="h-2 w-2 animate-bounce rounded-full bg-blue-500 delay-100" />
+                      <div className="h-2 w-2 animate-bounce rounded-full bg-blue-500 delay-200" />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -232,24 +278,27 @@ className="block p-4 bg-red-50 rounded-xl border border-red-200 hover:border-red
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Input */}
-          <div className="p-4 border-t bg-white">
-            <div className="flex gap-2">
+          <div className="border-t border-slate-200 bg-white p-3">
+            <div className="flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-2 transition focus-within:border-blue-300 focus-within:bg-white focus-within:ring-2 focus-within:ring-blue-100">
               <input
                 type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={handleKeyPress}
                 placeholder="Nhập câu hỏi của bạn..."
-                className="flex-1 px-4 py-3 border border-gray-300 rounded-full focus:outline-none focus:border-red-500"
+                className="min-w-0 flex-1 bg-transparent px-1 py-2 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none"
                 disabled={chatLoading}
               />
               <button
-                onClick={sendMessage}
+                type="button"
+                onClick={() => sendMessage()}
                 disabled={chatLoading || !input.trim()}
-                className="px-6 py-3 bg-red-500 hover:bg-red-600 text-white rounded-full disabled:opacity-50 disabled:cursor-not-allowed transition font-medium"
+                aria-label="Gửi tin nhắn"
+                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-blue-600 text-white shadow-sm transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-slate-300"
               >
-                Gửi
+                <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path d="M3.4 20.4 21 12 3.4 3.6 3 10.1l11 1.9-11 1.9.4 6.5z" />
+                </svg>
               </button>
             </div>
           </div>
@@ -260,6 +309,3 @@ className="block p-4 bg-red-50 rounded-xl border border-red-200 hover:border-red
 };
 
 export default ChatBot;
-
-
-

@@ -189,7 +189,10 @@ export default function Header() {
     }).format(price);
   };
 
-  const isActive = (path) => location.pathname === path;
+  const isActive = (path) =>
+      path === "/"
+          ? location.pathname === "/"
+          : location.pathname === path || location.pathname.startsWith(`${path}/`);
 
   const navItems = [
     { to: "/", label: "Trang chủ" },
@@ -223,8 +226,8 @@ export default function Header() {
                         to={item.to}
                         className={`rounded-full px-5 py-2.5 text-sm font-semibold uppercase tracking-[0.12em] transition ${
                             active
-                                ? "bg-black text-white"
-                                : "text-[#333] hover:bg-[#f1f1f1] hover:text-black"
+                                ? "bg-blue-600 text-white shadow-[0_8px_18px_rgba(37,99,235,0.20)]"
+                                : "text-slate-700 hover:bg-blue-50 hover:text-blue-700"
                         }`}
                     >
                       {item.label}
@@ -405,8 +408,8 @@ export default function Header() {
                             onClick={() => setMenuOpen(false)}
                             className={`flex items-center justify-between rounded-2xl px-4 py-3 text-sm font-semibold uppercase tracking-[0.08em] transition ${
                                 active
-                                    ? "bg-black text-white"
-                                    : "bg-white text-black hover:bg-[#f1f1f1]"
+                                    ? "bg-blue-600 text-white shadow-[0_8px_18px_rgba(37,99,235,0.20)]"
+                                    : "bg-white text-slate-700 hover:bg-blue-50 hover:text-blue-700"
                             }`}
                         >
                           {item.label}
@@ -516,7 +519,6 @@ export default function Header() {
       </header>
   );
 }
-
 
 
 

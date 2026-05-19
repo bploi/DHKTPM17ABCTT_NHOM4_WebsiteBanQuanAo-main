@@ -89,7 +89,7 @@ const ProductCard = ({
     return (
       <>
         <div
-          className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition duration-300 group cursor-pointer relative flex gap-4 p-4"
+          className="group relative flex cursor-pointer gap-4 overflow-hidden rounded-[24px] border border-slate-200 bg-white p-4 shadow-[0_10px_24px_rgba(15,23,42,0.05)] transition duration-300 hover:-translate-y-1 hover:border-blue-200 hover:shadow-[0_18px_36px_rgba(37,99,235,0.10)]"
           onClick={goToDetail}
         >
           {/* HÌNH ẢNH BÊN TRÁI */}
@@ -205,7 +205,7 @@ const ProductCard = ({
                 {/* NÚT GIỎ HÀNG */}
                 <button
                   onClick={goToDetail}
-                  className="px-8 py-4 rounded-full bg-black text-white hover:bg-red-500 transition flex items-center justify-center gap-2 font-semibold"
+                  className="flex items-center justify-center gap-2 rounded-full bg-blue-600 px-8 py-4 font-semibold text-white transition hover:bg-blue-700"
                 >
                   <ShoppingCart size={20} />
                 </button>
@@ -231,7 +231,7 @@ const ProductCard = ({
   return (
     <>
       <div
-        className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition duration-300 group cursor-pointer relative"
+        className="group relative cursor-pointer overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-[0_10px_24px_rgba(15,23,42,0.05)] transition duration-300 hover:-translate-y-1 hover:border-blue-200 hover:shadow-[0_18px_36px_rgba(37,99,235,0.10)]"
         onClick={goToDetail}
       >
         {/* HÌNH ẢNH + OVERLAY */}
@@ -345,7 +345,7 @@ const ProductCard = ({
             {/* Nút giỏ hàng */}
             <button
               onClick={goToDetail}
-              className="p-4 rounded-full bg-black text-white hover:bg-red-500 transition flex items-center justify-center"
+              className="flex items-center justify-center rounded-full bg-blue-600 p-4 text-white transition hover:bg-blue-700"
             >
               <ShoppingCart size={20} />
             </button>
@@ -367,7 +367,6 @@ const ProductCard = ({
 };
 
 export default ProductCard;
-
 
 
 

@@ -2,7 +2,7 @@
 import { useNavigate } from "react-router";
 import { jwtDecode } from "jwt-decode";
 import { toast } from "sonner";
-import { ArrowRight, Lock, User } from "lucide-react";
+import { ArrowRight, House, Lock, User } from "lucide-react";
 
 const getTokenRoles = (decodedToken) => {
   const rawRoles = [
@@ -90,18 +90,18 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#f3f6fb] px-4 py-8 text-slate-950 sm:px-6 lg:px-8">
-      <div className="mx-auto grid min-h-[88vh] max-w-7xl grid-cols-1 overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-[0_24px_70px_rgba(15,23,42,0.10)] lg:grid-cols-[0.95fr_1.05fr]">
+    <div className="min-h-screen bg-[#f7f8fb] px-4 py-8 text-slate-950 sm:px-6 lg:px-8">
+      <div className="mx-auto grid min-h-[88vh] max-w-7xl grid-cols-1 overflow-hidden rounded-[36px] border border-slate-200 bg-white shadow-[0_20px_50px_rgba(15,23,42,0.08)] lg:grid-cols-[0.95fr_1.05fr]">
         {/* Left panel */}
-        <div className="flex flex-col border-b border-slate-200 bg-[#f8fbff] p-8 lg:border-b-0 lg:border-r lg:p-12">
+        <div className="flex flex-col border-b border-slate-200 bg-gradient-to-br from-blue-50 via-white to-sky-50 p-8 lg:border-b-0 lg:border-r lg:p-12">
           <div>
-            <p className="inline-flex rounded-full border border-blue-100 bg-blue-50 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-blue-700">
+            <p className="inline-flex rounded-full border border-blue-100 bg-white px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-blue-700">
               DTCLL SHOP • TRUY CẬP TÀI KHOẢN
             </p>
 
-            <h1 className="mt-8 text-4xl font-extrabold leading-[1.05] text-slate-950 sm:text-5xl">
+            <h1 className="mt-8 text-4xl font-extrabold leading-[1.02] tracking-[-0.04em] sm:text-5xl">
               Chào mừng trở lại
-              <span className="block text-blue-600">Đăng nhập để tiếp tục</span>
+              <span className="block text-blue-700">Đăng nhập để tiếp tục</span>
             </h1>
 
             <p className="mt-6 max-w-xl text-base leading-8 text-slate-600">
@@ -110,35 +110,35 @@ const Login = () => {
             </p>
 
             <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-3">
-              <div className="rounded-[18px] border border-slate-200 bg-white p-4 shadow-[0_10px_24px_rgba(15,23,42,0.04)]">
-                <p className="text-2xl font-bold text-slate-950">Nhanh chóng</p>
-                <p className="mt-1 text-[11px] uppercase tracking-[0.12em] text-slate-500">
+              <div className="rounded-[24px] border border-blue-100 bg-white/85 p-4">
+                <p className="text-2xl font-bold">Nhanh chóng</p>
+                <p className="mt-1 text-xs font-semibold uppercase tracking-[0.16em] text-blue-700">
                   Truy cập
                 </p>
               </div>
-              <div className="rounded-[18px] border border-slate-200 bg-white p-4 shadow-[0_10px_24px_rgba(15,23,42,0.04)]">
-                <p className="text-2xl font-bold text-slate-950">Bảo mật</p>
-                <p className="mt-1 text-[11px] uppercase tracking-[0.12em] text-slate-500">
+              <div className="rounded-[24px] border border-blue-100 bg-white/85 p-4">
+                <p className="text-2xl font-bold">Bảo mật</p>
+                <p className="mt-1 text-xs font-semibold uppercase tracking-[0.16em] text-blue-700">
                   Đăng nhập
                 </p>
               </div>
-              <div className="rounded-[18px] border border-slate-200 bg-white p-4 shadow-[0_10px_24px_rgba(15,23,42,0.04)]">
-                <p className="text-2xl font-bold text-slate-950">Gọn gàng</p>
-                <p className="mt-1 text-[11px] uppercase tracking-[0.12em] text-slate-500">
+              <div className="rounded-[24px] border border-blue-100 bg-white/85 p-4">
+                <p className="text-2xl font-bold">Gọn gàng</p>
+                <p className="mt-1 text-xs font-semibold uppercase tracking-[0.16em] text-blue-700">
                   Trải nghiệm
                 </p>
               </div>
             </div>
           </div>
 
-          <div className="mt-10 rounded-[24px] bg-slate-950 p-8 text-white shadow-[0_18px_44px_rgba(15,23,42,0.22)]">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-blue-200">
+          <div className="mt-10 rounded-[32px] border border-blue-100 bg-white/85 p-8 text-slate-950 shadow-[0_12px_30px_rgba(37,99,235,0.08)]">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-blue-700">
               Tinh thần cốt lõi
             </p>
-            <p className="mt-5 text-3xl font-extrabold leading-tight">
+            <p className="mt-5 text-3xl font-extrabold leading-tight tracking-[-0.03em]">
               Ít ồn ào.
             </p>
-            <p className="mt-1 text-3xl font-extrabold leading-tight text-blue-100">
+            <p className="mt-1 text-3xl font-extrabold leading-tight tracking-[-0.03em] text-blue-700">
               Nhiều phong cách.
             </p>
           </div>
@@ -148,10 +148,10 @@ const Login = () => {
         <div className="flex items-center justify-center p-8 lg:p-12">
           <div className="w-full max-w-xl">
             <div className="mb-8">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-blue-700">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-blue-700">
                 Đăng nhập
               </p>
-              <h2 className="mt-3 text-3xl font-extrabold text-slate-950 sm:text-4xl">
+              <h2 className="mt-3 text-3xl font-extrabold tracking-[-0.03em] sm:text-4xl">
                 Đăng nhập tài khoản
               </h2>
               <p className="mt-3 text-base leading-8 text-slate-600">
@@ -161,15 +161,15 @@ const Login = () => {
 
             <form className="space-y-6" onSubmit={handleSubmit}>
               <div>
-                <label className="mb-3 block text-sm font-semibold text-slate-900">
+                <label className="mb-3 block text-sm font-semibold text-slate-950">
                   Tên đăng nhập
                 </label>
-                <div className="flex items-center gap-3 rounded-[18px] border border-slate-200 bg-slate-50 px-4 py-4 transition focus-within:border-blue-500 focus-within:bg-white focus-within:ring-4 focus-within:ring-blue-100">
-                  <User className="h-5 w-5 text-blue-600" />
+                <div className="flex items-center gap-3 rounded-[20px] border border-[#E0E0E0] bg-[#F9F9F9] px-4 py-4 transition focus-within:border-blue-500 focus-within:bg-white focus-within:ring-2 focus-within:ring-blue-100">
+                  <User className="h-5 w-5 text-blue-700" />
                   <input
                     type="text"
                     name="username"
-                    className="w-full bg-transparent text-base text-slate-950 outline-none placeholder:text-slate-400"
+                    className="w-full bg-transparent text-base outline-none placeholder:text-slate-400"
                     value={formAuthentication.username}
                     onChange={handleChange}
                     placeholder="Nhập tên đăng nhập"
@@ -179,15 +179,15 @@ const Login = () => {
               </div>
 
               <div>
-                <label className="mb-3 block text-sm font-semibold text-slate-900">
+                <label className="mb-3 block text-sm font-semibold text-slate-950">
                   Mật khẩu
                 </label>
-                <div className="flex items-center gap-3 rounded-[18px] border border-slate-200 bg-slate-50 px-4 py-4 transition focus-within:border-blue-500 focus-within:bg-white focus-within:ring-4 focus-within:ring-blue-100">
-                  <Lock className="h-5 w-5 text-blue-600" />
+                <div className="flex items-center gap-3 rounded-[20px] border border-[#E0E0E0] bg-[#F9F9F9] px-4 py-4 transition focus-within:border-blue-500 focus-within:bg-white focus-within:ring-2 focus-within:ring-blue-100">
+                  <Lock className="h-5 w-5 text-blue-700" />
                   <input
                     type="password"
                     name="password"
-                    className="w-full bg-transparent text-base text-slate-950 outline-none placeholder:text-slate-400"
+                    className="w-full bg-transparent text-base outline-none placeholder:text-slate-400"
                     value={formAuthentication.password}
                     onChange={handleChange}
                     placeholder="Nhập mật khẩu"
@@ -229,7 +229,7 @@ const Login = () => {
 
                 <button
                   type="button"
-                  className="inline-flex h-14 items-center justify-center rounded-full border border-slate-200 bg-white px-6 text-sm font-semibold text-slate-900 transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700"
+                  className="inline-flex h-14 items-center justify-center rounded-full border border-slate-200 bg-white px-6 text-sm font-semibold text-slate-800 transition hover:border-blue-200 hover:bg-blue-50"
                   onClick={() => {
                     navigate("/register");
                   }}
@@ -239,17 +239,18 @@ const Login = () => {
 
                 <button
                   type="button"
-                  className="inline-flex h-14 items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-6 text-sm font-semibold text-slate-900 transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700"
+                  className="inline-flex h-14 items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-6 text-sm font-semibold text-slate-800 transition hover:border-blue-200 hover:bg-blue-50"
                   onClick={() => {
                     navigate("/");
                   }}
                 >
+                  {/* <House className="h-4 w-4" /> */}
                   Về trang chủ
                 </button>
               </div>
             </form>
 
-            <div className="mt-8 rounded-[18px] border border-blue-100 bg-blue-50 p-5">
+            <div className="mt-8 rounded-[24px] border border-blue-100 bg-blue-50 p-5">
               <p className="text-sm font-semibold text-slate-950">
                 Lưu ý đăng nhập
               </p>
