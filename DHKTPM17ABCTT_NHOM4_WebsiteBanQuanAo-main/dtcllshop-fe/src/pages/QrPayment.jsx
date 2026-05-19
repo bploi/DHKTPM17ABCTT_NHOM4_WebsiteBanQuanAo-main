@@ -12,7 +12,6 @@ const QrPayment = () => {
   const invoiceId = params.get("invoiceId");
   const [realAmount, setRealAmount] = useState(0);
   const [realInvoiceCode, setRealInvoiceCode] = useState("");
-  const [realOrderId, setRealOrderId] = useState(null);
   const interval = useRef(null);
 
   const qrCode = realAmount > 0 && realInvoiceCode
@@ -37,10 +36,6 @@ const QrPayment = () => {
         if (invoice.invoiceCode) {
           setRealInvoiceCode(invoice.invoiceCode);
         }
-        if (invoice.order && invoice.order.id) {
-          setRealOrderId(invoice.order.id);
-        }
-        
         if (invoice.paymentStatus === "PAID") {
           clearInterval(interval.current);
           setIsSuccess(true);
@@ -153,7 +148,6 @@ const QrPayment = () => {
 };
 
 export default QrPayment;
-
 
 
 

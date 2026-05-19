@@ -1,51 +1,42 @@
-﻿import React from "react";
+import React from "react";
 import { Navigate } from "react-router-dom";
-import { jwtDecode } from "jwt-decode"; // npm install jwt-decode
+import { jwtDecode } from "jwt-decode";
 
-/**
- * StaffRoute - Only allows users with STAFF role to access
- */
+const getRoles = (decodedToken) => {
+  const rawRoles = [
+    decodedToken.scope,
+    decodedToken.role,
+    decodedToken.authorities,
+    decodedToken.roles,
+  ].flatMap((role) => (Array.isArray(role) ? role : [role]));
+
+  return rawRoles
+    .filter(Boolean)
+    .flatMap((role) => role.toString().split(/\s+/))
+    .map((role) => role.toUpperCase());
+};
+
 const StaffRoute = ({ children }) => {
   const token = localStorage.getItem("accessToken");
 
-  // 1. No token → Redirect to login
   if (!token) {
-    alert("Bạn cần đăng nhập để truy cập khu vực nhân viên.");
     return <Navigate to="/login" replace />;
   }
 
   try {
-    // 2. Decode token
-    const decoded = jwtDecode(token);
+    const decodedToken = jwtDecode(token);
+    const roles = getRoles(decodedToken);
 
-    const role =
-      decoded.scope ||
-      decoded.role ||
-      decoded.authorities ||
-      decoded.roles ||
-      null;
-
-    const rolesArray = Array.isArray(role) ? role : (role ? [role] : []);
-
-    const isStaff = rolesArray.some((r) =>
-      r.toString().toUpperCase().includes("STAFF")
-    );
-
-    if (!isStaff) {
-      alert("Bạn không có quyền truy cập khu vực này. Chỉ dành cho nhân viên.");
+    if (!roles.some((role) => role.includes("STAFF"))) {
       return <Navigate to="/" replace />;
     }
 
     return children;
-
   } catch (error) {
-    console.error("Invalid or expired token:", error);
-    alert("Phiên đăng nhập không hợp lệ hoặc đã hết hạn. Vui lòng đăng nhập lại.");
+    console.error("Token không hợp lệ hoặc đã hết hạn:", error);
     localStorage.removeItem("accessToken");
     return <Navigate to="/login" replace />;
   }
 };
 
 export default StaffRoute;
-
-

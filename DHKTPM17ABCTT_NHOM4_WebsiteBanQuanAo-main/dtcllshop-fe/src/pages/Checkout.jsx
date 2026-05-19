@@ -85,10 +85,6 @@ const deletePurchasedCartItems = async (items, token) => {
   }
 };
 
-const getAddressText = (addr) => {
-  return addr?.deliveryAddress || addr?.delivery_address || "";
-};
-
 const getAddressNote = (addr) => {
   return addr?.deliveryNote || addr?.delivery_note || "";
 };
@@ -663,7 +659,6 @@ const Checkout = () => {
 };
 
 export default Checkout;
-
 
 
 

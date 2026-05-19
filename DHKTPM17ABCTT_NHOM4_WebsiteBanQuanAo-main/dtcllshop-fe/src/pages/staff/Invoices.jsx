@@ -107,11 +107,14 @@ export default function Invoice() {
   const getStatusColor = (status) => {
     switch (status) {
       case "PAID":
-        return "bg-green-100 text-green-800 border border-green-300";
+        return "admin-status-success";
       case "UNPAID":
-        return "bg-yellow-100 text-yellow-800 border border-yellow-300";
+      case "PENDING":
+        return "admin-status-warning";
+      case "FAILED":
+        return "admin-status-danger";
       default:
-        return "bg-gray-100 text-gray-800 border border-gray-300";
+        return "admin-status-neutral";
     }
   };
 
@@ -144,7 +147,7 @@ export default function Invoice() {
             {/* Làm mới Button */}
             <button
               onClick={loadInvoices}
-              className="px-4 py-2 bg-white border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all flex items-center gap-2 shadow-sm"
+              className="admin-btn-secondary"
               title="Làm mới hóa đơn"
             >
               <FaSync className={loading ? "animate-spin" : ""} />
@@ -298,7 +301,7 @@ export default function Invoice() {
                         </td>
                         <td className="px-6 py-5 text-base">
                           <span
-                            className={`px-4 py-2 rounded-lg text-sm font-bold inline-block ${getStatusColor(
+                            className={`admin-status-badge ${getStatusColor(
                               invoice.paymentStatus
                             )}`}
                           >
@@ -312,7 +315,7 @@ export default function Invoice() {
                           <div className="flex justify-center">
                             <button
                               onClick={() => handleViewDetails(invoice)}
-                              className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 font-semibold transition-all shadow-sm text-sm"
+                              className="admin-btn-secondary"
                             >
                               <FaEye size={16} />
                               <span>Xem</span>
@@ -418,7 +421,7 @@ export default function Invoice() {
                       Trạng thái thanh toán
                     </p>
                     <span
-                      className={`text-sm font-bold px-4 py-2 rounded-lg inline-block ${getStatusColor(
+                      className={`admin-status-badge ${getStatusColor(
                         selectedInvoice.paymentStatus
                       )}`}
                     >
@@ -519,7 +522,7 @@ export default function Invoice() {
             <div className="sticky bottom-0 bg-gray-100 px-8 py-5 border-t-2 border-gray-300 flex justify-end rounded-b-xl">
               <button
                 onClick={() => setShowDetailModal(false)}
-                className="px-8 py-3 text-gray-700 hover:text-gray-900 font-bold border-2 border-gray-400 rounded-lg hover:bg-gray-200 transition-all text-base"
+                className="admin-btn-secondary"
               >
                 Đóng
               </button>
@@ -530,7 +533,6 @@ export default function Invoice() {
     </div>
   );
 }
-
 
 
 

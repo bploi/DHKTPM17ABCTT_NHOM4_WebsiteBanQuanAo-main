@@ -3,7 +3,6 @@ import {
   FaPlus, FaEdit, FaTrash, FaUpload, FaDownload, FaImage, FaEye,
   FaSearch, FaFilter, FaSortAmountDown
 } from "react-icons/fa";
-import AdminChatBot from '../../components/AdminChatBot';
 export default function Products({ initialFilter = 'ALL' }) {
 
   const [products, setProducts] = useState([]);
@@ -307,15 +306,25 @@ export default function Products({ initialFilter = 'ALL' }) {
     return labels[status] || status || "Không xác định";
   };
 
+  const statusBadgeClass = (status) =>
+    status === "ACTIVE" ? "admin-status-success" : "admin-status-danger";
+
+  const stockBadgeClass = (quantity) => {
+    const stock = Number(quantity || 0);
+    if (stock <= 0) return "admin-status-danger";
+    if (stock <= 10) return "admin-status-warning";
+    return "admin-status-success";
+  };
+
   const formatCurrency = (value) =>
     `${Number(value || 0).toLocaleString("vi-VN")} đ`;
 
   const getCategoryColor = (categoryName) => {
     switch (categoryName) {
-      case "Bottom": return "bg-blue-100 text-blue-800";
-      case "Accessories": return "bg-purple-100 text-purple-800";
-      case "Top": return "bg-yellow-100 text-yellow-800";
-      default: return "bg-gray-100 text-gray-800";
+      case "Bottom": return "admin-status-info";
+      case "Accessories": return "admin-status-neutral";
+      case "Top": return "admin-status-warning";
+      default: return "admin-status-neutral";
     }
   };
 
@@ -383,11 +392,11 @@ export default function Products({ initialFilter = 'ALL' }) {
 
             <div className="flex gap-3 flex-wrap">
 
-              <button onClick={handleExportFile} className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2.5 rounded-xl flex items-center gap-2 shadow-md transition-all">
+              <button onClick={handleExportFile} className="admin-btn-secondary">
                 <FaDownload /> <span className="font-medium">Xuất file</span>
               </button>
 
-              <button onClick={openAddModal} className="bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2.5 rounded-xl flex items-center gap-2 shadow-md transition-all">
+              <button onClick={openAddModal} className="admin-btn-primary">
                 <FaPlus /> <span className="font-medium">Thêm mới</span>
               </button>
             </div>
@@ -492,7 +501,7 @@ export default function Products({ initialFilter = 'ALL' }) {
 
                       {/* Category */}
                       <td className="px-6 py-4">
-                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${getCategoryColor(p.category?.name)}`}>
+                        <span className={`admin-status-badge ${getCategoryColor(p.category?.name)}`}>
                           {categoryLabel(p.category?.name)}
                         </span>
                       </td>
@@ -504,34 +513,28 @@ export default function Products({ initialFilter = 'ALL' }) {
 
                       {/* Stock */}
                       <td className="px-6 py-4">
-                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${p.quantity > 0 ? 'bg-gray-100 text-gray-800' : 'bg-red-100 text-red-800'}`}>
+                        <span className={`admin-status-badge ${stockBadgeClass(p.quantity)}`}>
                           {p.quantity > 0 ? p.quantity : "Hết hàng"}
                         </span>
                       </td>
 
                       {/* Status */}
                       <td className="px-6 py-4">
-                        {p.status === "ACTIVE" ? (
-                          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800">
-                            <span className="w-1.5 h-1.5 bg-green-600 rounded-full mr-2"></span> {statusLabel(p.status)}
-                          </span>
-                        ) : (
-                          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-800">
-                            <span className="w-1.5 h-1.5 bg-red-600 rounded-full mr-2"></span> {statusLabel(p.status)}
-                          </span>
-                        )}
+                        <span className={`admin-status-badge ${statusBadgeClass(p.status)}`}>
+                          {statusLabel(p.status)}
+                        </span>
                       </td>
 
                       {/* Thao tác */}
                       <td className="px-6 py-4">
                         <div className="flex gap-2 justify-end">
-                          <button onClick={() => openDetailModal(p)} className="text-gray-600 hover:text-blue-600 p-2 rounded-lg hover:bg-blue-50 transition-all" title="Xem chi tiết">
+                          <button onClick={() => openDetailModal(p)} className="admin-btn-secondary" title="Xem chi tiết">
                             <FaEye />
                           </button>
-                          <button onClick={() => openEditModal(p)} className="text-blue-600 hover:text-blue-700 p-2 rounded-lg hover:bg-blue-50 transition-all" title="Chỉnh sửa">
+                          <button onClick={() => openEditModal(p)} className="admin-btn-primary" title="Chỉnh sửa">
                             <FaEdit />
                           </button>
-                          <button onClick={() => deleteProduct(p.id)} className="text-red-600 hover:text-red-700 p-2 rounded-lg hover:bg-red-50 transition-all" title="Xóa">
+                          <button onClick={() => deleteProduct(p.id)} className="admin-btn-danger" title="Xóa">
                             <FaTrash />
                           </button>
                         </div>
@@ -607,7 +610,7 @@ export default function Products({ initialFilter = 'ALL' }) {
                     <div>
                       <h3 className="text-3xl font-bold text-gray-900 mb-2">{detailProduct.name}</h3>
                       <div className="flex items-center gap-3 mt-2">
-                        <span className="bg-linear-to-r from-blue-500 to-indigo-500 text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow-md">
+                        <span className={`admin-status-badge ${getCategoryColor(detailProduct.category?.name)}`}>
                           {categoryLabel(detailProduct.category?.name)}
                         </span>
                         <span className="text-sm text-gray-500 font-medium">ID: #{detailProduct.id}</span>
@@ -694,7 +697,7 @@ export default function Products({ initialFilter = 'ALL' }) {
               {/* Footer Modal */}
               <div className="p-6 border-t border-gray-100 bg-gray-50 flex justify-end rounded-b-3xl">
                 <button
-                  className="px-6 py-3 bg-linear-to-r from-gray-700 to-gray-800 hover:from-gray-800 hover:to-gray-900 text-white rounded-xl font-medium shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-0.5"
+                  className="admin-btn-secondary"
                   onClick={() => setShowDetailModal(false)}
                 >
                   Đóng
@@ -949,13 +952,13 @@ export default function Products({ initialFilter = 'ALL' }) {
               {/* FOOTER BUTTONS */}
               <div className="p-6 border-t border-gray-100 bg-gray-50 rounded-b-3xl flex justify-end gap-4">
                 <button
-                  className="px-6 py-3 bg-white border-2 border-gray-300 text-gray-700 rounded-xl hover:bg-gray-100 hover:border-gray-400 font-semibold transition-all duration-200 shadow-sm hover:shadow-md"
+                  className="admin-btn-secondary"
                   onClick={() => setShowModal(false)}
                 >
                   Hủy bỏ
                 </button>
                 <button
-                  className="px-6 py-3 bg-linear-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-200 flex items-center gap-2 transform hover:-translate-y-0.5"
+                  className="admin-btn-primary"
                   onClick={saveProduct}
                 >
                   <FaEdit /> {editingProduct ? "Cập nhật sản phẩm" : "Lưu sản phẩm"}
@@ -966,13 +969,6 @@ export default function Products({ initialFilter = 'ALL' }) {
           </div>
         )}
       </div>
-      <AdminChatBot/>
     </div>
   );
 }
-
-
-
-
-
-

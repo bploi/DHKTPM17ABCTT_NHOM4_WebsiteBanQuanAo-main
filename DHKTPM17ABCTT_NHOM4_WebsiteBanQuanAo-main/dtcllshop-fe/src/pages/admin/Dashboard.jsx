@@ -263,6 +263,47 @@ const Dashboard = () => {
     }
   };
 
+  const getStatusBadgeClass = (status) => {
+    const value = String(status || "").toUpperCase();
+
+    if (
+      value.includes("CANCEL") ||
+      value.includes("FAILED") ||
+      value.includes("HỦY")
+    ) {
+      return "admin-status-danger";
+    }
+
+    if (
+      value.includes("PENDING") ||
+      value.includes("PROCESS") ||
+      value.includes("CHỜ") ||
+      value.includes("ĐANG XỬ")
+    ) {
+      return "admin-status-warning";
+    }
+
+    if (
+      value.includes("SHIPPING") ||
+      value.includes("SHIPPED") ||
+      value.includes("ĐANG GIAO")
+    ) {
+      return "admin-status-info";
+    }
+
+    if (
+      value.includes("DONE") ||
+      value.includes("COMPLETE") ||
+      value.includes("DELIVER") ||
+      value.includes("CONFIRM") ||
+      value.includes("HOÀN THÀNH")
+    ) {
+      return "admin-status-success";
+    }
+
+    return "admin-status-neutral";
+  };
+
   const getPaymentLabel = (payment) => {
     switch (payment) {
       case "Thẻ tín dụng":
@@ -574,7 +615,9 @@ const Dashboard = () => {
                       <td>{formatCurrency(order.total)}</td>
                       <td>{getPaymentLabel(order.payment)}</td>
                       <td>
-                        <span>{getStatusLabel(order.status)}</span>
+                        <span className={`admin-status-badge ${getStatusBadgeClass(order.status)}`}>
+                          {getStatusLabel(order.status)}
+                        </span>
                       </td>
                       <td>{order.date}</td>
                       <td>{order.items}</td>

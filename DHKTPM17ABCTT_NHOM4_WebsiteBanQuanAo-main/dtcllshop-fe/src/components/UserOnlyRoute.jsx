@@ -1,35 +1,42 @@
-﻿// components/UserOnlyRoute.jsx
 import React from "react";
 import { Navigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 
+const getRoles = (decodedToken) => {
+  const rawRoles = [
+    decodedToken.scope,
+    decodedToken.role,
+    decodedToken.authorities,
+    decodedToken.roles,
+  ].flatMap((role) => (Array.isArray(role) ? role : [role]));
+
+  return rawRoles
+    .filter(Boolean)
+    .flatMap((role) => role.toString().split(/\s+/))
+    .map((role) => role.toUpperCase());
+};
+
 const UserOnlyRoute = ({ children }) => {
-    const token = localStorage.getItem("accessToken");
+  const token = localStorage.getItem("accessToken");
 
-    // Nếu chưa đăng nhập → cho phép vào (các trang public)
-    if (!token) {
-        return children;
+  if (!token) {
+    return children;
+  }
+
+  try {
+    const decodedToken = jwtDecode(token);
+    const roles = getRoles(decodedToken);
+
+    if (roles.some((role) => role.includes("ADMIN"))) {
+      return <Navigate to="/admin" replace />;
     }
 
-    try {
-        const decoded = jwtDecode(token);
-        const role = decoded.scope || decoded.role || decoded.authorities?.[0];
-
-        // Chặn Admin truy cập vào các trang dành cho người dùng thường
-        if (role === "ADMIN") {
-            alert("Từ chối truy cập. Quản trị viên không thể vào trang người dùng.");
-            return <Navigate to="/admin" replace />;
-        }
-
-        // Nếu là USER hoặc STAFF (tùy yêu cầu của bạn) → cho vào
-        return children;
-    } catch (error) {
-        console.error("Invalid or expired token:", error);
-        localStorage.removeItem("accessToken");
-        alert("Phiên đăng nhập đã hết hạn hoặc không hợp lệ. Vui lòng đăng nhập lại.");
-        return <Navigate to="/login" replace />;
-    }
+    return children;
+  } catch (error) {
+    console.error("Token không hợp lệ hoặc đã hết hạn:", error);
+    localStorage.removeItem("accessToken");
+    return <Navigate to="/login" replace />;
+  }
 };
 
 export default UserOnlyRoute;
-
