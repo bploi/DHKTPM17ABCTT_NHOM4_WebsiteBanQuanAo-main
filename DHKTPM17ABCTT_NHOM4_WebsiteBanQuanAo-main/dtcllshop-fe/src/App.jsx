@@ -25,21 +25,6 @@ import UserOnlyRoute from "./components/UserOnlyRoute";
 import { jwtDecode } from "jwt-decode";
 import Profile from "./pages/Profile.jsx";
 import Order from "./pages/Order.jsx";
-
-const getTokenRoles = (decodedToken) => {
-  const rawRoles = [
-    decodedToken.scope,
-    decodedToken.role,
-    decodedToken.authorities,
-    decodedToken.roles,
-  ].flatMap((role) => (Array.isArray(role) ? role : [role]));
-
-  return rawRoles
-    .filter(Boolean)
-    .flatMap((role) => role.toString().split(/\s+/))
-    .map((role) => role.toUpperCase());
-};
-
 function App() {
   return (
     <>
@@ -119,9 +104,9 @@ const SmartRedirect = () => {
   if (token) {
     try {
       const decoded = jwtDecode(token);
-      const roles = getTokenRoles(decoded);
-      if (roles.some((role) => role.includes("ADMIN"))) return <Navigate to="/admin" replace />;
-      if (roles.some((role) => role.includes("STAFF"))) return <Navigate to="/staff/orders" replace />;
+      const role = decoded.scope || decoded.role || decoded.authorities?.[0];
+      if (role === "ADMIN") return <Navigate to="/admin" replace />;
+      if (role === "STAFF") return <Navigate to="/staff/orders" replace />;
     } catch {
       // token lỗi → xóa luôn
       localStorage.removeItem("accessToken");
@@ -131,4 +116,5 @@ const SmartRedirect = () => {
 };
 
 export default App;
+
 

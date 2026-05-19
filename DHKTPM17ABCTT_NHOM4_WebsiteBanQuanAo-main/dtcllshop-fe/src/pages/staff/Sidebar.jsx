@@ -50,26 +50,18 @@ export default function StaffSidebar() {
         </Link>
       </nav>
 
-      <div className="pt-4 mt-4 border-t border-slate-200 space-y-3">
-        <div className="admin-sidebar-profile">
-          <div className="admin-sidebar-avatar">ST</div>
-          <div className="admin-sidebar-user">
-            <strong>Staff</strong>
-            <span>Vận hành đơn hàng</span>
-          </div>
-        </div>
-
-        <button
-          onClick={handleLogout}
-          className="admin-sidebar-logout flex items-center gap-3 w-full px-4 py-3 transition"
-        >
-          <FaSignOutAlt size={18} />
-          <span>Đăng xuất</span>
-        </button>
-      </div>
+      {/* Đăng xuất */}
+      <button
+        onClick={handleLogout}
+        className="admin-sidebar-logout flex items-center gap-3 w-full px-4 py-3 transition"
+      >
+        <FaSignOutAlt size={18} />
+        <span>Đăng xuất</span>
+      </button>
     </div>
   );
 }
+
 
 
 

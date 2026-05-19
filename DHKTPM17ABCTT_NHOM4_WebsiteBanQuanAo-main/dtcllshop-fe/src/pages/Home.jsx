@@ -187,30 +187,32 @@ const Home = () => {
                     className="h-[520px] w-full object-cover opacity-90"
                 />
 
-                <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(0,0,0,0.50),rgba(0,0,0,0.10))]" />
+                <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(15,23,42,0.72),rgba(15,23,42,0.18)_48%,rgba(15,23,42,0.04))]" />
 
-                <div className="absolute bottom-5 left-5 right-5 flex items-end justify-between">
-                  <div className="rounded-2xl border border-white/15 bg-white/10 px-4 py-3 backdrop-blur-md">
-                    <p className="text-[10px] uppercase tracking-[0.2em] text-white/70">
+                <div className="absolute bottom-5 left-5 right-5 flex items-end justify-between gap-4">
+                  <div className="max-w-[72%] rounded-2xl border border-white/20 bg-slate-950/80 px-4 py-3 text-white shadow-[0_14px_32px_rgba(15,23,42,0.30)] backdrop-blur-md">
+                    <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-blue-100">
                       DTCLL BỘ SƯU TẬP
                     </p>
-                    <p className="mt-1 text-lg font-semibold text-white">
+                    <p className="mt-1 text-lg font-semibold leading-snug text-white">
                       Hiện đại, gọn gàng và giàu cá tính.
                     </p>
                   </div>
 
-                  <div className="flex gap-2">
+                  <div className="flex flex-shrink-0 gap-2">
                     <button
                         onClick={prevBanner}
-                        className="flex h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white backdrop-blur-md transition hover:bg-white/20"
+                        aria-label="Ảnh trước"
+                        className="flex h-11 w-11 items-center justify-center rounded-full border border-white/30 bg-slate-950/80 text-white shadow-[0_10px_24px_rgba(15,23,42,0.28)] backdrop-blur-md transition hover:bg-blue-600"
                     >
-                      <ChevronLeft size={20} />
+                      <ChevronLeft size={22} strokeWidth={2.6} />
                     </button>
                     <button
                         onClick={nextBanner}
-                        className="flex h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white backdrop-blur-md transition hover:bg-white/20"
+                        aria-label="Ảnh tiếp theo"
+                        className="flex h-11 w-11 items-center justify-center rounded-full border border-white/30 bg-slate-950/80 text-white shadow-[0_10px_24px_rgba(15,23,42,0.28)] backdrop-blur-md transition hover:bg-blue-600"
                     >
-                      <ChevronRight size={20} />
+                      <ChevronRight size={22} strokeWidth={2.6} />
                     </button>
                   </div>
                 </div>
@@ -404,16 +406,19 @@ const Home = () => {
             <section className="pb-20">
               <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
                 <div className="grid grid-cols-1 overflow-hidden rounded-[36px] border border-black/10 bg-white shadow-[0_18px_50px_rgba(0,0,0,0.08)] lg:grid-cols-[1.2fr_0.8fr]">
-                  <div className="bg-black px-8 py-14 text-white sm:px-12">
-                    <p className="inline-flex rounded-full border border-white/15 bg-white/10 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-white/80">
+                  <div className="bg-slate-950 px-8 py-14 text-white sm:px-12">
+                    <p className="inline-flex rounded-full border border-blue-300/30 bg-blue-600 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-white shadow-[0_10px_24px_rgba(37,99,235,0.24)]">
                       Tham gia DTCLL Shop
                     </p>
 
-                    <h2 className="mt-6 text-4xl font-extrabold tracking-[-0.03em] sm:text-5xl">
+                    <h2
+                        className="mt-6 text-4xl font-extrabold sm:text-5xl"
+                        style={{ color: "#ffffff" }}
+                    >
                       Bắt đầu mua sắm hôm nay
                     </h2>
 
-                    <p className="mt-5 max-w-xl text-base leading-8 text-white/72">
+                    <p className="mt-5 max-w-xl text-base leading-8 text-slate-200">
                       Tạo tài khoản để nhận ưu đãi riêng, cập nhật sản phẩm mới
                       và mua sắm thuận tiện hơn.
                     </p>
@@ -421,13 +426,13 @@ const Home = () => {
                     <div className="mt-8 flex flex-col gap-4 sm:flex-row">
                       <button
                           onClick={() => navigate("/register")}
-                          className="inline-flex h-14 items-center justify-center rounded-full bg-white px-8 text-sm font-semibold text-black transition hover:bg-[#e8e8e8]"
+                          className="inline-flex h-14 items-center justify-center rounded-full bg-white px-8 text-sm font-semibold text-slate-950 shadow-[0_10px_24px_rgba(255,255,255,0.12)] transition hover:bg-blue-50 hover:text-blue-700"
                       >
                         Đăng ký ngay
                       </button>
                       <button
                           onClick={() => navigate("/login")}
-                          className="inline-flex h-14 items-center justify-center rounded-full border border-white/20 bg-white/10 px-8 text-sm font-semibold text-white transition hover:bg-white/20"
+                          className="inline-flex h-14 items-center justify-center rounded-full border border-blue-300/40 bg-blue-600 px-8 text-sm font-semibold text-white shadow-[0_10px_24px_rgba(37,99,235,0.20)] transition hover:bg-blue-700"
                       >
                         Đã có tài khoản
                       </button>
@@ -459,6 +464,4 @@ const Home = () => {
 };
 
 export default Home;
-
-
 

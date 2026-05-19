@@ -334,13 +334,13 @@ export default function Employees() {
 
             <div className="flex gap-3">
               <button
-                className="admin-btn-primary"
+                className="bg-linear-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-5 py-2.5 rounded-xl flex items-center gap-2 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 font-medium"
                 onClick={openCreate}
               >
                 <FaPlus /> Thêm nhân viên
               </button>
 
-              <button className="admin-btn-secondary"
+              <button className="bg-linear-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-5 py-2.5 rounded-xl flex items-center gap-2 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 font-medium"
                 onClick={() => openCreateMeetingModal()}
               >
                 <FaMailBulk /> Tạo Google Meet
@@ -378,7 +378,7 @@ export default function Employees() {
 
             {/* Filter button */}
             <button
-              className="admin-btn-primary w-full md:w-auto"
+              className="w-full md:w-auto px-6 py-2.5 bg-linear-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white rounded-xl font-medium shadow-md hover:shadow-lg transition-all duration-200 transform hover:-translate-y-0.5"
               onClick={loadCustomers}
             >
               Lọc
@@ -432,14 +432,14 @@ export default function Employees() {
                       </td>
                       <td className="px-6 py-4 text-gray-700">{c.customer.phoneNumber}</td>
                       <td className="px-6 py-4">
-                        <span className="admin-status-badge admin-status-info">
+                        <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
                           {roleText(c.role)}
                         </span>
                       </td>
                       <td className="px-6 py-4">
-                        <span className={`admin-status-badge ${c.statusLogin === 'ACTIVE'
-                          ? 'admin-status-success'
-                          : 'admin-status-danger'
+                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold ${c.statusLogin === 'ACTIVE'
+                          ? 'bg-green-100 text-green-800'
+                          : 'bg-red-100 text-red-800'
                           }`}>
                           {accountStatusText(c.statusLogin)}
                         </span>
@@ -448,7 +448,7 @@ export default function Employees() {
                       <td className="px-6 py-4">
                         <div className="flex gap-2 justify-end">
                           <button
-                            className="admin-btn-secondary"
+                            className="text-gray-600 hover:text-purple-600 flex items-center gap-1.5 px-3 py-1.5 rounded-lg hover:bg-purple-50 transition-all duration-200"
                             onClick={() => openDetail(c)}
                           >
                             <FaEye />
@@ -456,7 +456,7 @@ export default function Employees() {
                           </button>
 
                           <button
-                            className="admin-btn-primary"
+                            className="text-blue-600 hover:text-blue-700 flex items-center gap-1.5 px-3 py-1.5 rounded-lg hover:bg-blue-50 transition-all duration-200"
                             onClick={() => openEdit(c)}
                           >
                             <FaEdit />
@@ -464,7 +464,7 @@ export default function Employees() {
                           </button>
 
                           <button
-                            className="admin-btn-danger"
+                            className="text-red-600 hover:text-red-700 flex items-center gap-1.5 px-3 py-1.5 rounded-lg hover:bg-red-50 transition-all duration-200"
                             onClick={() => blockAccount(c)}
                           >
                             <FaBan />
@@ -564,7 +564,7 @@ export default function Employees() {
               {/* Button */}
               <div className="p-6 border-t border-gray-100 bg-gray-50 flex justify-end rounded-b-3xl">
                 <button
-                  className="admin-btn-secondary"
+                  className="px-6 py-3 bg-linear-to-r from-gray-700 to-gray-800 hover:from-gray-800 hover:to-gray-900 text-white rounded-xl font-medium shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-0.5"
                   onClick={() => setShowDetail(false)}
                 >
                   Đóng
@@ -723,14 +723,14 @@ export default function Employees() {
               {/* Buttons */}
               <div className="p-6 border-t border-gray-100 bg-gray-50 flex justify-end gap-4 rounded-b-3xl">
                 <button
-                  className="admin-btn-secondary"
+                  className="px-6 py-3 bg-white border-2 border-gray-300 text-gray-700 rounded-xl hover:bg-gray-100 hover:border-gray-400 font-semibold transition-all duration-200 shadow-sm hover:shadow-md"
                   onClick={() => { setShowCreate(false); setEditingAccount(null); }}
                 >
                   Hủy
                 </button>
 
                 <button
-                  className="admin-btn-primary"
+                  className="px-6 py-3 bg-linear-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-0.5"
                   onClick={submitForm}
                 >
                   {editingAccount ? "Lưu thay đổi" : "Tạo nhân viên"}
@@ -866,7 +866,7 @@ export default function Employees() {
                       <button
                         type="button"
                         onClick={() => setOpenModal(false)}
-                        className="admin-btn-secondary"
+                        className="px-6 py-3 bg-white border-2 border-gray-300 text-gray-700 rounded-xl hover:bg-gray-100 hover:border-gray-400 font-semibold transition-all duration-200 shadow-sm hover:shadow-md"
                       >
                         Hủy bỏ
                       </button>
@@ -874,7 +874,7 @@ export default function Employees() {
                       <button
                         type="submit"
                         disabled={isSubmitting}
-                        className="admin-btn-primary disabled:opacity-70 disabled:cursor-not-allowed"
+                        className="px-6 py-3 bg-linear-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-0.5 flex items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
                       >
                         {isSubmitting ? "Đang xử lý..." : "Tạo cuộc họp"}
                       </button>
@@ -889,5 +889,7 @@ export default function Employees() {
     </div>
   );
 }
+
+
 
 

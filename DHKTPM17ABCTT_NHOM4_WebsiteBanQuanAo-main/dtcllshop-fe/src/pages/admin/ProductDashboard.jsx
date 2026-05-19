@@ -165,11 +165,11 @@ const ProductDashboard = ({ onNavigate }) => {
           </div>
           
           <div className="flex gap-3">
-             <button className="admin-btn-secondary">
+             <button className="flex items-center gap-2 px-5 py-3 bg-white border border-slate-200 text-slate-600 rounded-xl font-semibold hover:bg-slate-50 transition-colors">
                 <Calendar size={18} />
                 <span>Chọn ngày</span>
              </button>
-             <button className="admin-btn-primary">
+             <button className="flex items-center gap-2 px-6 py-3 bg-slate-900 text-white rounded-xl font-semibold shadow-xl shadow-slate-200 hover:bg-slate-800 transition-all hover:-translate-y-1">
                 <Download size={18} />
                 <span>Xuất báo cáo</span>
              </button>
@@ -384,7 +384,7 @@ const ProductDashboard = ({ onNavigate }) => {
                                     <td className="py-4 text-slate-500">{prod.category}</td>
                                     <td className="py-4 font-semibold text-slate-800">{prod.sales}</td>
                                     <td className="py-4 text-right pr-2">
-                                        <span className="admin-status-badge admin-status-success">
+                                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-green-100 text-green-700 text-xs font-bold">
                                             <TrendingUp size={12} /> {prod.trend}
                                         </span>
                                     </td>
@@ -426,7 +426,7 @@ const ProductDashboard = ({ onNavigate }) => {
                 </div>
                 
                 <div className="mt-8 pt-6 border-t border-slate-100">
-                    <button className="admin-btn-primary w-full">
+                    <button className="w-full py-3 rounded-xl bg-slate-900 text-white font-bold text-sm hover:bg-indigo-600 transition-colors shadow-lg shadow-slate-200">
                         Quản lý tồn kho
                     </button>
                 </div>
@@ -439,6 +439,7 @@ const ProductDashboard = ({ onNavigate }) => {
 };
 
 export default ProductDashboard;
+
 
 
 
