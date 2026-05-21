@@ -47,14 +47,18 @@ public class SePayService {
                 }
             }
         }
-        if (invoiceCode != null && invoiceCode.matches("INV\\d{11,}")) {
+        Invoice invoice = invoiceRepository.findByInvoiceCode(invoiceCode);
+
+        // Nếu không tìm thấy, thử format lại theo kiểu cũ (thêm gạch nối) rồi tìm lại
+        if (invoice == null && invoiceCode != null && invoiceCode.matches("INV\\d{11,}")) {
             String datePart = invoiceCode.substring(3, 11);
             String indexPart = invoiceCode.substring(11);
-            invoiceCode = "INV-" + datePart + "-" + indexPart;
+            String formattedCode = "INV-" + datePart + "-" + indexPart;
+            invoice = invoiceRepository.findByInvoiceCode(formattedCode);
         }
-        Invoice invoice = invoiceRepository.findByInvoiceCode(invoiceCode);
+
         if (invoice == null) {
-            return new SePayResponse(true, "Invoice not found");
+            return new SePayResponse(true, "Invoice not found: " + invoiceCode);
         }
         if (callbackRequest.getTransferAmount() < invoice.getTotalAmount()) {
             return new SePayResponse(true, "Payment amount insufficient");

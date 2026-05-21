@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { FaUser, FaEdit, FaPlus, FaTrash, FaEnvelope, FaStar, FaEye, FaMailBulk, FaBan } from "react-icons/fa";
 import AdminChatBot from '../../components/AdminChatBot';
 
@@ -31,6 +31,9 @@ export default function Customers() {
   // Create / Edit state
   const [showCreate, setShowCreate] = useState(false);
   const [editingAccount, setEditingAccount] = useState(null);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const customersPerPage = 10;
 
 
   const [form, setForm] = useState(
@@ -263,8 +266,17 @@ export default function Customers() {
     }
   };
 
+  const filteredAccounts = accounts.filter(c => c.id !== 1);
+  const sortedAccounts = [...filteredAccounts].sort((a, b) => b.id - a.id);
+  
+  const indexOfLastCustomer = currentPage * customersPerPage;
+  const indexOfFirstCustomer = indexOfLastCustomer - customersPerPage;
+  const currentCustomers = sortedAccounts.slice(indexOfFirstCustomer, indexOfLastCustomer);
+  const totalPages = Math.ceil(sortedAccounts.length / customersPerPage);
 
-
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
 
   const submitForm = () => {
     if (editingAccount) updateCustomer();
@@ -393,9 +405,7 @@ export default function Customers() {
               </thead>
 
               <tbody className="divide-y divide-gray-100">
-                {accounts
-                  .filter(c => c.id !== 1)
-                  .map((c) => (
+                {currentCustomers.map((c) => (
                     <tr key={c.id} className="hover:bg-purple-50/50 transition-colors duration-200">
                       <td className="px-6 py-4">
                         <span className="font-semibold text-gray-900">{c.customer.fullName}</span>
@@ -463,6 +473,46 @@ export default function Customers() {
                 )}
               </tbody>
             </table>
+          </div>
+
+          <div className="px-6 py-4 border-t border-gray-100 bg-gray-50 flex items-center justify-between flex-wrap gap-4">
+            <span className="text-sm text-gray-500">
+              Hiển thị {sortedAccounts.length > 0 ? indexOfFirstCustomer + 1 : 0} - {Math.min(indexOfLastCustomer, sortedAccounts.length)} / {sortedAccounts.length} khách hàng
+            </span>
+            <div className="flex gap-1">
+              <button
+                onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
+                disabled={currentPage === 1}
+                className="px-3 py-1 rounded-md text-sm font-medium border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Trước
+              </button>
+              
+              {Array.from({ length: totalPages }, (_, i) => i + 1)
+                .filter(p => p === 1 || p === totalPages || Math.abs(p - currentPage) <= 1)
+                .map((page, idx, arr) => {
+                  const isGap = idx > 0 && arr[idx - 1] !== page - 1;
+                  return (
+                    <React.Fragment key={page}>
+                      {isGap && <span className="px-2 py-1 text-gray-500">...</span>}
+                      <button
+                        onClick={() => handlePageChange(page)}
+                        className={`px-3 py-1 rounded-md text-sm font-medium border ${currentPage === page ? 'bg-purple-600 text-white border-purple-600' : 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50'}`}
+                      >
+                        {page}
+                      </button>
+                    </React.Fragment>
+                  );
+                })}
+
+              <button
+                onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
+                disabled={currentPage === totalPages || totalPages === 0}
+                className="px-3 py-1 rounded-md text-sm font-medium border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Sau
+              </button>
+            </div>
           </div>
         </div>
 

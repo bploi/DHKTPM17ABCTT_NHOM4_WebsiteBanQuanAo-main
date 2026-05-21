@@ -32,11 +32,21 @@ const Dashboard = () => {
   const [detailedOrder, setDetailedOrder] = useState([]);
   const [timeSlotData, setTimeSlotData] = useState([]);
   const [allData, setAllData] = useState([]);
+  
+  const [currentOrderPage, setCurrentOrderPage] = useState(1);
+  const ordersPerPage = 10;
 
   const [dateRange, setDateRange] = useState({
     start: new Date(Date.now() - 30 * 86400000).toISOString().split("T")[0],
     end: new Date().toISOString().split("T")[0],
   });
+
+  const [currentTime, setCurrentTime] = useState(new Date());
+
+  useEffect(() => {
+    const timer = setInterval(() => setCurrentTime(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, []);
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -279,6 +289,19 @@ const Dashboard = () => {
     }
   };
 
+  const sortedDetailedOrder = useMemo(() => {
+    return [...detailedOrder].reverse();
+  }, [detailedOrder]);
+
+  const indexOfLastOrder = currentOrderPage * ordersPerPage;
+  const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
+  const currentOrders = sortedDetailedOrder.slice(indexOfFirstOrder, indexOfLastOrder);
+  const totalOrderPages = Math.ceil(sortedDetailedOrder.length / ordersPerPage);
+
+  const handleOrderPageChange = (page) => {
+    setCurrentOrderPage(page);
+  };
+
   const quickRanges = [
     { label: "Hôm nay", action: "today" },
     { label: "Hôm qua", action: "yesterday" },
@@ -330,7 +353,7 @@ const Dashboard = () => {
 
         <div className="dashboard-v2-heroStats">
           <span>Cập nhật</span>
-          <strong>{new Date().toLocaleTimeString("vi-VN")}</strong>
+          <strong>{currentTime.toLocaleTimeString("vi-VN")}</strong>
           <small>{dateRange.start} - {dateRange.end}</small>
         </div>
       </section>
@@ -565,7 +588,7 @@ const Dashboard = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {detailedOrder.map((order, index) => (
+                  {currentOrders.map((order, index) => (
                     <tr key={index}>
                       <td>
                         <strong>{order.id}</strong>
@@ -585,12 +608,35 @@ const Dashboard = () => {
             </div>
 
             <div className="dashboard-v2-tableFooter">
-              <span>Hiển thị {detailedOrder.length} / {totalOrder} đơn hàng</span>
+              <span>Hiển thị {sortedDetailedOrder.length > 0 ? indexOfFirstOrder + 1 : 0} - {Math.min(indexOfLastOrder, sortedDetailedOrder.length)} / {sortedDetailedOrder.length} đơn hàng</span>
               <div>
-                <button>Trước</button>
-                <button className="active">1</button>
-                <button>2</button>
-                <button>Sau</button>
+                <button 
+                  onClick={() => handleOrderPageChange(Math.max(1, currentOrderPage - 1))}
+                  disabled={currentOrderPage === 1}
+                >Trước</button>
+                
+                {Array.from({ length: totalOrderPages }, (_, i) => i + 1)
+                  .filter(p => p === 1 || p === totalOrderPages || Math.abs(p - currentOrderPage) <= 1)
+                  .map((page, idx, arr) => {
+                    const isGap = idx > 0 && arr[idx - 1] !== page - 1;
+                    return (
+                      <span key={page} style={{display: 'inline-flex', gap: '4px'}}>
+                        {isGap && <span style={{display: 'inline-flex', alignItems: 'center', margin: '0 4px'}}>...</span>}
+                        <button 
+                          className={currentOrderPage === page ? "active" : ""}
+                          onClick={() => handleOrderPageChange(page)}
+                        >
+                          {page}
+                        </button>
+                      </span>
+                    );
+                  })
+                }
+
+                <button 
+                  onClick={() => handleOrderPageChange(Math.min(totalOrderPages, currentOrderPage + 1))}
+                  disabled={currentOrderPage === totalOrderPages || totalOrderPages === 0}
+                >Sau</button>
               </div>
             </div>
           </section>

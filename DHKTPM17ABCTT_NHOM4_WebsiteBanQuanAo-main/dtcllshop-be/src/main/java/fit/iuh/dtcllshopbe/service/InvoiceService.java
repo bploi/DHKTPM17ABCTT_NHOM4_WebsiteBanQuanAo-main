@@ -105,14 +105,14 @@ public class InvoiceService {
         Date start = toDateStart(startDate);
         Date end = toDateEnd(endDate);
 
-        List<Object[]> results = invoiceRepository.getProfitByWeek(start, end);
+        List<Object[]> results = invoiceRepository.findDailyRevenue(start, end, fit.iuh.dtcllshopbe.enums.StatusPayment.PAID);
 
-        // Convert DB data thành map week → profit
         Map<Integer, Double> profitMap = new HashMap<>();
         for (Object[] row : results) {
-            Integer week = (Integer) row[1];
-            Double profit = (Double) row[2];
-            profitMap.put(week, profit);
+            java.sql.Date sqlDate = (java.sql.Date) row[0];
+            Double profit = (Double) row[1];
+            LocalDate localDate = sqlDate.toLocalDate();
+            profitMap.put(localDate.getDayOfWeek().getValue(), profit);
         }
 
         int weekNumber = startDate.get(WeekFields.ISO.weekOfWeekBasedYear());
@@ -120,13 +120,12 @@ public class InvoiceService {
 
         List<Map<String, Object>> finalList = new ArrayList<>();
 
-        // Chỉ 1 tuần → fill đủ thứ 2 → CN
         for (int i = 1; i <= 7; i++) {
             Map<String, Object> item = new HashMap<>();
             item.put("year", year);
             item.put("week", weekNumber);
-            item.put("day", startDate.plusDays(i - 1).getDayOfWeek().toString());
-            item.put("profit", profitMap.getOrDefault(weekNumber, 0.0));
+            item.put("day", java.time.DayOfWeek.of(i).name());
+            item.put("profit", profitMap.getOrDefault(i, 0.0));
             finalList.add(item);
         }
 

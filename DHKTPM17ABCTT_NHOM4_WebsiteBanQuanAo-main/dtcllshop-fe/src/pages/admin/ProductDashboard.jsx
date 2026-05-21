@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Package, AlertTriangle, TrendingUp, Download,
   Calendar, ChevronRight, Star, Sparkles, CheckCircle,
@@ -58,11 +58,33 @@ const ProductDashboard = ({ onNavigate }) => {
   useEffect(() => {
     fetchTopProducts();
     fetchSetData();
-    fetchProfit(timeFilter);
     getCategoryRevenue();
-  }, [type, timeFilter]);
+  }, [type]);
+
+  useEffect(() => {
+    fetchProfit(timeFilter);
+  }, [timeFilter]);
 
   // --- API CALLS ---
+  const exportToCSV = () => {
+    const headers = ["Thời gian", "Lợi nhuận (VNĐ)"];
+    const rows = chartData.map((i) => {
+      return [ `"${i.name}"`, i.profitRaw ];
+    });
+
+    if (rows.length === 0) {
+      alert("Không có dữ liệu để xuất file.");
+      return;
+    }
+
+    const csv = [headers.join(","), ...rows.map((r) => r.join(","))].join("\n");
+    const blob = new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8;" });
+
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = `Product_Profit_${timeFilter}.csv`;
+    link.click();
+  };
   const getCategoryRevenue = async () => {
     try {
       const response = await fetch("http://localhost:8080/categories/category-revenue", {
@@ -128,7 +150,15 @@ const ProductDashboard = ({ onNavigate }) => {
       };
 
       const formatted = data.map((item) => {
-        let rawValue = typeof item.profit === 'string' ? parseFloat(item.profit.replace(/,/g, '')) : item.profit;
+        let rawValue = 0;
+        if (item.profit != null) {
+          if (typeof item.profit === 'string') {
+             rawValue = parseFloat(item.profit.replace(/,/g, '').replace(/\./g, '')) || 0;
+          } else {
+             rawValue = parseFloat(item.profit) || 0;
+          }
+        }
+        
         let displayName = filter === "week" ? mapDayToVI(item.day) : (filter === "month" ? `Tháng ${item.month}` : `${item.year}`);
         
         return {
@@ -165,11 +195,26 @@ const ProductDashboard = ({ onNavigate }) => {
           </div>
           
           <div className="flex gap-3">
-             <button className="flex items-center gap-2 px-5 py-3 bg-white border border-slate-200 text-slate-600 rounded-xl font-semibold hover:bg-slate-50 transition-colors">
-                <Calendar size={18} />
-                <span>Chọn ngày</span>
-             </button>
-             <button className="flex items-center gap-2 px-6 py-3 bg-slate-900 text-white rounded-xl font-semibold shadow-xl shadow-slate-200 hover:bg-slate-800 transition-all hover:-translate-y-1">
+             <div className="relative">
+               <select 
+                 className="absolute inset-0 opacity-0 cursor-pointer w-full"
+                 value={timeFilter}
+                 onChange={(e) => setTimeFilter(e.target.value)}
+                 title="Chọn khoảng thời gian"
+               >
+                 <option value="week">Theo tuần</option>
+                 <option value="month">Theo tháng</option>
+                 <option value="year">Theo năm</option>
+               </select>
+               <button className="flex items-center gap-2 px-5 py-3 bg-white border border-slate-200 text-slate-600 rounded-xl font-semibold hover:bg-slate-50 transition-colors pointer-events-none">
+                  <Calendar size={18} />
+                  <span>Chọn thời gian</span>
+               </button>
+             </div>
+             <button 
+                onClick={exportToCSV}
+                className="flex items-center gap-2 px-6 py-3 bg-slate-900 text-white rounded-xl font-semibold shadow-xl shadow-slate-200 hover:bg-slate-800 transition-all hover:-translate-y-1"
+             >
                 <Download size={18} />
                 <span>Xuất báo cáo</span>
              </button>
