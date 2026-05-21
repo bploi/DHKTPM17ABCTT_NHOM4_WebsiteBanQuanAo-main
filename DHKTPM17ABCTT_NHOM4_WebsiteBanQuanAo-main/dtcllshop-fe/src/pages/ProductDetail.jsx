@@ -250,9 +250,52 @@ const ProductDetail = () => {
       return toast.warning("Vui lòng chọn size");
     }
 
-    if (!user?.id) {
-      return toast.warning("Vui lòng đăng nhập trước khi thêm vào giỏ hàng");
-    }
+    // if (!user?.id) {
+    //   return toast.warning("Vui lòng đăng nhập trước khi thêm vào giỏ hàng");
+    // }
+
+      const selectedSizeDetail = hasSizes
+          ? uniqueSizes.find((size) => size.sizeName === selectedSize)
+          : null;
+
+      if (hasSizes && !selectedSizeDetail?.id) {
+          return toast.error("Kích cỡ đã chọn không hợp lệ.");
+      }
+
+      if (!user?.id) {
+          // 1. Lưu vào LocalStorage cho khách vãng lai
+          let guestCart = JSON.parse(localStorage.getItem("guestCart")) || [];
+
+          const existingItemIndex = guestCart.findIndex(
+              (item) => item.productId === parseInt(id) && item.sizeDetailId === selectedSizeDetail?.id
+          );
+
+          if (existingItemIndex > -1) {
+              guestCart[existingItemIndex].quantity += parseInt(quantity);
+              guestCart[existingItemIndex].subtotal = guestCart[existingItemIndex].quantity * guestCart[existingItemIndex].priceAtTime;
+          } else {
+              guestCart.push({
+                  id: `guest_${Date.now()}`, // Tạo ID ảo cho giỏ hàng tạm
+                  productId: parseInt(id),
+                  productName: product.name,
+                  sizeDetailId: selectedSizeDetail?.id,
+                  sizeName: selectedSize,
+                  quantity: parseInt(quantity),
+                  priceAtTime: product.costPrice || product.price,
+                  subtotal: (product.costPrice || product.price) * parseInt(quantity),
+                  productImage: product.imageUrlFront,
+                  selected: true
+              });
+          }
+          localStorage.setItem("guestCart", JSON.stringify(guestCart));
+          setIsAddedToCart(true);
+          toast.success("Đã thêm sản phẩm vào giỏ hàng!");
+          setTimeout(() => setIsAddedToCart(false), 2000);
+          window.dispatchEvent(new Event("cartUpdated")); // Bắn event để icon giỏ hàng nháy số
+          return;
+      }
+
+
     if (quantity < 1) return toast.warning("Số lượng phải lớn hơn hoặc bằng 1");
     if (!cart?.id) return toast.error("Giỏ hàng chưa sẵn sàng. Vui lòng thử lại.");
 

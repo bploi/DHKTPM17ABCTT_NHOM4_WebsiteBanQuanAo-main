@@ -17,6 +17,13 @@ export default function Header() {
   const [searchResults, setSearchResults] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
+    const [guestCartCount, setGuestCartCount] = useState(0);
+
+    const updateGuestCartCount = () => {
+        const guestCart = JSON.parse(localStorage.getItem("guestCart")) || [];
+        const count = guestCart.reduce((sum, item) => sum + item.quantity, 0);
+        setGuestCartCount(count);
+    };
   const navigate = useNavigate();
   const location = useLocation();
   const searchRef = useRef(null);
@@ -37,11 +44,13 @@ export default function Header() {
       const token = localStorage.getItem("accessToken");
       if (!token) {
         setUser(null);
+          updateGuestCartCount();
         return;
       }
       setIsLoggedIn(!!token);
     };
     checkAuth();
+      updateGuestCartCount();
     window.addEventListener("storage", checkAuth);
     window.addEventListener("login", checkAuth);
     window.addEventListener("logout", checkAuth);
@@ -115,6 +124,9 @@ export default function Header() {
     const handleCartUpdated = () => {
       if (user?.id) {
         fetchCart();
+      }
+      else {
+          updateGuestCartCount(); // <-- THÊM NHÁNH ELSE NÀY
       }
     };
     window.addEventListener("cartUpdated", handleCartUpdated);
@@ -314,73 +326,137 @@ export default function Header() {
                 )}
               </div>
 
-              {/* Auth / User */}
-              {isLoggedIn ? (
-                  <>
+              {/*/!* Auth / User *!/*/}
+              {/*{isLoggedIn ? (*/}
+              {/*    <>*/}
+              {/*      <div className="relative group">*/}
+              {/*        <button className="flex h-11 w-11 items-center justify-center rounded-full border border-black/10 bg-white text-[#333] shadow-[0_10px_24px_rgba(0,0,0,0.04)] transition hover:bg-black hover:text-white">*/}
+              {/*          <User size={19} strokeWidth={2.2} />*/}
+              {/*        </button>*/}
+
+              {/*        <div className="invisible absolute right-0 mt-3 w-56 translate-y-2 overflow-hidden rounded-[24px] border border-black/10 bg-white opacity-0 shadow-[0_24px_60px_rgba(0,0,0,0.12)] transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 z-50">*/}
+              {/*          <Link*/}
+              {/*              to="/profile"*/}
+              {/*              className="block px-4 py-3 text-sm font-medium text-black transition hover:bg-[#f7f7f7]"*/}
+              {/*          >*/}
+              {/*            Hồ sơ*/}
+              {/*          </Link>*/}
+              {/*          <Link*/}
+              {/*              to="/wishlists"*/}
+              {/*              className="block px-4 py-3 text-sm font-medium text-black transition hover:bg-[#f7f7f7]"*/}
+              {/*          >*/}
+              {/*            Danh sách yêu thích*/}
+              {/*          </Link>*/}
+              {/*          <Link*/}
+              {/*              to="/orders"*/}
+              {/*              onClick={() => {*/}
+              {/*                localStorage.setItem("userId", user.id);*/}
+              {/*              }}*/}
+              {/*              className="block px-4 py-3 text-sm font-medium text-black transition hover:bg-[#f7f7f7]"*/}
+              {/*          >*/}
+              {/*            Đơn hàng của tôi*/}
+              {/*          </Link>*/}
+              {/*          <button*/}
+              {/*              onClick={handleLogout}*/}
+              {/*              className="flex w-full items-center gap-2 px-4 py-3 text-left text-sm font-semibold text-black transition hover:bg-[#f7f7f7]"*/}
+              {/*          >*/}
+              {/*            <LogOut size={16} />*/}
+              {/*            Đăng xuất*/}
+              {/*          </button>*/}
+              {/*        </div>*/}
+              {/*      </div>*/}
+
+              {/*      <button*/}
+              {/*          onClick={() => navigate("/cart")}*/}
+              {/*          className="relative flex h-11 w-11 items-center justify-center rounded-full border border-black/10 bg-white text-[#333] shadow-[0_10px_24px_rgba(0,0,0,0.04)] transition hover:bg-black hover:text-white"*/}
+              {/*      >*/}
+              {/*        <ShoppingCart size={19} strokeWidth={2.2} />*/}
+              {/*        <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-black text-[10px] font-bold text-white">*/}
+              {/*      {cart?.totalQuantity || 0}*/}
+              {/*    </span>*/}
+              {/*      </button>*/}
+              {/*    </>*/}
+              {/*) : (*/}
+              {/*    <div className="hidden sm:flex items-center gap-2 rounded-full border border-black/10 bg-white p-1.5 shadow-[0_10px_24px_rgba(0,0,0,0.04)]">*/}
+              {/*      <Link*/}
+              {/*          to="/login"*/}
+              {/*          className="inline-flex h-10 items-center justify-center rounded-full bg-black px-5 text-sm font-semibold text-white transition hover:bg-[#2a2a2a]"*/}
+              {/*      >*/}
+              {/*        Đăng nhập*/}
+              {/*      </Link>*/}
+              {/*      <Link*/}
+              {/*          to="/register"*/}
+              {/*          className="inline-flex h-10 items-center justify-center rounded-full px-5 text-sm font-semibold text-black transition hover:bg-[#f2f2f2]"*/}
+              {/*      >*/}
+              {/*        Đăng ký*/}
+              {/*      </Link>*/}
+              {/*    </div>*/}
+              {/*)}*/}
+                {/* Giỏ hàng luôn hiển thị độc lập */}
+                <button
+                    onClick={() => navigate("/cart")}
+                    className="relative flex h-11 w-11 items-center justify-center rounded-full border border-black/10 bg-white text-[#333] shadow-[0_10px_24px_rgba(0,0,0,0.04)] transition hover:bg-black hover:text-white"
+                >
+                    <ShoppingCart size={19} strokeWidth={2.2} />
+                    <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-black text-[10px] font-bold text-white">
+                  {isLoggedIn ? (cart?.totalQuantity || 0) : guestCartCount}
+                </span>
+                </button>
+
+                {/* Auth / User: Chỉ hiển thị nút Hồ sơ/Đăng nhập */}
+                {isLoggedIn ? (
                     <div className="relative group">
-                      <button className="flex h-11 w-11 items-center justify-center rounded-full border border-black/10 bg-white text-[#333] shadow-[0_10px_24px_rgba(0,0,0,0.04)] transition hover:bg-black hover:text-white">
-                        <User size={19} strokeWidth={2.2} />
-                      </button>
-
-                      <div className="invisible absolute right-0 mt-3 w-56 translate-y-2 overflow-hidden rounded-[24px] border border-black/10 bg-white opacity-0 shadow-[0_24px_60px_rgba(0,0,0,0.12)] transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 z-50">
-                        <Link
-                            to="/profile"
-                            className="block px-4 py-3 text-sm font-medium text-black transition hover:bg-[#f7f7f7]"
-                        >
-                          Hồ sơ
-                        </Link>
-                        <Link
-                            to="/wishlists"
-                            className="block px-4 py-3 text-sm font-medium text-black transition hover:bg-[#f7f7f7]"
-                        >
-                          Danh sách yêu thích
-                        </Link>
-                        <Link
-                            to="/orders"
-                            onClick={() => {
-                              localStorage.setItem("userId", user.id);
-                            }}
-                            className="block px-4 py-3 text-sm font-medium text-black transition hover:bg-[#f7f7f7]"
-                        >
-                          Đơn hàng của tôi
-                        </Link>
-                        <button
-                            onClick={handleLogout}
-                            className="flex w-full items-center gap-2 px-4 py-3 text-left text-sm font-semibold text-black transition hover:bg-[#f7f7f7]"
-                        >
-                          <LogOut size={16} />
-                          Đăng xuất
+                        <button className="flex h-11 w-11 items-center justify-center rounded-full border border-black/10 bg-white text-[#333] shadow-[0_10px_24px_rgba(0,0,0,0.04)] transition hover:bg-black hover:text-white">
+                            <User size={19} strokeWidth={2.2} />
                         </button>
-                      </div>
+
+                        <div className="invisible absolute right-0 mt-3 w-56 translate-y-2 overflow-hidden rounded-[24px] border border-black/10 bg-white opacity-0 shadow-[0_24px_60px_rgba(0,0,0,0.12)] transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 z-50">
+                            <Link
+                                to="/profile"
+                                className="block px-4 py-3 text-sm font-medium text-black transition hover:bg-[#f7f7f7]"
+                            >
+                                Hồ sơ
+                            </Link>
+                            <Link
+                                to="/wishlists"
+                                className="block px-4 py-3 text-sm font-medium text-black transition hover:bg-[#f7f7f7]"
+                            >
+                                Danh sách yêu thích
+                            </Link>
+                            <Link
+                                to="/orders"
+                                onClick={() => {
+                                    localStorage.setItem("userId", user.id);
+                                }}
+                                className="block px-4 py-3 text-sm font-medium text-black transition hover:bg-[#f7f7f7]"
+                            >
+                                Đơn hàng của tôi
+                            </Link>
+                            <button
+                                onClick={handleLogout}
+                                className="flex w-full items-center gap-2 px-4 py-3 text-left text-sm font-semibold text-black transition hover:bg-[#f7f7f7]"
+                            >
+                                <LogOut size={16} />
+                                Đăng xuất
+                            </button>
+                        </div>
                     </div>
-
-                    <button
-                        onClick={() => navigate("/cart")}
-                        className="relative flex h-11 w-11 items-center justify-center rounded-full border border-black/10 bg-white text-[#333] shadow-[0_10px_24px_rgba(0,0,0,0.04)] transition hover:bg-black hover:text-white"
-                    >
-                      <ShoppingCart size={19} strokeWidth={2.2} />
-                      <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-black text-[10px] font-bold text-white">
-                    {cart?.totalQuantity || 0}
-                  </span>
-                    </button>
-                  </>
-              ) : (
-                  <div className="hidden sm:flex items-center gap-2 rounded-full border border-black/10 bg-white p-1.5 shadow-[0_10px_24px_rgba(0,0,0,0.04)]">
-                    <Link
-                        to="/login"
-                        className="inline-flex h-10 items-center justify-center rounded-full bg-black px-5 text-sm font-semibold text-white transition hover:bg-[#2a2a2a]"
-                    >
-                      Đăng nhập
-                    </Link>
-                    <Link
-                        to="/register"
-                        className="inline-flex h-10 items-center justify-center rounded-full px-5 text-sm font-semibold text-black transition hover:bg-[#f2f2f2]"
-                    >
-                      Đăng ký
-                    </Link>
-                  </div>
-              )}
-
+                ) : (
+                    <div className="hidden sm:flex items-center gap-2 rounded-full border border-black/10 bg-white p-1.5 shadow-[0_10px_24px_rgba(0,0,0,0.04)]">
+                        <Link
+                            to="/login"
+                            className="inline-flex h-10 items-center justify-center rounded-full bg-black px-5 text-sm font-semibold text-white transition hover:bg-[#2a2a2a]"
+                        >
+                            Đăng nhập
+                        </Link>
+                        <Link
+                            to="/register"
+                            className="inline-flex h-10 items-center justify-center rounded-full px-5 text-sm font-semibold text-black transition hover:bg-[#f2f2f2]"
+                        >
+                            Đăng ký
+                        </Link>
+                    </div>
+                )}
               {/* Mobile Menu Button */}
               <button
                   className="lg:hidden flex h-11 w-11 items-center justify-center rounded-full border border-black/10 bg-white text-[#333] shadow-[0_10px_24px_rgba(0,0,0,0.04)] transition hover:bg-black hover:text-white"

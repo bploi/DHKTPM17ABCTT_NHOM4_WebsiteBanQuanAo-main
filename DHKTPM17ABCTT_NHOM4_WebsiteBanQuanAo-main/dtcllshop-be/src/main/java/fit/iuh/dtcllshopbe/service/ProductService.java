@@ -26,6 +26,7 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -50,7 +51,13 @@ public class ProductService {
     CategoryRepository categoryRepository;
     SizeRepository sizeRepository;
     ProductMapper productMapper;
+    public Page<ProductResponse> getProductsPage(Pageable pageable) {
+        // Hàm findAll(Pageable) được tích hợp sẵn trong JpaRepository
+        Page<Product> productPage = productRepository.findAll(pageable);
 
+        // Chuyển đổi từ Page<Product> sang Page<ProductResponse> qua Mapper
+        return productPage.map(productMapper::toProductResponse);
+    }
     public List<ProductResponse> getAllProducts() {
         List<Product> products = productRepository.findAll();
 

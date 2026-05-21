@@ -79,10 +79,19 @@ const Cart = () => {
         }
     };
 
-    useEffect(() => {
-        fetchUser();
-    }, []);
+    // useEffect(() => {
+    //     fetchUser();
+    // }, []);
 
+
+    useEffect(() => {
+        const token = localStorage.getItem("accessToken");
+        if (token) {
+            fetchUser();
+        } else {
+            hanldeFetchCart(); // Chưa login thì render ngay giỏ hàng tạm
+        }
+    }, []);
     const fetchCart = async () => {
         try {
             const token = localStorage.getItem("accessToken");
@@ -109,56 +118,95 @@ const Cart = () => {
         }
     }, [user]);
 
+    // const hanldeFetchCart = async () => {
+    //     try {
+    //         const token = localStorage.getItem("accessToken");
+    //         const res = await fetch(
+    //             `http://localhost:8080/cart-details/cart/${cart.id}`,
+    //             {
+    //                 headers: {
+    //                     "Content-Type": "application/json",
+    //                     Authorization: `Bearer ${token}`,
+    //                 },
+    //             }
+    //         );
+    //         const data = await res.json();
+    //         for (const cd of data) {
+    //             console.log(cd);
+    //         }
+    //         console.log("Cart API: ", data);
+    //         const items = Array.isArray(data)
+    //             ? data
+    //             : data.result || data.cartDetails || [];
+    //         setCartItems(items.map(normalizeCartItem));
+    //     } catch (err) {
+    //         console.error("Lỗi: ", err);
+    //     }
+    // };
+
     const hanldeFetchCart = async () => {
+        const token = localStorage.getItem("accessToken");
+        if (!token) {
+            const guestCart = JSON.parse(localStorage.getItem("guestCart")) || [];
+            setCartItems(guestCart.map(normalizeCartItem));
+            return;
+        }
+        if (!cart?.id) return;
         try {
-            const token = localStorage.getItem("accessToken");
-            const res = await fetch(
-                `http://localhost:8080/cart-details/cart/${cart.id}`,
-                {
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            );
+            const res = await fetch(`http://localhost:8080/cart-details/cart/${cart.id}`, {
+                headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+            });
             const data = await res.json();
-            for (const cd of data) {
-                console.log(cd);
-            }
-            console.log("Cart API: ", data);
-            const items = Array.isArray(data)
-                ? data
-                : data.result || data.cartDetails || [];
+            const items = Array.isArray(data) ? data : data.result || data.cartDetails || [];
             setCartItems(items.map(normalizeCartItem));
         } catch (err) {
             console.error("Lỗi: ", err);
         }
     };
 
+
+    // const handleToggleSelect = async (cartDetailId) => {
+    //     const updatedItems = cartItems.map((item) =>
+    //         item.id === cartDetailId ? { ...item, selected: !item.selected } : item
+    //     );
+    //
+    //     setCartItems(updatedItems);
+    //
+    //     try {
+    //         const token = localStorage.getItem("accessToken");
+    //         await fetch(`http://localhost:8080/cart-details/${cartDetailId}/select`, {
+    //             method: "PUT",
+    //             headers: {
+    //                 "Content-Type": "application/json",
+    //                 Authorization: `Bearer ${token}`,
+    //             },
+    //             body: JSON.stringify({
+    //                 selected: updatedItems.find((i) => i.id === cartDetailId).selected,
+    //             }),
+    //         });
+    //     } catch (err) {
+    //         console.error("Lỗi update select: ", err);
+    //     }
+    // };
     const handleToggleSelect = async (cartDetailId) => {
+        const token = localStorage.getItem("accessToken");
         const updatedItems = cartItems.map((item) =>
             item.id === cartDetailId ? { ...item, selected: !item.selected } : item
         );
-
         setCartItems(updatedItems);
 
+        if (!token) {
+            localStorage.setItem("guestCart", JSON.stringify(updatedItems));
+            return;
+        }
         try {
-            const token = localStorage.getItem("accessToken");
             await fetch(`http://localhost:8080/cart-details/${cartDetailId}/select`, {
                 method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify({
-                    selected: updatedItems.find((i) => i.id === cartDetailId).selected,
-                }),
+                headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+                body: JSON.stringify({ selected: updatedItems.find((i) => i.id === cartDetailId).selected }),
             });
-        } catch (err) {
-            console.error("Lỗi update select: ", err);
-        }
+        } catch (err) { console.error("Lỗi update select: ", err); }
     };
-
     useEffect(() => {
         const selectedItems = cartItems.filter((item) => item.selected);
         setSelect(selectedItems);
@@ -168,9 +216,129 @@ const Cart = () => {
         console.log("Select state đã cập nhật:", select);
     }, [select]);
 
+    // const handleToggleIncrease = async (cartDetailId, priceAtTime) => {
+    //     try {
+    //         const token = localStorage.getItem("accessToken");
+    //         const res = await fetch(
+    //             `http://localhost:8080/cart-details/${cartDetailId}/increase-quantity`,
+    //             {
+    //                 method: "PUT",
+    //                 headers: {
+    //                     "Content-Type": "application/json",
+    //                     Authorization: `Bearer ${token}`,
+    //                 },
+    //             }
+    //         );
+    //
+    //         const data = await res.json();
+    //
+    //         setCartItems((prev) =>
+    //             prev.map((item) =>
+    //                 item.id === cartDetailId ? { ...item, ...data } : item
+    //             )
+    //         );
+    //         const resCart = await fetch(
+    //             `http://localhost:8080/carts/update/${cart.id}/increase`,
+    //             {
+    //                 method: "PUT",
+    //                 headers: {
+    //                     "Content-Type": "application/json",
+    //                     Authorization: `Bearer ${token}`,
+    //                 },
+    //                 body: JSON.stringify({ price: priceAtTime }),
+    //             }
+    //         );
+    //
+    //         await resCart.json().catch(() => null);
+    //         if (resCart.ok) {
+    //             window.dispatchEvent(new Event("cartUpdated"));
+    //         }
+    //         console.log("Update quantity response: ", data);
+    //     } catch (err) {
+    //         console.error("Lỗi update select: ", err);
+    //     }
+    // };
+    //
+    // const handleToggleDecrease = async (cartDetailId, priceAtTime) => {
+    //     try {
+    //         const token = localStorage.getItem("accessToken");
+    //         const res = await fetch(
+    //             `http://localhost:8080/cart-details/${cartDetailId}/decrease-quantity`,
+    //             {
+    //                 method: "PUT",
+    //                 headers: {
+    //                     "Content-Type": "application/json",
+    //                     Authorization: `Bearer ${token}`,
+    //                 },
+    //             }
+    //         );
+    //
+    //         const data = await res.json();
+    //         if (!data || data.quantity === 0) {
+    //             setCartItems((prev) => prev.filter((i) => i.id !== cartDetailId));
+    //             const resCart = await fetch(
+    //                 `http://localhost:8080/carts/update/${cart.id}/decrease`,
+    //                 {
+    //                     method: "PUT",
+    //                     headers: {
+    //                         "Content-Type": "application/json",
+    //                         Authorization: `Bearer ${token}`,
+    //                     },
+    //                     body: JSON.stringify({ price: priceAtTime }),
+    //                 }
+    //             );
+    //
+    //             await resCart.json().catch(() => null);
+    //             if (resCart.ok) {
+    //                 window.dispatchEvent(new Event("cartUpdated"));
+    //             }
+    //             return;
+    //         }
+    //         setCartItems((prev) =>
+    //             prev.map((item) =>
+    //                 item.id === cartDetailId ? { ...item, ...data } : item
+    //             )
+    //         );
+    //         const resCart = await fetch(
+    //             `http://localhost:8080/carts/update/${cart.id}/decrease`,
+    //             {
+    //                 method: "PUT",
+    //                 headers: {
+    //                     "Content-Type": "application/json",
+    //                     Authorization: `Bearer ${token}`,
+    //                 },
+    //                 body: JSON.stringify({ price: priceAtTime }),
+    //             }
+    //         );
+    //
+    //         await resCart.json().catch(() => null);
+    //         if (resCart.ok) {
+    //             window.dispatchEvent(new Event("cartUpdated"));
+    //         }
+    //         console.log("Update quantity response: ", data);
+    //     } catch (err) {
+    //         console.error("Lỗi update select: ", err);
+    //     }
+    // };
     const handleToggleIncrease = async (cartDetailId, priceAtTime) => {
+        const token = localStorage.getItem("accessToken");
+
+        // 1. XỬ LÝ CHO KHÁCH VÃNG LAI (CHƯA ĐĂNG NHẬP)
+        if (!token) {
+            let guestCart = JSON.parse(localStorage.getItem("guestCart")) || [];
+            const index = guestCart.findIndex(i => i.id === cartDetailId);
+            if (index > -1) {
+                guestCart[index].quantity += 1;
+                guestCart[index].subtotal = guestCart[index].quantity * guestCart[index].priceAtTime;
+                localStorage.setItem("guestCart", JSON.stringify(guestCart));
+                setCartItems(guestCart.map(normalizeCartItem));
+                window.dispatchEvent(new Event("cartUpdated"));
+            }
+            return; // Dừng lại, không chạy xuống phần API bên dưới
+        }
+
+        // 2. XỬ LÝ CHO USER ĐÃ ĐĂNG NHẬP (GIỮ NGUYÊN CODE API CŨ CỦA BẠN)
         try {
-            const token = localStorage.getItem("accessToken");
             const res = await fetch(
                 `http://localhost:8080/cart-details/${cartDetailId}/increase-quantity`,
                 {
@@ -212,8 +380,28 @@ const Cart = () => {
     };
 
     const handleToggleDecrease = async (cartDetailId, priceAtTime) => {
+        const token = localStorage.getItem("accessToken");
+
+        // 1. XỬ LÝ CHO KHÁCH VÃNG LAI (CHƯA ĐĂNG NHẬP)
+        if (!token) {
+            let guestCart = JSON.parse(localStorage.getItem("guestCart")) || [];
+            const index = guestCart.findIndex(i => i.id === cartDetailId);
+            if (index > -1) {
+                guestCart[index].quantity -= 1;
+                if (guestCart[index].quantity <= 0) {
+                    guestCart.splice(index, 1); // Xóa khỏi mảng nếu số lượng = 0
+                } else {
+                    guestCart[index].subtotal = guestCart[index].quantity * guestCart[index].priceAtTime;
+                }
+                localStorage.setItem("guestCart", JSON.stringify(guestCart));
+                setCartItems(guestCart.map(normalizeCartItem));
+                window.dispatchEvent(new Event("cartUpdated"));
+            }
+            return; // Dừng lại, không chạy xuống phần API bên dưới
+        }
+
+        // 2. XỬ LÝ CHO USER ĐÃ ĐĂNG NHẬP (GIỮ NGUYÊN CODE API CŨ CỦA BẠN)
         try {
-            const token = localStorage.getItem("accessToken");
             const res = await fetch(
                 `http://localhost:8080/cart-details/${cartDetailId}/decrease-quantity`,
                 {
@@ -246,6 +434,7 @@ const Cart = () => {
                 }
                 return;
             }
+
             setCartItems((prev) =>
                 prev.map((item) =>
                     item.id === cartDetailId ? { ...item, ...data } : item
@@ -272,32 +461,50 @@ const Cart = () => {
             console.error("Lỗi update select: ", err);
         }
     };
-
+    // const handleDelete = async (cartDetailId) => {
+    //     try {
+    //         const token = localStorage.getItem("accessToken");
+    //         const res = await fetch(
+    //             `http://localhost:8080/cart-details/delete/${cartDetailId}`,
+    //             {
+    //                 method: "DELETE",
+    //                 headers: {
+    //                     "Content-Type": "application/json",
+    //                     Authorization: `Bearer ${token}`,
+    //                 },
+    //             }
+    //         );
+    //
+    //         if (res.ok) {
+    //             setCartItems(cartItems.filter((item) => item.id !== cartDetailId));
+    //             window.dispatchEvent(new Event("cartUpdated"));
+    //         } else {
+    //             console.error("Delete failed:", res.statusText);
+    //         }
+    //     } catch (err) {
+    //         console.error("Lỗi update select: ", err);
+    //     }
+    // };
     const handleDelete = async (cartDetailId) => {
+        const token = localStorage.getItem("accessToken");
+        if (!token) {
+            let guestCart = JSON.parse(localStorage.getItem("guestCart")) || [];
+            guestCart = guestCart.filter(item => item.id !== cartDetailId);
+            localStorage.setItem("guestCart", JSON.stringify(guestCart));
+            setCartItems(guestCart.map(normalizeCartItem));
+            window.dispatchEvent(new Event("cartUpdated"));
+            return;
+        }
         try {
-            const token = localStorage.getItem("accessToken");
-            const res = await fetch(
-                `http://localhost:8080/cart-details/delete/${cartDetailId}`,
-                {
-                    method: "DELETE",
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            );
-
+            const res = await fetch(`http://localhost:8080/cart-details/delete/${cartDetailId}`, {
+                method: "DELETE", headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+            });
             if (res.ok) {
                 setCartItems(cartItems.filter((item) => item.id !== cartDetailId));
                 window.dispatchEvent(new Event("cartUpdated"));
-            } else {
-                console.error("Delete failed:", res.statusText);
             }
-        } catch (err) {
-            console.error("Lỗi update select: ", err);
-        }
+        } catch (err) { console.error("Lỗi xóa: ", err); }
     };
-
     useEffect(() => {
         if (cart?.id) {
             hanldeFetchCart();
@@ -306,19 +513,46 @@ const Cart = () => {
 
     const summary = calculateSummary(cartItems);
 
+    // const handleCheckout = () => {
+    //     if (cartItems.length === 0) {
+    //         toast.warning("Giỏ hàng rỗng!!!");
+    //     } else if (select.length === 0) {
+    //         toast.warning("Vui lòng chọn sản phẩm muốn thanh toán!!!");
+    //     } else {
+    //         localStorage.setItem("cartItems", JSON.stringify(cartItems));
+    //         navigate("/checkout", {
+    //             state: { userId: user.id, select: select },
+    //         });
+    //     }
+    // };
     const handleCheckout = () => {
+        const token = localStorage.getItem("accessToken");
+
         if (cartItems.length === 0) {
             toast.warning("Giỏ hàng rỗng!!!");
-        } else if (select.length === 0) {
-            toast.warning("Vui lòng chọn sản phẩm muốn thanh toán!!!");
-        } else {
-            localStorage.setItem("cartItems", JSON.stringify(cartItems));
-            navigate("/checkout", {
-                state: { userId: user.id, select: select },
-            });
+            return;
         }
-    };
 
+        if (select.length === 0) {
+            toast.warning("Vui lòng chọn sản phẩm muốn thanh toán!!!");
+            return;
+        }
+
+        // KIỂM TRA NẾU CHƯA ĐĂNG NHẬP -> ĐẨY SANG TRANG LOGIN
+        if (!token) {
+            toast.info("Vui lòng đăng nhập tài khoản để tiến hành thanh toán!");
+            // Lưu lại giỏ hàng hiện tại vào localStorage để bảo toàn trạng thái trước khi chuyển trang
+            localStorage.setItem("cartItems", JSON.stringify(cartItems));
+            navigate("/login");
+            return;
+        }
+
+        // NẾU ĐÃ ĐĂNG NHẬP -> CHUYỂN TỚI TRANG CHECKOUT NHƯ CŨ
+        localStorage.setItem("cartItems", JSON.stringify(cartItems));
+        navigate("/checkout", {
+            state: { userId: user?.id, select: select },
+        });
+    };
     return (
         <div className="min-h-screen py-10">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
