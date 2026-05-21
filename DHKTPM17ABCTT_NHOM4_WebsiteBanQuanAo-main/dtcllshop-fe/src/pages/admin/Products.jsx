@@ -8,6 +8,12 @@ export default function Products({ initialFilter = 'ALL' }) {
 
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
+    // === THÊM 3 DÒNG NÀY VÀO ĐÂY ===
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(0);
+    const [pageSize, setPageSize] = useState(10);
+
+
   const [showModal, setShowModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
@@ -53,18 +59,22 @@ export default function Products({ initialFilter = 'ALL' }) {
   useEffect(() => {
     loadProducts();
     loadCategories();
-  }, []);
+  }, [currentPage, pageSize]);
 
-  const loadProducts = async () => {
-    try {
-      const res = await fetch("http://localhost:8080/products");
-      if (!res.ok) throw new Error("Failed");
-      const data = await res.json();
-      setProducts(data?.result || []);
-    } catch (err) {
-      console.log(err);
-    }
-  };
+    const loadProducts = async () => {
+        try {
+            // Gọi API phân trang, trừ đi 1 vì Spring Boot đếm trang từ 0
+            const res = await fetch(`http://localhost:8080/products/admin/page?page=${currentPage - 1}&size=${pageSize}`);
+            if (!res.ok) throw new Error("Failed");
+            const data = await res.json();
+
+            // ApiResponse có thuộc tính result, bên trong result là đối tượng Page chứa content và totalPages
+            setProducts(data?.result?.content || []);
+            setTotalPages(data?.result?.totalPages || 0);
+        } catch (err) {
+            console.log(err);
+        }
+    };
 
   const loadCategories = async () => {
     try {
@@ -551,6 +561,54 @@ export default function Products({ initialFilter = 'ALL' }) {
               </tbody>
             </table>
           </div>
+            {/* === THÊM ĐOẠN GIAO DIỆN PHÂN TRANG NÀY VÀO ĐÂY === */}
+            {totalPages > 1 && (
+                <div className="flex justify-center items-center gap-2 p-4 bg-gray-50 border-t border-gray-100">
+                    <button
+                        disabled={currentPage === 1}
+                        onClick={() => setCurrentPage((prev) => prev - 1)}
+                        className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all ${
+                            currentPage === 1
+                                ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                                : "bg-white text-blue-600 border border-blue-200 hover:bg-blue-50 shadow-sm"
+                        }`}
+                    >
+                        Trước
+                    </button>
+
+                    <div className="flex items-center gap-1">
+                        {[...Array(totalPages).keys()].map((index) => {
+                            const pageNumber = index + 1;
+                            return (
+                                <button
+                                    key={pageNumber}
+                                    onClick={() => setCurrentPage(pageNumber)}
+                                    className={`w-10 h-10 flex items-center justify-center rounded-xl text-sm font-bold transition-all ${
+                                        currentPage === pageNumber
+                                            ? "bg-blue-600 text-white shadow-md"
+                                            : "bg-white text-gray-600 border border-gray-200 hover:bg-gray-50"
+                                    }`}
+                                >
+                                    {pageNumber}
+                                </button>
+                            );
+                        })}
+                    </div>
+
+                    <button
+                        disabled={currentPage === totalPages}
+                        onClick={() => setCurrentPage((prev) => prev + 1)}
+                        className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all ${
+                            currentPage === totalPages
+                                ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                                : "bg-white text-blue-600 border border-blue-200 hover:bg-blue-50 shadow-sm"
+                        }`}
+                    >
+                        Sau
+                    </button>
+                </div>
+            )}
+            {/* === KẾT THÚC ĐOẠN PHÂN TRANG === */}
         </div>
 
         {/* DETAIL MODAL */}

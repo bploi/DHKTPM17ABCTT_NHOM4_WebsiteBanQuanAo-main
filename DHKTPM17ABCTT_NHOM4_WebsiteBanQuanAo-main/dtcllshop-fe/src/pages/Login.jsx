@@ -58,7 +58,46 @@ const Login = () => {
           const roles = getTokenRoles(decodedToken);
 
           toast.success("Đăng nhập thành công!");
+// ĐỒNG BỘ GIỎ HÀNG KHÁCH VÃNG LAI -> DATABASE
+            const guestCart = localStorage.getItem("guestCart");
+            if (guestCart && JSON.parse(guestCart).length > 0) {
+                try {
+                    const parsedGuestCart = JSON.parse(guestCart);
 
+                    // Lấy ID người dùng và Giỏ hàng của họ bằng API có sẵn
+                    const resUser = await fetch(`http://localhost:8080/accounts/myinfor`, { headers: { Authorization: `Bearer ${token}` } });
+                    const userData = await resUser.json();
+                    const userId = userData.result.id;
+
+                    const resCart = await fetch(`http://localhost:8080/carts/account/${userId}`, { headers: { Authorization: `Bearer ${token}` } });
+                    const cartData = await resCart.json();
+                    const cartId = cartData.result.id;
+
+                    // Vòng lặp bắn API thêm vào giỏ hàng thực tế cho từng món
+                    for (const item of parsedGuestCart) {
+                        await fetch(`http://localhost:8080/cart-details/add-to-cart`, {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+                            body: JSON.stringify({
+                                productId: item.productId,
+                                cartId: cartId,
+                                quantity: item.quantity,
+                                ...(item.sizeDetailId && { sizeDetailId: item.sizeDetailId }),
+                            })
+                        });
+                        // Cập nhật tổng tiền vào bảng Cart
+                        await fetch(`http://localhost:8080/carts/update/${cartId}`, {
+                            method: "PUT",
+                            headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+                            body: JSON.stringify({ quantity: item.quantity, totalAmount: item.subtotal })
+                        });
+                    }
+                    localStorage.removeItem("guestCart"); // Xóa giỏ tạm sau khi đồng bộ xong
+                    window.dispatchEvent(new Event("cartUpdated"));
+                } catch (err) {
+                    console.error("Lỗi đồng bộ giỏ hàng vãng lai:", err);
+                }
+            }
           if (roles.some((role) => role.includes("ADMIN"))) {
             navigate("/admin", { replace: true });
           } else if (roles.some((role) => role.includes("STAFF"))) {
