@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   FaPlus, FaEdit, FaTrash, FaUpload, FaDownload, FaImage, FaEye,
   FaSearch, FaFilter, FaSortAmountDown
@@ -207,12 +207,14 @@ export default function Products({ initialFilter = 'ALL' }) {
 
     // 4. Xử lý SizeDetailRequests
     // Map từ state đơn giản của form sang cấu trúc lồng nhau của API
-    const sizeDetailRequestsData = formData.sizeDetails.map(item => ({
-      quantity: Number(item.quantity),
-      sizeRequest: {
-        nameSize: item.nameSize // Lấy tên size từ input form
-      }
-    }));
+    const sizeDetailRequestsData = formData.sizeDetails
+      .filter(item => item.nameSize && item.nameSize.trim() !== "")
+      .map(item => ({
+        quantity: Number(item.quantity),
+        sizeRequest: {
+          nameSize: item.nameSize // Lấy tên size từ input form
+        }
+      }));
 
     // 5. Tạo Payload cuối cùng
     const payload = {
